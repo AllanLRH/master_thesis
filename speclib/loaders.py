@@ -5,7 +5,6 @@ import os
 import sys
 import json
 import codecs
-from pudb import set_trace
 
 
 def loadAndersJson(filepath):
@@ -14,8 +13,11 @@ def loadAndersJson(filepath):
 
     def cleanLine(ln):
         ruleTup = (("u'", "'"),
-                   ('"', "\\"),
-                   ("'", '"'))
+                   ('"', '\\"'),
+                   ("'", '"'),
+                   ("True", "true"),
+                   ("False", "false"),
+                   ("None", "null"))
         for rule in ruleTup:
             ln = ln.replace(*rule)
         return ln
@@ -35,7 +37,6 @@ def loadAndersJson(filepath):
             except json.decoder.JSONDecodeError as err:
                 print(err, file=sys.stderr)
                 print(repr(cleanLine(lineDecoded)), file=sys.stderr)
-                set_trace()
 
 
 def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles'):
