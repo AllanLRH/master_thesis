@@ -53,18 +53,33 @@ def loadAndersJson(filepath):
                 print(repr(cleanLine(lineDecoded)), file=sys.stderr)
 
 
-def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles'):
+def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles', dataFilter=None):
     """Loads a users data as dict.
 
     Args:
         user (str): Name of user data folder
         dataPath (str, optional): Path to folder which contains user data folder.
+        dataFilter (Iterable containing str, optional): Only return certain datasets from
+            a user. Allowed values are 'sms', 'question', 'gps', 'bluetooth', 'screen',
+            'facebook' and 'call'.
 
     Returns:
         TYPE: dict
     """
     userPath = os.path.join(dataPath, user)
-    datafileList = os.listdir(userPath)
+
+    # Relating to dataFilter argument...
+    if dataFilter is not None:  # Not all data files in the user folder should be loaded
+        # Check that dataFilter arguments are valid, raise ValueError if they aren't
+        validFilterSet = {'sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call'}
+        if any({el not in validFilterSet for el in dataFilter}):
+            raise ValueError("Invalied filter argument provided. Allowed values are %r"
+                             % validFilterSet)
+        # Filter data files in user folder according to dataFilter
+        datafileList = [el for el in os.listdir(userPath) if el.split("_")[0] in dataFilter]
+    else:  # If no dataFilter is set, use all avaiable data files in user folder
+        datafileList = os.listdir(userPath)
+
     userDict = dict()
     for filename in datafileList:
         dataType = filename.split('_')[0]
