@@ -46,8 +46,8 @@ def loadAndersJson(filepath):
             lineDecoded = decodeLine(line)
             # yield ujson.loads(cleanLine(lineDecoded))
             try:
-                cleaned = cleanLine(lineDecoded)
-                yield json.loads(cleaned)
+                cleanedLine = cleanLine(lineDecoded)
+                yield json.loads(cleanedLine)
             except json.decoder.JSONDecodeError as err:
                 print(err, file=sys.stderr)
                 print(repr(cleanLine(lineDecoded)), file=sys.stderr)
