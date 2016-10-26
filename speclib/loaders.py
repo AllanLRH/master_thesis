@@ -16,7 +16,7 @@ def loadAndersJson(filepath):
     Args:
         filepath (str): Path to date file
 
-    Returns:
+    Yields:
         TYPE: dict
 
     Raises:
@@ -67,10 +67,8 @@ def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles'):
     datafileList = os.listdir(userPath)
     userDict = dict()
     for filename in datafileList:
-        print(filename)
         dataType = filename.split('_')[0]
         datafilePath = os.path.join(userPath, filename)
-        print(datafilePath)
         userDict[dataType] = list(loadAndersJson(datafilePath))
     return userDict
 
