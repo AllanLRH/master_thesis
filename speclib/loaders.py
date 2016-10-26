@@ -8,6 +8,20 @@ import codecs
 
 
 def loadAndersJson(filepath):
+    """Loads Anders' "json" data files.
+       It does so by converting the strings to valid json, and subsequently interpreting
+       it using a json library
+
+
+    Args:
+        filepath (str): Path to date file
+
+    Returns:
+        TYPE: dict
+
+    Raises:
+        FileNotFoundError: Raised if filepath doesn't point to a file.
+    """
     if not os.path.isfile(filepath):
         raise FileNotFoundError("The file {} doesn't seem to exist".format(filepath))
 
@@ -40,6 +54,15 @@ def loadAndersJson(filepath):
 
 
 def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles'):
+    """Loads a users data as dict.
+
+    Args:
+        user (str): Name of user data folder
+        dataPath (str, optional): Path to folder which contains user data folder.
+
+    Returns:
+        TYPE: dict
+    """
     userPath = os.path.join(dataPath, user)
     datafileList = os.listdir(userPath)
     userDict = dict()
