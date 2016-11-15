@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import codecs
+import pickle
 
 
 def loadAndersJson(filepath):
@@ -89,6 +90,21 @@ def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
         datafilePath = os.path.join(userPath, filename)
         userDict[dataType] = list(loadAndersJson(datafilePath))
     return userDict
+
+
+def loadUserPhonenumberDict(filepath="/lscr_paper/allan/phonenumbers.p"):
+    """Loads the dictionary which relates a phone number to a user.
+    Format is phoneID -> userID
+
+    Args:
+        filepath (str, optional): Path to the phonenumbers.p pickle-file.
+
+    Returns:
+        dict: phoneID -> userID
+    """
+    with open(filepath, "rb") as fid:
+        data = pickle.load(fid)
+        return data
 
 
 if __name__ == '__main__':
