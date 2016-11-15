@@ -65,6 +65,9 @@ def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
 
     Returns:
         TYPE: dict
+
+    Raises:
+        ValueError: If a wrong parameter is passed to dataFilter
     """
     userPath = os.path.join(dataPath, user)
 
