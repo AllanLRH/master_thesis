@@ -107,6 +107,10 @@ def loadUserPhonenumberDict(filepath="/lscr_paper/allan/phonenumbers.p"):
         return data
 
 
+def getUserList(dataPath='/lscr_paper/allan/data/Telefon/userfiles'):
+    return os.listdir(datapath)
+
+
 if __name__ == '__main__':
     datapath = '/lscr_paper/allan/data/Telefon/userfiles'
     userList = [el for el in os.listdir(datapath) if os.path.isdir(os.path.join(datapath, el))]
