@@ -54,12 +54,12 @@ def loadAndersJson(filepath):
                 print(repr(cleanLine(lineDecoded)), file=sys.stderr)
 
 
-def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles', dataFilter=None):
+def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilter=None):
     """Loads a users data as dict.
 
     Args:
         user (str): Name of user data folder
-        dataPath (str, optional): Path to folder which contains user data folder.
+        datapath (str, optional): Path to folder which contains user data folder.
         dataFilter (Iterable containing str, optional): Only return certain datasets from
             a user. Allowed values are 'sms', 'question', 'gps', 'bluetooth', 'screen',
             'facebook' and 'call'.
@@ -70,7 +70,7 @@ def loadUser(user, dataPath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
     Raises:
         ValueError: If a wrong parameter is passed to dataFilter
     """
-    userPath = os.path.join(dataPath, user)
+    userPath = os.path.join(datapath, user)
 
     # Relating to dataFilter argument...
     if dataFilter is not None:  # Not all data files in the user folder should be loaded
@@ -107,7 +107,7 @@ def loadUserPhonenumberDict(filepath="/lscr_paper/allan/phonenumbers.p"):
         return data
 
 
-def getUserList(dataPath='/lscr_paper/allan/data/Telefon/userfiles'):
+def getUserList(datapath='/lscr_paper/allan/data/Telefon/userfiles'):
     return os.listdir(datapath)
 
 
