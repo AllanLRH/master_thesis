@@ -3,3 +3,7 @@ speclib/textExample.txt
 ._.DS_Store
 temp
 sshRelated/__pycache__
+.DS_Store
+.cache/
+speclib/.cache/
+speclib/__pycache__/
