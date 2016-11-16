@@ -26,7 +26,7 @@ def loadAndersJson(filepath):
     if not os.path.isfile(filepath):
         raise FileNotFoundError("The file {} doesn't seem to exist".format(filepath))
 
-    def cleanLine(ln):
+    def _cleanLine(ln):
         ruleTup = (("u'", "'"),
                    ('"', '\\"'),
                    ("'", '"'),
@@ -43,15 +43,15 @@ def loadAndersJson(filepath):
         return "\\n".join([el for el in toConcat if el])
 
     with open(filepath, "br") as fid:
-        for line in fid:
+        for i, line in enumerate(fid):
             lineDecoded = decodeLine(line)
-            # yield ujson.loads(cleanLine(lineDecoded))
+            # yield ujson.loads(_cleanLine(lineDecoded))
             try:
-                cleanedLine = cleanLine(lineDecoded)
+                cleanedLine = _cleanLine(lineDecoded)
                 yield json.loads(cleanedLine)
             except json.decoder.JSONDecodeError as err:
                 print(err, file=sys.stderr)
-                print(repr(cleanLine(lineDecoded)), file=sys.stderr)
+                print("%s  &d:\t%r" % (filepath, i, _cleanLine(lineDecoded)), file=sys.stderr)
 
 
 def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilter=None):
