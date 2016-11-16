@@ -82,7 +82,7 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
         # Filter data files in user folder according to dataFilter
         datafileList = [el for el in os.listdir(userPath) if el.split("_")[0] in dataFilter]
     else:  # If no dataFilter is set, use all avaiable data files in user folder
-        datafileList = os.listdir(userPath)
+        datafileList = [el for el in os.listdir(userPath) if el.lower().endswith(".txt")]
 
     userDict = dict()
     for filename in datafileList:
