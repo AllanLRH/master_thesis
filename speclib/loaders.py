@@ -6,7 +6,7 @@ from glob import glob
 import pickle
 
 
-def loadAndersJson(filepath):
+def loadPythonSyntaxFile(filepath):
     """Loads data stored in a text file, where each line is a python dict.
 
     Args:
@@ -65,7 +65,7 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
     userDict = dict()
     for filepath in datafileList:
         dictkey = _filepath2dictkey(filepath)
-        userDict[dictkey] = loadAndersJson(filepath)
+        userDict[dictkey] = loadPythonSyntaxFile(filepath)
     return userDict
 
 
