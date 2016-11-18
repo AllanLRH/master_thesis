@@ -7,17 +7,27 @@ import pickle
 
 
 def loadAndersJson(filepath):
-    if not os.path.isfile(filepath):
+    """Loads data stored in a text file, where each line is a python dict.
+
+    Args:
+        filepath (str): Path of file to be read
+
+    Returns:
+        list: Return a list containing all the dicts from the file.
+
+    Raises:
+        FileNotFoundError: If filepath doesn't point to a .txt-file.
+    """
+    if not os.path.isfile(filepath) or not filepath.lower().endswith(".txt"):
         raise FileNotFoundError("The file {} doesn't seem to exist".format(filepath))
     localNamespace = dict()
     with open(filepath) as fid:
         cl0 = fid.read()
-        cl1 = cl0.replace("u'", "'")  # Unicode prefix not required in Python 3
-        cl2 = cl1.replace("\n{", ",\n{")  # Add "," to seperate dicts
-        cl3 = cl2.strip()
-        cl4 = "data = [" + cl3 + "]"  # Put all lines into a list.
+        cl1 = cl0.replace("\n{", ",\n{")  # Add "," to seperate dicts
+        cl2 = cl1.strip()
+        cl3 = "data = [" + cl2 + "]"  # Put all lines into a list.
         # set_trace()
-        exec(cl4, localNamespace)  # Execute the python command
+        exec(cl3, localNamespace)  # Execute the python command
         return localNamespace["data"]  # Return values from localNamespace-dict
 
 
