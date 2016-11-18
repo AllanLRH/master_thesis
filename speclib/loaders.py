@@ -2,56 +2,23 @@
 # -*- coding: utf8 -*-
 
 import os
-import sys
-import json
-import codecs
+from glob import glob
 import pickle
 
 
 def loadAndersJson(filepath):
-    """Loads Anders' "json" data files.
-       It does so by converting the strings to valid json, and subsequently interpreting
-       it using a json library
-
-
-    Args:
-        filepath (str): Path to date file
-
-    Yields:
-        TYPE: dict
-
-    Raises:
-        FileNotFoundError: Raised if filepath doesn't point to a file.
-    """
     if not os.path.isfile(filepath):
         raise FileNotFoundError("The file {} doesn't seem to exist".format(filepath))
-
-    def _cleanLine(ln):
-        ruleTup = (("u'", "'"),
-                   ('"', '\\"'),
-                   ("'", '"'),
-                   ("True", "true"),
-                   ("False", "false"),
-                   ("None", "null"))
-        for rule in ruleTup:
-            ln = ln.replace(*rule)
-        return ln
-
-    def decodeLine(byteLine):
-        lst = byteLine.split(b"\\n")
-        toConcat = [codecs.escape_decode(line)[0].decode("iso-8859-15") for line in lst]
-        return "\\n".join([el for el in toConcat if el])
-
-    with open(filepath, "br") as fid:
-        for i, line in enumerate(fid):
-            lineDecoded = decodeLine(line)
-            # yield ujson.loads(_cleanLine(lineDecoded))
-            try:
-                cleanedLine = _cleanLine(lineDecoded)
-                yield json.loads(cleanedLine)
-            except json.decoder.JSONDecodeError as err:
-                print(err, file=sys.stderr)
-                print("%s  &d:\t%r" % (filepath, i, _cleanLine(lineDecoded)), file=sys.stderr)
+    localNamespace = dict()
+    with open(filepath) as fid:
+        cl0 = fid.read()
+        cl1 = cl0.replace("u'", "'")  # Unicode prefix not required in Python 3
+        cl2 = cl1.replace("\n{", ",\n{")  # Add "," to seperate dicts
+        cl3 = cl2.strip()
+        cl4 = "data = [" + cl3 + "]"  # Put all lines into a list.
+        # set_trace()
+        exec(cl4, localNamespace)  # Execute the python command
+        return localNamespace["data"]  # Return values from localNamespace-dict
 
 
 def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilter=None):
@@ -70,9 +37,12 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
     Raises:
         ValueError: If a wrong parameter is passed to dataFilter
     """
+    # Turn "/foo/bar/baz/gps_log.txt" -> "gps"
+    _filepath2dictkey = lambda el: el.rsplit("/", maxsplit=1)[1].split("_")[0]
     userPath = os.path.join(datapath, user)
 
     # Relating to dataFilter argument...
+    datafileList = glob(os.path.join(userPath, "*.txt"))
     if dataFilter is not None:  # Not all data files in the user folder should be loaded
         # Check that dataFilter arguments are valid, raise ValueError if they aren't
         validFilterSet = {'sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call'}
@@ -80,15 +50,12 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
             raise ValueError("Invalied filter argument provided. Allowed values are %r"
                              % validFilterSet)
         # Filter data files in user folder according to dataFilter
-        datafileList = [el for el in os.listdir(userPath) if el.split("_")[0] in dataFilter]
-    else:  # If no dataFilter is set, use all avaiable data files in user folder
-        datafileList = [el for el in os.listdir(userPath) if el.lower().endswith(".txt")]
+        datafileList = [el for el in datafileList if _filepath2dictkey(el) in dataFilter]
 
     userDict = dict()
-    for filename in datafileList:
-        dataType = filename.split('_')[0]
-        datafilePath = os.path.join(userPath, filename)
-        userDict[dataType] = list(loadAndersJson(datafilePath))
+    for filepath in datafileList:
+        dictkey = _filepath2dictkey(filepath)
+        userDict[dictkey] = loadAndersJson(filepath)
     return userDict
 
 
