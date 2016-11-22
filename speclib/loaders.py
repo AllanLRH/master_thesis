@@ -31,7 +31,8 @@ def loadPythonSyntaxFile(filepath):
         return localNamespace["data"]  # Return values from localNamespace-dict
 
 
-def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilter=None):
+def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
+             dataFilter=('sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call')):
     """Loads a users data as dict.
 
     Args:
@@ -42,31 +43,33 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles', dataFilt
             'facebook' and 'call'.
 
     Returns:
-        TYPE: dict
+        dict: User data in a dict, maps to None for missing data types.
 
     Raises:
         ValueError: If a wrong parameter is passed to dataFilter
     """
     # Turn "/foo/bar/baz/gps_log.txt" -> "gps"
-    _filepath2dictkey = lambda el: el.rsplit("/", maxsplit=1)[1].split("_")[0]
+    _filepath2dictkey = lambda el: el.rsplit(os.path.sep, maxsplit=1)[1].split("_")[0]
     userPath = os.path.join(datapath, user)
-
-    # Relating to dataFilter argument...
-    datafileList = glob(os.path.join(userPath, "*.txt"))
-    if dataFilter is not None:  # Not all data files in the user folder should be loaded
-        # Check that dataFilter arguments are valid, raise ValueError if they aren't
-        validFilterSet = {'sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call'}
-        if any({el not in validFilterSet for el in dataFilter}):
-            raise ValueError("Invalied filter argument provided. Allowed values are %r"
-                             % validFilterSet)
-        # Filter data files in user folder according to dataFilter
-        datafileList = [el for el in datafileList if _filepath2dictkey(el) in dataFilter]
-
     userDict = dict()
+    loadedFilesSet = set()
+    datafileList = glob(os.path.join(userPath, "*.txt"))
+
+    # Check that dataFilter arguments are valid, raise ValueError if they aren't
+    validFilterSet = {'sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call'}
+    if any({el not in validFilterSet for el in dataFilter}):
+        raise ValueError("Invalied filter argument provided. Allowed values are %r"
+                         % validFilterSet)
+
     for filepath in datafileList:
         dictkey = _filepath2dictkey(filepath)
+        if dictkey not in dataFilter:
+            continue
         userDict[dictkey] = loadPythonSyntaxFile(filepath)
-    return userDict
+        loadedFilesSet.add(dictkey)
+    for missingFileKey in (set(dataFilter) - loadedFilesSet):
+        userDict[missingFileKey] = None
+    return userDict if userDict else False  # Return None if there's no contents in userDict
 
 
 def loadUserPhonenumberDict(filepath="/lscr_paper/allan/phonenumbers.p"):
