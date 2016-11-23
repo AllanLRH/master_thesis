@@ -91,8 +91,39 @@ def getUserList(datapath='/lscr_paper/allan/data/Telefon/userfiles'):
     return os.listdir(datapath)
 
 
+class Useralias(object):
+    """Class used to rename user from the human ureadable hash values.
+    Works like a dict for lookups, but return a new (sequentially generetad) alias for
+    unknown users, whereas previous look-up users aliases is saved, and returned when
+    asked for.
+
+    Attributes:
+        formatStr (str): String template for returned aliases. Must be compatible with
+        the .format()-method
+        i (int): Holds value for the next user in the sequence
+        userdct (dict): Holds previously seen hash -> alias pairs
+    """
+
+    def __init__(self, formatStr="u{:04d}"):
+        super(Useralias, self).__init__()
+        self.formatStr = formatStr
+        self.i = 0
+        self.userdct = dict()
+
+    def __setitem__(self, key, value):
+        self.userdct[key] = value
+
+    def __getitem__(self, key):
+        if key not in self.userdct:
+            self.i += 1
+            self.userdct[key] = self.formatStr.format(self.i)
+        return self.userdct[key]
+
+
 if __name__ == '__main__':
     datapath = '/lscr_paper/allan/data/Telefon/userfiles'
     userList = [el for el in os.listdir(datapath) if os.path.isdir(os.path.join(datapath, el))]
     print(userList[0])
     data = loadUser(userList[0])
+
+
