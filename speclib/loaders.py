@@ -129,6 +129,7 @@ class Useralias(object):
         self.formatStr = formatStr
         self.i = 0
         self.userdct = dict()
+        self.reversed = dict()
 
     def __setitem__(self, key, value):
         self.userdct[key] = value
@@ -138,6 +139,19 @@ class Useralias(object):
             self.i += 1
             self.userdct[key] = self.formatStr.format(self.i)
         return self.userdct[key]
+
+    def lookup(self, alias):
+        """Reverse lookup: given a useralias, return the username (hash-like string)
+
+        Args:
+            alias (str): useralias, default on the form u0001, u0123, u0435, u1023 and so on....
+
+        Returns:
+            TYPE: Original username (hash-like), that is, the name of the user data-folder.
+        """
+        if len(self.reversed) != len(self.userDict):
+            self.reversed = {v: k for (k, v) in self.userDict.items()}
+        return reversed[alias]
 
 
 if __name__ == '__main__':
