@@ -8,3 +8,4 @@ sshRelated/__pycache__
 speclib/.cache/
 speclib/__pycache__/
 *.ipynb_checkpoints
+__pycache__
