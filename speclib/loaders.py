@@ -4,6 +4,7 @@
 import os
 from glob import glob
 import pickle
+from multiprocessing import Pool
 
 
 def loadPythonSyntaxFile(filepath):
@@ -70,6 +71,25 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
     for missingFileKey in (set(dataFilter) - loadedFilesSet):
         userDict[missingFileKey] = None
     return userDict if userDict else False  # Return None if there's no contents in userDict
+
+
+def _loadUserHandler(userSpec):
+    if len(userSpec) == 2:
+        user, alias = userSpec
+        return (alias, loadUser(user))
+    else:
+        user, alias, dataFilter = userSpec
+        return (alias, loadUser(user, dataFilter=dataFilter))
+
+
+def loadUserParallel(userSpec, n=16):
+    pool = Pool(n)
+    users = None
+    try:
+        users = pool.map(_loadUserHandler, userSpec)
+    finally:
+        pool.terminate()
+    return dict(users)
 
 
 def loadUserPhonenumberDict(filepath="/lscr_paper/allan/phonenumbers.p"):
