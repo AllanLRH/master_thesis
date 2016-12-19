@@ -70,7 +70,7 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
         loadedFilesSet.add(dictkey)
     for missingFileKey in (set(dataFilter) - loadedFilesSet):
         userDict[missingFileKey] = None
-    return userDict if userDict else False  # Return None if there's no contents in userDict
+    return userDict if userDict else None  # Return None if there's no contents in userDict
 
 
 def _loadUserHandler(userSpec):
