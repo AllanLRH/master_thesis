@@ -64,9 +64,6 @@ def barSBS(ax, *args, offset=0.04, extraGroupSpace=None):
         *args (dict): Data series contained in a dict. 'y' and 'label' are required keys, referenceing to data and label respectively. 'x' is x-values and is optional.
         offset (float, optional): Space between individual bars, default 0.04.
         extraGroupSpace (float, optional): Extra space between groups, default is 0 for less than 4 groups.
-
-    Returns:
-        TYPE: Description
     """
     dataDicts = args
     if extraGroupSpace is None:
