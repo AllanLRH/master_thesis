@@ -12,6 +12,7 @@ def isInputPort(inp):
 
 
 def getNotebooks():
+    # "jupyter-noteboo" is not an error, the "k" really is missing from the process name
     return [pr for pr in psutil.process_iter() if (pr.name() == "jupyter-noteboo" and pr.username() == username)]
 
 
