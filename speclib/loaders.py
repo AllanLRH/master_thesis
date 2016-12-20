@@ -4,6 +4,7 @@
 import os
 from glob import glob
 import pickle
+import pandas as pd
 from multiprocessing import Pool
 
 
@@ -152,6 +153,73 @@ class Useralias(object):
         if len(self.reversed) != len(self.userDict):
             self.reversed = {v: k for (k, v) in self.userDict.items()}
         return reversed[alias]
+
+
+def dict2DataFrame(dct, useralias):
+    """Convert the dict-based output from loadUser to a DataFrame
+
+    Args:
+        dct (dict): A single communication typy dict from a user, as returned by loadUser.
+        useralias (Useralias): A Useralias-instance or a dict mapping hashlike
+                               usernames to a human readable format.
+
+    Returns:
+        DataFrame: Pandas DataFrame with 'user' and 'comtype' as the index, and columns:
+        - body: Hash of SMS body, NaN for calls
+        - duration: Duration of call, NaN for SMS
+        - number: Hash of recieving number
+        - timestamp: Datetime for when the event occured
+        - weekday: Weekday on which the event occured
+        - hour: Hour of the day when the envent occured
+    """
+    df = pd.DataFrame(dct)
+    if 'id' in df.columns:
+        df = df.drop("id", axis=1)
+    if 'type' in df.columns:
+        df = df.drop('type', axis=1)
+    df.timestamp = df.timestamp.astype('datetime64[s]')  # convert Unix integer timestamps to datetime-objects
+    df["weekday"] = df.timestamp.dt.weekday  # Add weekday column
+    df["hour"] = df.timestamp.dt.hour  # Add hour column
+    df.user = df.user.apply(lambda x: useralias[x])  # convert hex-usernames to enumerated usernames
+    # Set comtype and rename 'address' to 'number' for datatype 'sms'
+    if 'address' in df.columns:
+        df["comtype"] = "sms"  # create the column "comtype", set it to "sms"
+        df.rename(columns={'address': 'number'}, inplace=True)
+    else:
+        df["comtype"] = "call"
+    df = df.set_index(["user", "comtype"])  # move columns "user" and "comtype" to (multi)index
+    return df
+
+
+def _user2DataFrameHandler(args):
+    """Helper function for users2DataFrame"""
+    return dict2DataFrame(*args)
+
+
+def users2DataFrame(dct, useralias, processes=15):
+    """Convert a dict of users into a DataFrame using multiple CPU cores.
+
+    Args:
+        dct (dict): Dict of users like the one returned by loadUserParallel.
+        useralias (Useralias): An Useralias-instance.
+        processes (int, optional): Number of CPU cores to useself.
+
+    Returns:
+        DataFrame: All the users from dct as a DataFrame, as the one returned
+                   from dict2DataFrame.
+    """
+    gen = ((comDct, useralias) for user in dct.values()
+                      for comDct in user.values() if comDct)  # noqa
+    try:
+        pool = Pool(processes=processes)
+        call = pool.map_async(_user2DataFrameHandler, gen)
+        call.wait()
+        toConcatenate = call.get()
+    finally:
+        pool.terminate()
+    df = pd.concat(toConcatenate)
+    df.sortlevel(level=0, inplace=True)
+    return df
 
 
 if __name__ == '__main__':
