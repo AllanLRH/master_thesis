@@ -82,6 +82,18 @@ def barSBS(ax, *args, offset=0.04, extraGroupSpace=None):
     ax.legend()
 
 
+def countsOnBarPlot(ax):
+    # attach some text labels
+    # From: http://matplotlib.org/examples/api/barchart_demo.html
+    # Don't include the last Rectangle, which is the canvas (or something like that)
+    rectangles = [el for el in ax.get_children() if isinstance(el, mpl.patches.Rectangle)][:-1]
+    for rect in rectangles:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
+                '%d' % int(height),
+                ha='center', va='bottom')
+
+
 if __name__ == '__main__':
     d0 = {'y': (5 + np.random.randn(24))**2, 'label': 'SMS'}
     d1 = {'y': (5 + np.random.randn(24))**2, 'label': 'Call'}
