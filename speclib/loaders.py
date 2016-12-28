@@ -6,6 +6,7 @@ from glob import glob
 import pickle
 import pandas as pd
 from multiprocessing import Pool
+import json
 
 
 def loadPythonSyntaxFile(filepath):
@@ -33,6 +34,46 @@ def loadPythonSyntaxFile(filepath):
         return localNamespace["data"]  # Return values from localNamespace-dict
 
 
+def loadUser2(user, datapath='/lscr_paper/allan/telephone',
+              dataFilter=('sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call')):
+    """Loads a users data as dict.
+
+    Args:
+        user (str): Name of user data folder
+        datapath (str, optional): Path to folder which contains user data folder.
+        dataFilter (Iterable containing str, optional): Only return certain datasets from
+            a user. Allowed values are 'sms', 'question', 'gps', 'bluetooth', 'screen',
+            'facebook' and 'call'.
+
+    Returns:
+        dict: User data in a dict, maps to None for missing data types.
+
+    Raises:
+        ValueError: If a wrong parameter is passed to dataFilter
+    """
+    userPath = os.path.join(datapath, user)
+    userDict = dict()
+    loadedFilekeySet = set()
+    datafileList = os.listdir(userPath)
+
+    # Check that dataFilter arguments are valid, raise ValueError if they aren't
+    validFilterSet = {'sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call'}
+    if any({el not in validFilterSet for el in dataFilter}):
+        raise ValueError("Invalied filter argument provided. Allowed values are %r"
+                         % validFilterSet)
+
+    for filename in datafileList:
+        filekey = filename.split('.')[0]
+        if filekey not in dataFilter:
+            continue
+        with open(os.path.join(userPath, filename)) as fid:
+            userDict.update(json.load(fid))
+        loadedFilekeySet.add(filekey)
+    for missingFileKey in (set(dataFilter) - loadedFilekeySet):
+        userDict[missingFileKey] = None
+    return userDict if userDict else None  # Return None if there's no contents in userDict
+
+
 def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
              dataFilter=('sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call')):
     """Loads a users data as dict.
@@ -54,7 +95,7 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
     _filepath2dictkey = lambda el: el.rsplit(os.path.sep, maxsplit=1)[1].split("_")[0]
     userPath = os.path.join(datapath, user)
     userDict = dict()
-    loadedFilesSet = set()
+    loadedFilekeySet = set()
     datafileList = glob(os.path.join(userPath, "*.txt"))
 
     # Check that dataFilter arguments are valid, raise ValueError if they aren't
@@ -68,8 +109,8 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
         if dictkey not in dataFilter:
             continue
         userDict[dictkey] = loadPythonSyntaxFile(filepath)
-        loadedFilesSet.add(dictkey)
-    for missingFileKey in (set(dataFilter) - loadedFilesSet):
+        loadedFilekeySet.add(dictkey)
+    for missingFileKey in (set(dataFilter) - loadedFilekeySet):
         userDict[missingFileKey] = None
     return userDict if userDict else None  # Return None if there's no contents in userDict
 
@@ -77,10 +118,10 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
 def _loadUserHandler(userSpec):
     if len(userSpec) == 2:
         user, alias = userSpec
-        return (alias, loadUser(user))
+        return (alias, loadUser2(user))
     else:
         user, alias, dataFilter = userSpec
-        return (alias, loadUser(user, dataFilter=dataFilter))
+        return (alias, loadUser2(user, dataFilter=dataFilter))
 
 
 def loadUserParallel(userSpec, n=16):
