@@ -9,3 +9,4 @@ speclib/.cache/
 speclib/__pycache__/
 *.ipynb_checkpoints
 __pycache__
+userActivity/comFreq.pandasPickle
