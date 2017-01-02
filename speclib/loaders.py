@@ -218,7 +218,8 @@ def dict2DataFrame(dct, useralias):
         df = df.drop("id", axis=1)
     if 'type' in df.columns:
         df = df.drop('type', axis=1)
-    df.timestamp = df.timestamp.astype('datetime64[s]')  # convert Unix integer timestamps to datetime-objects
+    df.rename(columns={'timestamp': 'timeint'}, inplace=True)
+    df['timestamp'] = df.timeint.astype('datetime64[s]')  # convert Unix integer timestamps to datetime-objects
     df["weekday"] = df.timestamp.dt.weekday  # Add weekday column
     df["hour"] = df.timestamp.dt.hour  # Add hour column
     df.user = df.user.apply(lambda x: useralias[x])  # convert hex-usernames to enumerated usernames
