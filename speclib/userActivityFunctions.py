@@ -30,6 +30,16 @@ def getComdataMean(df, dataCol, datasizeCol):
 
 
 def df2punchcard(df, binwidth=3600):
+    """Make a punchcard over all time for the communication-dataframe df.
+       I suspect it's buggy!
+
+    Args:
+        df (DataFrame): DataFrame with communication events.
+        binwidth (int, optional): Bin witdh in seconds, default i 3600 (= 1 hour).
+
+    Returns:
+        Array: 2D array with users on the y-axis and timebins on the x-axis.
+    """
     minInt, maxInt = df.timeint.min(), df.timeint.max()
     deltaInt = maxInt - minInt
     nBins = 3600  # (deltaInt % binwidth) + 1
@@ -45,6 +55,15 @@ def df2punchcard(df, binwidth=3600):
 
 
 def plotPunchcard(data):
+    """Plots a "punchcard of user activity, using the pcolor plot function."
+
+    Args:
+        data (2d array): An matrix with activity binned hourly.
+                         Users along the y-axis, hours along the x-axis.
+
+    Returns:
+        Figure, Axis: Figure and axis of plot.
+    """
     fig, ax = plt.subplots()
     pc = ax.pcolorfast(data, cmap=mpl.cm.viridis)
     fig.colorbar(pc)
