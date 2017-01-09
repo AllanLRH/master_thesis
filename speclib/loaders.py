@@ -134,11 +134,12 @@ def loadUserParallel(userSpec, n=16):
     return dict(users)
 
 
-def loadUserPhonenumberDict(filepath="/lscr_paper/allan/phonenumbers.p"):
+def loadUserPhonenumberDict(useralias=None, filepath="/lscr_paper/allan/phonenumbers.p"):
     """Loads the dictionary which relates a phone number to a user.
     Format is phoneID -> userID
 
     Args:
+        useralias (Useralias, optional): An Useralias instance, may be None.
         filepath (str, optional): Path to the phonenumbers.p pickle-file.
 
     Returns:
@@ -146,6 +147,8 @@ def loadUserPhonenumberDict(filepath="/lscr_paper/allan/phonenumbers.p"):
     """
     with open(filepath, "rb") as fid:
         data = pickle.load(fid)
+        if useralias is not None:
+            return {k: useralias[v] for (k, v) in data.items()}
         return data
 
 
