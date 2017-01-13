@@ -10,3 +10,5 @@ speclib/__pycache__/
 *.ipynb_checkpoints
 __pycache__
 userActivity/comFreq.pandasPickle
+networkxNotebookTutorials/
+userPCA/pcaPlay.ipynb
