@@ -5,7 +5,7 @@ import os
 from glob import glob
 import pickle
 import pandas as pd
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 import json
 
 
@@ -116,6 +116,9 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
 
 
 def _loadUserHandler(userSpec):
+    """
+    Helper function for loadUserParallel.
+    """
     if len(userSpec) == 2:
         user, alias = userSpec
         return (alias, loadUser2(user))
@@ -124,7 +127,21 @@ def _loadUserHandler(userSpec):
         return (alias, loadUser2(user, dataFilter=dataFilter))
 
 
-def loadUserParallel(userSpec, n=16):
+def loadUserParallel(userSpec, n=None):
+    """Loads users in parallel.
+
+    Args:
+        userSpec (tuple): Contains (username, useralias) or (username, useralias, dataFilter).
+                          See the documentation for loadUser2 (which uses theese arguments).
+        n (None, optional): Number of provessor cores to use when loading the users in parallel.
+                            Default is 16, but will fall back to number of cores minus 1 if 16
+                            cores aren't avaiable.
+
+    Returns:
+        dict: Dictionary representation of all users. Can easily be converted to pandas DataFrame.
+    """
+    if n is None:
+        n = 16 if 16 < cpu_count() else cpu_count() - 1
     pool = Pool(n)
     users = None
     try:
