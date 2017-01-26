@@ -61,9 +61,12 @@ def barSBS(ax, *args, offset=0.04, extraGroupSpace=None):
 
     Args:
         ax (axes): Axes to plot on.
-        *args (dict): Data series contained in a dict. 'y' and 'label' are required keys, referenceing to data and label respectively. 'x' is x-values and is optional.
+        *args (dict): Data series contained in a dict. 'y' and 'label' are required keys,
+                      referenceing to data and label respectively. 'x' is x-values and
+                      is optional.
         offset (float, optional): Space between individual bars, default 0.04.
-        extraGroupSpace (float, optional): Extra space between groups, default is 0 for less than 4 groups.
+        extraGroupSpace (float, optional): Extra space between groups, default is 0 for
+                                           less than 4 groups.
     """
     dataDicts = args
     if extraGroupSpace is None:
@@ -75,7 +78,8 @@ def barSBS(ax, *args, offset=0.04, extraGroupSpace=None):
             x = dct['x']
         else:
             x = np.arange(len(dct['y']))
-        ax.bar(x+extraGroupSpace+i*(width + offset), dct['y'], width, color=getNextColor(), label=dct['label'])
+        ax.bar(x+extraGroupSpace+i*(width + offset), dct['y'], width, color=getNextColor(),
+               label=dct['label'])
     xtickLabels = ["%d" % el for el in ax.get_xticks()]
     ax.set_xticks(ax.get_xticks() + 0.35)
     ax.set_xticklabels(xtickLabels)
