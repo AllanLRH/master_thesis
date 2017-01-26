@@ -4,6 +4,7 @@ from collections import Iterable
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import networkx as nx
 
 
 def looseAxesLimits(ax, loosen=0.05):
@@ -96,6 +97,46 @@ def countsOnBarPlot(ax):
         ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
                 '%d' % int(height),
                 ha='center', va='bottom')
+
+
+def plotNeatoGraph(g, plotSettings=None, labels=None, fig_ax=None):
+    """Plot a NetworkX graph, optionally add labels, and modify plot settings.
+
+    Args:
+        g (NetworkX graph): The graph to plot.
+        plotSettings (dict, optional): Update plottting preference, options and defaults is:
+                                        * 'node_color':   'steelblue',
+                                        * 'edge_color':   'slategray',
+                                        * 'figsize':      (16, 9),
+                                        * 'font_color':   'mediumaquamarine',
+                                        * 'font_size':    15,
+                                        * 'font_weight':  'bold'
+        labels (dict, optional): A dict with {'node': 'label'}.
+        fig_ax (tuple, optional): Tuple containing (fig, ax) (Matplotlib figure and Axis).
+        figsize (tuple, optional): Matplotlib figure size,
+
+    Returns:
+        (fig, ax): figure and axis
+    """
+    ps = {'node_color': 'steelblue',
+          'edge_color':  'slategray',
+          'figsize': (16, 9),
+          'font_color': 'mediumaquamarine',  # for labelled nodes
+          'font_size': 15,  # for labelled nodes
+          'font_weight': 'bold'}  # for labelled nodes
+    if plotSettings is not None:
+        ps.update(plotSettings)
+    fig, ax = plt.subplots(figsize=ps['figsize'])
+    pos = nx.drawing.nx_agraph.graphviz_layout(g, prog='neato')
+    nx.draw_networkx_nodes(g, pos, node_size=70, node_color=ps['node_color'], ax=ax)
+    nx.draw_networkx_edges(g, pos, edge_color=ps['edge_color'])
+    if labels:
+        nx.draw_networkx_labels(g, pos, labels=labels, font_color=ps['font_color'],
+                                font_size=ps['font_size'], font_weight=ps['font_weight'])
+    ax.set_axis_bgcolor('white')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    return (fig, ax)
 
 
 if __name__ == '__main__':
