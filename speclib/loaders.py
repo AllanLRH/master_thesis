@@ -258,22 +258,26 @@ def _user2DataFrameHandler(args):
     return dict2DataFrame(*args)
 
 
-def users2DataFrame(dct, useralias, processes=15):
+def users2DataFrame(dct, useralias, n=None):
     """Convert a dict of users into a DataFrame using multiple CPU cores.
 
     Args:
         dct (dict): Dict of users like the one returned by loadUserParallel.
         useralias (Useralias): An Useralias-instance.
-        processes (int, optional): Number of CPU cores to useself.
+        n (None, optional): Number of CPU cores to use.
+                            Default is 16, but will fall back to number of cores
+                            minus 1 if 16 cores aren't avaiable.
 
     Returns:
         DataFrame: All the users from dct as a DataFrame, as the one returned
                    from dict2DataFrame.
     """
+    if n is None:
+        n = 16 if 16 < cpu_count() else cpu_count() - 1
     gen = ((comDct, useralias) for user in dct.values()
                       for comDct in user.values() if comDct)  # noqa
     try:
-        pool = Pool(processes=processes)
+        pool = Pool(processes=n)
         call = pool.map_async(_user2DataFrameHandler, gen)
         call.wait()
         toConcatenate = call.get()
