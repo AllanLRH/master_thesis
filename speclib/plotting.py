@@ -13,15 +13,14 @@ def looseAxesLimits(ax, loosen=0.05):
 
     Args:
         ax (axis): The axes-handle for the relevant axis.
-        loosen (float or tuple, default = 0.05): The fractional amount to adjust the plot.
+        loosen (float/int or tuple, default = 0.05): The fractional amount to adjust the plot.
                    - If a float is passed, the plot distance will be modified by the same
                    value in all directions.
                    - If a tuple with 2 floats is passed, the first float will be applid in
                    the horizontal direction, and the second float will be applied in the
                    vertical direction.
                    - If a tuple with 4 floats is passed, the floats will be used when
-                   adjusting the horizontal-left, horozontal-right, vertical-left and
-                   vertical-right directions.
+                   adjusting the left, right, bottom and top directions.
 
     Raises:
         ValueError: If loosen is not a float, 2-element tuple (2-tuple) or 4-tuple.
@@ -34,10 +33,10 @@ def looseAxesLimits(ax, loosen=0.05):
     axrngY = axmaxY - axminY
 
     # Check for input errors in loosen-argument
-    if not isinstance(loosen, float) and len(loosen) not in (2, 4):
-        raise ValueError("loosen-argument must be float, 2-tuple, or 4-tuple.")
-    if isinstance(loosen, Iterable) and not all([isinstance(el, float) for el in loosen]):
-        raise ValueError("The contents of loosen must all be floats.")
+    if not (isinstance(loosen, float) or isinstance(loosen, int)) and len(loosen) not in (2, 4):
+        raise ValueError("loosen-argument must be float/int, 2-tuple, or 4-tuple.")
+    if isinstance(loosen, Iterable) and not all([(isinstance(el, float) or isinstance(el, int)) for el in loosen]):
+        raise ValueError("The contents of loosen must all be floats or ints.")
 
     # Parse the loosen-argument
     if isinstance(loosen, float):
