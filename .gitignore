@@ -12,3 +12,5 @@ __pycache__
 userActivity/comFreq.pandasPickle
 networkxNotebookTutorials/
 userPCA/pcaPlay.ipynb
+userPCA/phone_df.h5
+userPCA/useralias.pk
