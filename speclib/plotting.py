@@ -138,6 +138,24 @@ def plotNeatoGraph(g, plotSettings=None, labels=None, fig_ax=None):
     return (fig, ax)
 
 
+def nxQuickDraw(G, **kwargs):
+    """Quickly draw a networkx graph.
+
+    Args:
+        G (nx.Graph-like): Graph to draw, can be Graph, DiGramh, MultiGraph or DiMutiGraph.
+        **kwargs: Additional keyword arguments to nx.draw.
+    """
+    kwDct = dict(with_labels=True,  # Use some sane defaults
+                 node_color='lightblue',
+                 edge_color='lightgray',
+                 node_size=150)
+    # Make a copy so that the defaults of the function is not changed whenever it's
+    # called with arguments other that the graph
+    useKwDct = kwDct.copy()
+    useKwDct.update(kwargs)
+    nx.draw(G, **useKwDct)
+
+
 if __name__ == '__main__':
     d0 = {'y': (5 + np.random.randn(24))**2, 'label': 'SMS'}
     d1 = {'y': (5 + np.random.randn(24))**2, 'label': 'Call'}
