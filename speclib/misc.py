@@ -65,3 +65,16 @@ def timedelta2unit(timedelta, unit):
     if hasattr(timedelta, '__iter__'):
         return np.fromiter((_inner(td, unit.lower()) for td in timedelta), np.double)
     return _inner(timedelta, unit.lower())
+
+
+def standardizeData(data):
+    """
+    Normalize the data by substracting the mean from each feature,
+    and dividing by the standard deviation.
+    """
+    mean = data.mean(axis=0)
+    std = data.std(axis=0)
+    # set values of where there's no data to 1.0, since we're dividing with the std
+    std[mean == 0] = 1.0
+    normData = (data - mean)/std
+    return normData
