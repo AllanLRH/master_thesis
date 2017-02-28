@@ -90,12 +90,12 @@ def countsOnBarPlot(ax):
     # attach some text labels
     # From: http://matplotlib.org/examples/api/barchart_demo.html
     # Don't include the last Rectangle, which is the canvas (or something like that)
-    rectangles = [el for el in ax.get_children() if isinstance(el, mpl.patches.Rectangle)][:-1]
-    for rect in rectangles:
+    rect_list = [el for el in ax.get_children() if isinstance(el, mpl.patches.Rectangle)][:-1]
+    offset = np.mean([0.05*rect.get_height() for rect in rect_list])
+    for rect in rect_list:
         height = rect.get_height()
-        ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
-                '%d' % int(height),
-                ha='center', va='bottom')
+        ax.text(rect.get_x() + rect.get_width()/2., height + offset,
+                '%d' % int(height), ha='center', va='bottom')
 
 
 def plotNeatoGraph(g, plotSettings=None, labels=None, fig_ax=None):
