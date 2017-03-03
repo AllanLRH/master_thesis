@@ -94,8 +94,9 @@ def countsOnBarPlot(ax):
     offset = np.mean([0.05*rect.get_height() for rect in rect_list])
     for rect in rect_list:
         height = rect.get_height()
-        ax.text(rect.get_x() + rect.get_width()/2., height + offset,
-                '%d' % int(height), ha='center', va='bottom')
+        if int(height) != 0:
+            ax.text(rect.get_x() + rect.get_width()/2., height + offset,
+                    '%d' % int(height), ha='center', va='bottom')
 
 
 def plotNeatoGraph(g, plotSettings=None, labels=None, fig_ax=None):
