@@ -108,7 +108,7 @@ def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contac
     if comtype is not None:
         df = df[df.index.get_level_values('comtype') == comtype]
     communicationDct = _userDF2communicationDictOfDicts(df, userColumn=userColumn)
-    activityDf = pd.DataFrame(communicationDct)
+    activityDf = pd.DataFrame.from_dict(communicationDct, orient='index')
     activityDf.index.name = 'userInit'
     activityDf.columns.name = 'userRecv'
     return activityDf
