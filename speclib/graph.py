@@ -98,12 +98,12 @@ def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contac
     """Create an adjacency-matrix like DataFrame from the regular communication DataFrame.
 
     Args:
-    df (DataFrame): DataFrame as the one loaded by loadUsersParallel.
-    userColumn (str, optional): Name of the level in the index containing,
-                                users initiating the communication.
-    associatedUserColumn (str, optional): Name of the column containing users
-                                          communicated to or associated with.
-    comtype (str, optional): Filter communication type.
+        df (DataFrame): DataFrame as the one loaded by loadUsersParallel.
+        userColumn (str, optional): Name of the level in the index containing,
+                                    users initiating the communication.
+        associatedUserColumn (str, optional): Name of the column containing users
+                                              communicated to or associated with.
+        comtype (str, optional): Filter communication type.
 
     Returns:
         DataFrame: Adjacency-matrix like DataFrame
