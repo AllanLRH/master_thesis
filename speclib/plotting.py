@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx
+import palettable
+import itertools
 
 
 def looseAxesLimits(ax, loosen=0.05):
@@ -156,6 +158,43 @@ def nxQuickDraw(G, **kwargs):
     useKwDct = kwDct.copy()
     useKwDct.update(kwargs)
     nx.draw(G, **useKwDct)
+
+
+def barFractionPlot(df, ax=None):
+    """Plots a horizontal stacked bar chart colored by percent.
+
+    Args:
+        df (DataFrame): 1 dimmensional dataframe.
+        ax (axis, optional): Axis to plot on.
+
+    Returns:
+        axis: Axis, given or created.
+
+    Raises:
+        ValueError: If len(df.shape) > 1
+    """
+    if len(df.shape) > 1:
+        raise ValueError("Only 1-dimmensional dataFrames are accepted")
+    if ax is None:
+        _, ax = plt.subplots(figsize=(20, 1))
+    mplColors = itertools.cycle(
+        palettable.colorbrewer.qualitative.__dict__[
+            'Set3_%d' % max(3, min(13, df.shape[0]))].mpl_colors
+    )
+    oldLeft = 0.0
+    useDf = df.sort_values(ascending=False)/df.values.sum()
+    for i, ((lbl, val), color) in enumerate(zip((useDf).items(), mplColors)):
+        ax.barh(bottom=0, width=val, left=oldLeft, color=color, height=1.0)
+        ax.annotate(lbl, xy=(oldLeft, 0.010), xycoords='data',
+                    xytext=(60, 0), textcoords='offset pixels',
+                    horizontalalignment='center',
+                    verticalalignment='bottom')
+        oldLeft += val
+    ax.set_xticks(np.cumsum(useDf.values))
+    ax.set_xticklabels(["%.3f" % fl for fl in useDf.values], rotation=45)
+    ax.set_yticklabels([])
+    ax.set_xbound(0, 1)
+    return ax
 
 
 if __name__ == '__main__':
