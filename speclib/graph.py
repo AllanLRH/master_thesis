@@ -66,28 +66,31 @@ def _userDF2communicationDictOfDicts(df, userColumn='user',
 
 
 def userDF2nxGraph(df, userColumn='user', associatedUserColumn='contactedUser',
-                   comtype=None, diGraph=False):
+                   comtype=None, graphType=nx.Graph()):
     """Convert user DataFrame to a Networkx Graph.
 
     Args:
-    df (DataFrame): DataFrame as the one loaded by loadUsersParallel.
-    userColumn (str, optional): Name of the level in the index containing,
-                                users initiating the communication.
-    associatedUserColumn (str, optional): Name of the column containing users
-                                          communicated to or associated with.
-    comtype (str, optional): Filter communication type.
-    diGraph (bool, optional): Set to True to return a DiGraph rather thatn a Graph.
+        df (DataFrame): DataFrame as the one loaded by loadUsersParallel.
+        userColumn (str, optional): Name of the level in the index containing,
+                                    users initiating the communication.
+        associatedUserColumn (str, optional): Name of the column containing users
+                                              communicated to or associated with.
+        comtype (str, optional): Filter communication type.
+        graphType (nx.Graph-like, optional): Graph type to create, pass an empty instance.
 
     Returns:
         nx.Graph: A Networkx graph.
+
+    Deleted Parameters:
+        diGraph (bool, optional): Set to True to return a DiGraph rather thatn a Graph.
     """
     if comtype is not None:
         df = df[df.index.get_level_values('comtype') == comtype]
-    communicationDct = _userDF2communicationDictOfDicts(df, userColumn=userColumn)
-    if diGraph:
-        return nx.DiGraph(communicationDct)
-    # Drop the weights: Only the keys (users communicated to) is necessary
-    return nx.Graph({k: v.keys() for (k, v) in communicationDct.items()})
+    df = df.groupby([userColumn, associatedUserColumn]).comtype.count()
+    df = pd.DataFrame(df.reset_index()).rename(columns={'comtype': 'weight'})
+    g = nx.from_pandas_dataframe(df, source=userColumn, target=associatedUserColumn,
+                                 edge_attr=['weight'])
+    return g
 
 
 def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contactedUser',
