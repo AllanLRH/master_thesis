@@ -114,4 +114,5 @@ def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contac
     activityDf = pd.DataFrame.from_dict(communicationDct, orient='index')
     activityDf.index.name = 'userInit'
     activityDf.columns.name = 'userRecv'
+    activityDf.sort_index(axis=1, inplace=True)
     return activityDf
