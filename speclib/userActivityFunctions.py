@@ -76,3 +76,20 @@ def mutualContact(df, user0, user1):
         mutualContact.add((user1, user0))
         return True
     return False
+
+
+def userDf2CliqueDf(df, chosenUserLst, associatedUserColumn='contactedUser'):
+    """Given a user DataFrame and a list of users, return a user DataFrame which only
+    contains communication in between the users in the given list.
+
+    Args:
+        df (DataFrame): DataFrame, must have 'user' as an index.
+        chosenUserLst (list): List with chosen users.
+        associatedUserColumn (str, optional): Column name containing contacted users.
+
+    Returns:
+        DataFrame: With entries not involving users from chosenUserLst removed.
+    """
+    df = df.loc[chosenUserLst]
+    return df[df[associatedUserColumn].isin(chosenUserLst)]
+
