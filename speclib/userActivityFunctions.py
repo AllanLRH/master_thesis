@@ -52,3 +52,27 @@ def df2punchcard(df, binwidth=3600):
         except ValueError as e:
             print(i, user, nBins, deltaInt, e, sep="\n\n")
     return arr
+
+
+def mutualContact(df, user0, user1):
+    """Return true if user0 nad user1 have contacted each other.
+
+    Args:
+        df (DataFrame): DataFrame as the on loaded by loadUsersParallel.
+        user0 (str): Username to test.
+        user1 (str): Username to test.
+
+    Returns:
+        bool: True of there's mutual contact
+    """
+    mutualContact = set()
+    if (user0, user1) in mutualContact:
+        print("looked up!")
+        return True
+    user01 = df.loc[user0].contactedUser.str.contains(user1).any()
+    user10 = df.loc[user1].contactedUser.str.contains(user0).any()
+    if (user01 and user10):
+        mutualContact.add((user0, user1))
+        mutualContact.add((user1, user0))
+        return True
+    return False
