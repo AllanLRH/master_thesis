@@ -211,9 +211,9 @@ class Useralias(object):
         Returns:
             TYPE: Original username (hash-like), that is, the name of the user data-folder.
         """
-        if len(self.reversed) != len(self.userDict):
-            self.reversed = {v: k for (k, v) in self.userDict.items()}
-        return reversed[alias]
+        if len(self.reversed) != len(self.userdct):
+            self.reversed = {v: k for (k, v) in self.userdct.items()}
+        return self.reversed[alias]
 
 
 def dict2DataFrame(dct, useralias):
