@@ -52,29 +52,3 @@ def df2punchcard(df, binwidth=3600):
         except ValueError as e:
             print(i, user, nBins, deltaInt, e, sep="\n\n")
     return arr
-
-
-def plotPunchcard(data):
-    """Plots a "punchcard of user activity, using the pcolor plot function."
-
-    Args:
-        data (2d array): An matrix with activity binned hourly.
-                         Users along the y-axis, hours along the x-axis.
-
-    Returns:
-        Figure, Axis: Figure and axis of plot.
-    """
-    fig, ax = plt.subplots()
-    pc = ax.pcolorfast(data, cmap=mpl.cm.viridis)
-    fig.colorbar(pc)
-    ax.set_xlim(0, data.shape[1])
-    ax.set_ylim(0, data.shape[0])
-    tickmarks = np.arange(0, 7*24, 24) + 12
-    ax.set_xticks(tickmarks)
-    ax.set_xticklabels(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], rotation=45)
-    ax.grid()
-    for idx in np.arange(24, 7*24, 24):
-        ax.axvline(x=idx, linestyle='--', color='white', linewidth=1.5, zorder=3)
-    ax.set_yticklabels([])
-    ax.set_ylabel('Users')
-    return fig, ax
