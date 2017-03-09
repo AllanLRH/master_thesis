@@ -97,6 +97,8 @@ def userDf2CliqueDf(df, chosenUserLst, associatedUserColumn='contactedUser'):
 def userDf2timebinDf(df, bins):
     """Given a user DataFrame and bins, return a generator yielding the events for
     which fall in a given bin.
+    Binning happens on a weekly timescale, and the smallest time unit is an hour.
+    This all thuesdays in with hourly-bin 3 is combined, regardles of the actual date.
 
     Args
         df (DataFrame): User DataFrame.
