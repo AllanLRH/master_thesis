@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn import decomposition
 
 
 def nanEqual(a, b):
@@ -78,3 +79,19 @@ def standardizeData(data):
     std[mean == 0] = 1.0
     normData = (data - mean)/std
     return normData
+
+
+def pcaFit(toPca, **kwargs):
+    """Standardize data, create a PCA object and fit the data.
+
+    Args:
+        toPca (np.array): Data to perform PCA analysis on.
+        **kwargs (dict, optional): Additional keyword arguments to PCA.
+
+    Returns:
+        PCA: Fitted PCA instance.
+    """
+    toPca = standardizeData(toPca)
+    pca = decomposition.PCA(**kwargs)
+    pca.fit(toPca)
+    return pca
