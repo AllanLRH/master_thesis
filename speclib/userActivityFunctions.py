@@ -3,8 +3,8 @@
 
 import numpy as np
 import pandas as pd
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+from speclib import graph
+import networkx as nx
 
 
 def getComdataMean(df, dataCol, datasizeCol):
@@ -93,3 +93,74 @@ def userDf2CliqueDf(df, chosenUserLst, associatedUserColumn='contactedUser'):
     df = df.loc[chosenUserLst]
     return df[df[associatedUserColumn].isin(chosenUserLst)]
 
+
+def userDf2timebinDf(df, bins):
+    """Given a user DataFrame and bins, return a generator yielding the events for
+    which fall in a given bin.
+
+    Args
+        df (DataFrame): User DataFrame.
+        bins (str, int, or dict): Specification of bins...
+              str:  Name of column with bin values.
+              int:  Number of euqally spaced bins pr. 24 hours,
+              dict: A mapping for every hour to a bin value
+
+    Yields:
+        DataFrame: With events from bin associated with current iteration.
+
+    Raises:
+        ValueError: If an invalid column name is provided in bin argument.
+        ValueError: If a bins dict doesn't contain mapping for all hours.
+    """
+    df = df.copy()  # work in a copy of the input DataFrame
+
+    # Handle bins argument as a column name
+    if isinstance(bins, str):
+        if (bins not in df.columns) or (df[bins].dtype not in ('i', 'U')):
+            raise ValueError("If bins-argument is a string, it must " +
+                             "point to a column with integers.")
+        df['weekTimeBin'] = bins  # Just use the string for indexing
+
+    # Handle bins argument as a dict with bin mappings
+    if isinstance(bins, dict):
+        hour = df.timestamp.dt.hour  # Compute the hours from the timestamps
+        # Throw error if the bins dict doesn't map all hours
+        if not len(set(bins.keys()).intersection(set(hour))) == hour.unique().size:
+            raise ValueError("The bins-argument dict must contain mappings for all hours.")
+        df['weekTimeBin'] = hour.map(bins)
+
+    # Handle bins argument as an int with desired number of bins pr. 24 hours
+    if isinstance(bins, int):  # if bins are an int, calculate the bins
+        hour = df.timestamp.dt.hour  # Compute the hours from the timestamps
+        df['weekTimeBin'] = np.floor(hour/(24/bins)).astype(np.int)  # Compute the bins
+
+    for _, itrDf in df.groupby(['weekday', 'weekTimeBin'], as_index=False):
+        yield itrDf
+
+
+def userDf2timebinAdjMat(df, bins, chosenUserLst):
+    """Given a user DataFrame, return a matrix where each column is the rows/columns
+    from an adjacency matrix.
+
+    Args:
+        df (DataFrame): User DataFrame, must have 'user' as index and 'timestamp' as
+                        a column.
+        bins (str, int, or dict): Specification of bins...
+              str:  Name of column with bin values.
+              int:  Number of euqally spaced bins pr. 24 hours,
+              dict: A mapping for every hour to a bin value
+        chosenUserLst (iterable): Iterable (e.g. list) with user names from the index.
+
+    Returns:
+        np.array: Array where each column is the combined columns from the adjacency
+                  matrix constructed from the events in a corresponding time bin.
+    """
+    aggLst = list()
+    for itrDf in userDf2timebinDf(df, bins):
+        itrG = graph.userDF2nxGraph(itrDf)
+        itrAdj = nx.adj_matrix(itrG, nodelist=chosenUserLst)
+        aggLst.append(itrAdj)
+    toPcaRaw = np.zeros((len(chosenUserLst)**2, len(aggLst)))
+    for i in range(len(aggLst)):
+        toPcaRaw[:, i] = aggLst[i].todense().reshape((1, -1))
+    return toPcaRaw
