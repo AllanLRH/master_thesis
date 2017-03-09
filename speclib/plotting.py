@@ -160,7 +160,7 @@ def nxQuickDraw(G, **kwargs):
     nx.draw(G, **useKwDct)
 
 
-def barFractionPlot(df, ax=None):
+def barFractionPlot(df, ax=None, userOrder=None):
     """Plots a horizontal stacked bar chart colored by percent.
 
     Args:
@@ -175,18 +175,33 @@ def barFractionPlot(df, ax=None):
     """
     if len(df.shape) > 1:
         raise ValueError("Only 1-dimmensional dataFrames are accepted")
-    if ax is None:
+    if ax is None:  # Create plot and axis since none is provided
         _, ax = plt.subplots(figsize=(20, 1))
+    # Colorcycler, using colorbrewer Set3, with an an appropriate number of colors,
+    # limited to numbers 3 through 13. It will cycle infinitely.
     mplColors = itertools.cycle(
         palettable.colorbrewer.qualitative.__dict__[
             'Set3_%d' % max(3, min(13, df.shape[0]))].mpl_colors
     )
-    oldLeft = 0.0
-    useDf = df.sort_values(ascending=False)/df.values.sum()
+    oldLeft = 0.0  # position where previous bar ended
+    if userOrder is None:  # No ordering of users probided, sort descending
+        useDf = df.sort_values(ascending=False)
+    else:  # Use provided ordering
+        useDf = df.loc[userOrder]
+    useDf /= df.values.sum()
+    #   count
+    #   |    user
+    #   |    |    communicationFraction
+    #   |    |    |     bar color
+    #   |    |    |     |                       Iterate df as a dict
+    #   |    |    |     |                       |               Tag plot color on
     for i, ((lbl, val), color) in enumerate(zip((useDf).items(), mplColors)):
         ax.barh(bottom=0, width=val, left=oldLeft, color=color, height=1.0)
-        ax.annotate(lbl, xy=(oldLeft, 0.010), xycoords='data',
-                    xytext=(60, 0), textcoords='offset pixels',
+        ax.annotate(lbl,
+                    xy=(oldLeft, 0.010),
+                    xycoords='data',
+                    xytext=(60, 0),
+                    textcoords='offset pixels',
                     horizontalalignment='center',
                     verticalalignment='bottom')
         oldLeft += val
@@ -194,7 +209,7 @@ def barFractionPlot(df, ax=None):
     ax.set_xticklabels(["%.3f" % fl for fl in useDf.values], rotation=45)
     ax.set_yticklabels([])
     ax.set_xbound(0, 1)
-    return ax
+    return (ax, useDf.index.tolist())
 
 
 def plotPunchcard(data):
