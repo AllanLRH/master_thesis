@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from speclib import graph
 import networkx as nx
+from speclib import misc
+from speclib import graph
 
 
 def getComdataMean(df, dataCol, datasizeCol):
@@ -167,3 +169,40 @@ def userDf2timebinAdjMat(df, bins, chosenUserLst):
     for i in range(len(aggLst)):
         toPcaRaw[:, i] = aggLst[i].todense().reshape((1, -1))
     return toPcaRaw
+
+
+def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=None):
+    """Given  DataFrame with communities...
+    1) Strip communication events to the outisde of the community.
+    2) Seperate the comminication into weekly bins.
+    3) Build a matrix where each column is the stacked columns from an adjacency matrix
+        from a single weekly bin (using the function userDf2timebinAdjMat).
+    4) Do PCA analysis, and save the explained variance ratio for all communities, as
+        well as their community size.
+
+    Args:
+        userDf (DataFrame): DataFrame containing user activity.
+        communityDf (DataFrame): DataFrame with communities, where each line contains the
+            user names of the members of the community (padded with NaN/None if
+            necessary).
+        bins (str, int, or dict): int is number of bins pr 24 hours. See the
+        communitySizeUnique (ints in iterable, optional): Community size to analyze.
+        documentation for userDf2timebinAdjMat for the other options
+
+    Returns:
+        dict: keys is community size, values are list with arrays containing the
+              explained variance ratio from the PCA anaysis.
+    """
+    communityPcaDct = dict()
+    communitySize = communityDf.count(axis=1)
+    if communitySizeUnique is None:
+        communitySizeUnique = communitySize.unique()
+    for cs in communitySizeUnique:
+        communityPcaDct[cs] = list()
+        for community in communityDf[communitySize == cs].iloc[:, :cs].values:
+            community = community.tolist()
+            communitySubDf = userDf2CliqueDf(userDf, community)
+            toPcaRaw = userDf2timebinAdjMat(communitySubDf, bins, community)
+            pca = misc.pcaFit(toPcaRaw)
+            communityPcaDct[cs].append(pca.explained_variance_ratio_)
+    return communityPcaDct
