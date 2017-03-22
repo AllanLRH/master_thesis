@@ -6,7 +6,6 @@ import pandas as pd
 from speclib import graph
 import networkx as nx
 from speclib import misc
-from speclib import graph
 
 
 def getComdataMean(df, dataCol, datasizeCol):
