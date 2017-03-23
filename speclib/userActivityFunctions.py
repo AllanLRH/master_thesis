@@ -173,7 +173,7 @@ def userDf2timebinAdjMat(df, bins, chosenUserLst):
 def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=None):
     """Given  DataFrame with communities...
     1) Strip communication events to the outisde of the community.
-    2) Seperate the comminication into weekly bins.
+    2) Seperate the comminication into bins, merging bins on a weekly timescale.
     3) Build a matrix where each column is the stacked columns from an adjacency matrix
         from a single weekly bin (using the function userDf2timebinAdjMat).
     4) Do PCA analysis, and save the explained variance ratio for all communities, as
