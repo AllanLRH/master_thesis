@@ -95,7 +95,7 @@ def userDf2CliqueDf(df, chosenUserLst, associatedUserColumn='contactedUser'):
     return df[df[associatedUserColumn].isin(chosenUserLst)]
 
 
-def userDf2timebinDf(df, bins):
+def userDf2weeklyTimebinDf(df, bins):
     """Given a user DataFrame and bins, return a generator yielding the events which fall
     in a given bin.
     Binning happens on a weekly timescale, and the smallest time unit is an hour.
@@ -160,7 +160,7 @@ def userDf2timebinAdjMat(df, bins, chosenUserLst):
                   Thus the units is activity on the y axis and timebins on the x axis.
     """
     aggLst = list()
-    for itrDf in userDf2timebinDf(df, bins):
+    for itrDf in userDf2weeklyTimebinDf(df, bins):
         itrG = graph.userDF2nxGraph(itrDf)
         itrAdj = nx.adj_matrix(itrG, nodelist=chosenUserLst)
         aggLst.append(itrAdj)
