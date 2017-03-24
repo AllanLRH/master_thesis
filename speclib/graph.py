@@ -23,6 +23,43 @@ def networkx2igraph(nxGraph):
         )  # noqa
 
 
+def isSymmetric(m):
+    """Check if a matrix (Numpy array) is summetric
+
+    Args:
+        m (aray): 2d array
+
+    Returns:
+        bool: True if symmetric, false otherwise.
+
+    Raises:
+        ValueError: It input doesn't have exactly 2 dimmensions.
+    """
+    if m.ndim != 2:
+        raise ValueError("Input must have exactly 2 dimmensions.")
+    return np.allclose(m, m.T)
+
+
+def adjMatUpper2array(m):
+    """Given an (adjacency) matrix, return the upper triangular part as a 1d array.
+
+    Args:
+        m (array): 2d array (adjacency matrix).
+
+    Returns:
+        array: 1d array with upper triangular part of matrix.
+
+    Raises:
+        ValueError: If input have wrong dimmensions.
+        ValueError: If isn't a square matrix.
+    """
+    if m.ndim != 2:
+        raise ValueError("The input m must have exactly 2 dimmensions.")
+    if m.shape[0] != m.shape[1]:
+        raise ValueError('The input must be a square matrix (it was {})'.format(m.shape))
+    return (m[np.tril(m) > 0])
+
+
 def igraph2networkx(igGraph):
     """Convert a Igraph graph to an Networkx graph.
     Only tested for binary adjacency matrices.
