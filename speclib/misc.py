@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn import decomposition
+import multiprocessing
 
 
 def nanEqual(a, b):
@@ -96,6 +97,29 @@ def pcaFit(toPca, **kwargs):
     pca = decomposition.PCA(**kwargs)
     pca.fit(toPca)
     return pca
+
+
+def mapAsync(func, funcargLst, n=None):
+    """Given a function and an iterable with tuple-packed arguments, evalueate the
+    the function in parallel using multiple processors.
+
+    Args:
+        func (function): Function to evalueate.
+        funcargLst (list): List with tuples containing arguemnts for func.
+        n (int, optional): Number of processors to use. Default is 16 or number of
+                           processors - 1 (if there isn't 16 processors avaiable).
+
+    Returns:
+        list: List with result.
+    """
+    if n is None:
+        n = 16 if 16 < multiprocessing.cpu_count() else multiprocessing.cpu_count() - 1
+    with multiprocessing.Pool(n) as pool:
+        call = pool.starmap_async(func, funcargLst)  # parse args correctly
+        res = call.get()
+        pool.close()
+        pool.join()
+        return res
 
 
 def lstDct2dct(lst):
