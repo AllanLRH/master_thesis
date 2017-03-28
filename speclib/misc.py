@@ -96,3 +96,22 @@ def pcaFit(toPca, **kwargs):
     pca = decomposition.PCA(**kwargs)
     pca.fit(toPca)
     return pca
+
+
+def lstDct2dct(lst):
+    """Merge a list of dicts into a single dict.
+    Raises warning if there's overlapping key values.
+
+    Args:
+        lst (list): List with dictionaries.
+
+    Returns:
+        dict: Merged dictionary.
+    """
+    retDct = dict()
+    for dct in lst:
+        keyIntersection = set(dct.keys()).intersection(set(retDct.keys()))
+        if keyIntersection:
+            Warning('Keys are being overwritten: {}'.format(keyIntersection))
+        retDct.update(dct)
+    return retDct
