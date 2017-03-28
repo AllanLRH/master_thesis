@@ -57,7 +57,8 @@ def adjMatUpper2array(m):
         raise ValueError("The input m must have exactly 2 dimmensions.")
     if m.shape[0] != m.shape[1]:
         raise ValueError('The input must be a square matrix (it was {})'.format(m.shape))
-    return (m[np.tril(m) > 0])
+    i, j = np.triu_indices_from(m, k=1)
+    return m[i, j]
 
 
 def igraph2networkx(igGraph):
