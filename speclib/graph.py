@@ -5,6 +5,16 @@ import numpy as np
 import networkx as nx
 import pandas as pd
 import igraph as ig
+import logging
+
+
+log = logging.getLogger('graph.py')
+log.setLevel(logging.DEBUG)
+fh = logging.FileHandler('../logs/graph.log')
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+log.addHandler(fh)
 
 
 def networkx2igraph(nxGraph):
@@ -154,3 +164,25 @@ def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contac
     activityDf.columns.name = 'userRecv'
     activityDf.sort_index(axis=1, inplace=True)
     return activityDf
+
+
+def removeSubCommunities(comDf, comSize=None):
+    log.info("Entered removeSubCommunities")
+    log.debug("comDf: {}".format(comDf))
+    log.debug("comSize, before if statement: {}".format(comSize))
+    if isinstance(comSize, str):
+        comSize = comDf[comSize]
+    else:
+        comSize = comDf.select_dtypes(exclude=['int']).count(axis=1)
+    log.debug("comSize, after if statement: {}".format(comSize))
+    log.debug('comSize.max(): {}'.format(comSize.max()))
+    for s in range(comSize.max()):
+        log.debug("s: {}".format(s))
+        for _, comBig in comDf[comSize == s].iterrows():
+            big = set(comBig.dropna())
+            for _, comSmall in comDf[comSize < s].iterrows():
+                small = set(comSmall.dropna())
+                logging.debug("small.issubset(big): {}".format(small.issubset(big)))
+                if not small.issubset(big):
+                    yield comSmall
+
