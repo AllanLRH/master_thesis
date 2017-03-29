@@ -7,6 +7,7 @@ import pickle
 import pandas as pd
 from multiprocessing import Pool, cpu_count
 import json
+import collections
 
 
 def loadPythonSyntaxFile(filepath):
@@ -286,6 +287,53 @@ def users2DataFrame(dct, useralias, n=None):
     df = pd.concat(toConcatenate)
     df.sortlevel(level=0, inplace=True)
     return df
+
+
+def quickSaveHdf5(filepath, *data):
+    """Given a path to a HDF5 file, save data to file.
+    Data is converted to a pandas Series or DataFrame if it's too high dimmensioal for
+    a Series to be used.
+
+    Args:
+        filepath (str): Path to HDF5 file.
+        *data: Data to be saved. Can either be a dict or two iterables containing keys
+               and the data to save.
+
+    Raises:
+        ValueError: If *data input is not correct.
+    """
+
+    def saveElement(key, data, store):
+        """Save 'data' to HDF5 'store' with 'key'.
+        Tries to convert everything to a Pandas Series or DataFrame if it's too
+        high dimmensioal.
+
+        Args:
+            key (str): Key to save data under.
+            data: Data to save.
+            store (HDFStore): The HDFStore in which the file is saved.
+        """
+        if not isinstance(data, (pd.DataFrame, pd.Series)):
+            try:
+                data = pd.Series(data)
+                print("Attention! The data {} was convert to a Series".format(key))
+            except Exception:
+                data = pd.DataFrame(data)
+                print("Attention! The data {} was convert to a DataFrame".format(key))
+        store[key] = data
+
+    with pd.HDFStore(filepath, mode='w') as store:
+        if len(data) == 1 and isinstance(data[0], dict):
+            for key, value in data[0].items():
+                saveElement(key, value, store)
+        # It's two iterables of equal length, containing the data names and the data
+        elif all( len(data) == 2,  # noqa
+                  all([isinstance(data[i], collections.Iterable) for i in range(2)]),
+                  len(data[0] == len(data[1])) ):  # noqa
+            for key, value in data:
+                saveElement(key, value, store)
+        else:
+            raise ValueError("Incorrect data input.")
 
 
 if __name__ == '__main__':
