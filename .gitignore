@@ -14,3 +14,8 @@ networkxNotebookTutorials/
 userPCA/pcaPlay.ipynb
 userPCA/phone_df.h5
 userPCA/useralias.pk
+*.h5
+.fuse_*
+._.TemporaryItems
+*.pickle
+logs/
