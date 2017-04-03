@@ -40,6 +40,19 @@ def test_mapAsync():  # noqa
     assert trueVal == res
 
 
+def test__isSubCommunity():
+    lstDf = [list('ABCD'), list('BCDE'), list('ABC'), list('ADE'), list('ABE')]
+    df = pd.DataFrame(lstDf)
+    comsize = df.count(axis=1)
+    bigSetLst = df[comsize == 4].apply(lambda row: set(row.dropna()), axis=1).tolist()
+    smallDfRows = df[comsize < 4]
+    res = graph._isSubCommunity(bigSetLst, smallDfRows)
+    # print('\n')
+    # print('df', df, end='\n\n', sep='\n---------------\n')
+    # print('bigSetLst', bigSetLst, end='\n\n', sep='\n---------------\n')
+    # print('smallDfRows', smallDfRows, end='\n\n', sep='\n---------------\n')
+    # print('res', res, end='\n\n', sep='\n---------------\n')
+    assert res == {3: [{'A', 'D', 'E'}, {'A', 'B', 'E'}]}
 
 
 

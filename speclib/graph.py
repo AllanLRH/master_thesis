@@ -188,10 +188,20 @@ def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contac
     return activityDf
 
 
-def removeSubCommunities(comDf, comSize=None):
-    log.info("Entered removeSubCommunities")
-    log.debug("comDf: {}".format(comDf))
-    log.debug("comSize, before if statement: {}".format(comSize))
+def _isSubCommunity(bigSetLst, smallDfRows):
+    returnLst = list()
+    smallSetLst = smallDfRows.apply(lambda row: set(row.dropna()), axis=1).tolist()
+    bigLen = len(bigSetLst)
+    for small in smallSetLst:
+        # Consider usign itertools.takewhile insted of a while loop
+        keep = True  # Flag to stop testing / break out of while loop
+        i = 0  # counter for indexing into bigSetLst
+        while keep and (i < bigLen):
+            keep = not small.issubset(bigSetLst[i])  # check wether or not it's a subset
+            i += 1
+        if keep:  # append to returnLst if necessary
+            returnLst.append(small)
+    return {len(small): returnLst}
     if isinstance(comSize, str):
         comSize = comDf[comSize]
     else:
