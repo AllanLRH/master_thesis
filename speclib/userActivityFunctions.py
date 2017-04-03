@@ -205,3 +205,34 @@ def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=N
             pca = misc.pcaFit(toPcaRaw)
             communityPcaDct[cs].append(pca.explained_variance_ratio_)
     return communityPcaDct
+
+
+def communityDf2Pca(userDf, communityDf, bins):
+    """Given a Dataframe with communities, return the fitted PCA class instance for all
+    in a dict, where the keys is a tuple with the community members.
+
+    Args:
+        userDf (DataFrame): DataFrame with user activity.
+        communityDf (DataFrame): DataFrame with communities. Integer columns are excluded.
+        bins (str): A string identifying the bin column of the DataFrame.
+
+    Returns:
+        dict: Dictionary where the keys is the tuple with the usernames in the community,
+              and the values are the corresponding pca objects.
+    """
+    communityPcaDct = dict()
+    uniqueBins = userDf['tbin'].unique()
+    upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
+    # Exclude column with clique size (optionally included)
+    for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
+        community = community.dropna().tolist()
+        communitySubDf = userDf2CliqueDf(userDf, community)
+        toPcaRaw = np.zeros((upperTrilSize(len(community)), uniqueBins.size))  # noqa
+        for i, tbin in enumerate(uniqueBins):
+            mask = (communitySubDf[bins] == tbin).values
+            gSubBin = graph.userDF2nxGraph(communitySubDf[mask])
+            adjMatSubBin = nx.adjacency_matrix(gSubBin, community)
+            toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatSubBin)
+        pca = misc.pcaFit(toPcaRaw)
+        communityPcaDct[tuple(community)] = pca
+    return communityPcaDct
