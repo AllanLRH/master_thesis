@@ -71,6 +71,24 @@ def adjMatUpper2array(m):
     return m[i, j]
 
 
+def upperTril2adjMat(up):
+    """Given the upper triangular part of a quadratic matrix (excluding the diagonal,
+    which is assumed to be 0), construct the corresponding symmetric matrix.
+
+    Args:
+        up (array): Upper triangular part of quadratic matrix
+
+    Returns:
+        array: Symmetric matrix where upper and lower parts are both occupied by `up`.
+    """
+    if up.ndim != 1:
+        raise ValueError("The input m must have exactly 1 dimmension.")
+    ad = np.zeros((up.size, up.size), dtype=up.dtype)
+    ad[np.triu_indices_from(ad, +1)] = up
+    ad += ad.T
+    return ad
+
+
 def igraph2networkx(igGraph):
     """Convert a Igraph graph to an Networkx graph.
     Only tested for binary adjacency matrices.
