@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import os
 import inspect
+import itertools
 a = inspect.currentframe()
 b = inspect.getfile(a)
 c = os.path.abspath(b)
@@ -14,6 +15,7 @@ d = os.path.dirname(c)
 e = os.path.split(d)
 sys.path.append(e[0])
 from speclib import misc, graph, plotting, loaders, userActivityFunctions  # noqa
+import thf
 
 
 def test_mutualContact():
@@ -54,6 +56,19 @@ def test__isSubCommunity():
     # print('res', res, end='\n\n', sep='\n---------------\n')
     assert res == {3: [{'A', 'D', 'E'}, {'A', 'B', 'E'}]}
 
+
+@pytest.mark.skip(message='Not finished yet')
+def test_removeSubCommunitiesDumb():
+    lstDf = [list('ABCD'), list('BCDE'), list('ABC'), list('ADE'),
+             list('ABE'), list('AB'), list('AE'), list('BF')]
+    df = pd.DataFrame(lstDf)
+    new = graph.removeSubCommunitiesDumb(df)
+    lstDfExpected = [list('ABCD'), list('BCDE'), list('ADE'), list('ABE'), list('BF')]
+    dfExpected = pd.DataFrame(lstDfExpected)
+    # print('\n')
+    # print(df, end='\n-------------------------------\n')
+    # print(new)
+    assert thf.isArrRowSetEqual(new, dfExpected)
 
 
 def test_upperTril2adjMat():
