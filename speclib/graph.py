@@ -5,16 +5,20 @@ import numpy as np
 import networkx as nx
 import pandas as pd
 import igraph as ig
-import logging
+import collections
+import itertools
+# import logging
+import misc
+# from . import misc
 
 
-log = logging.getLogger('graph.py')
-log.setLevel(logging.DEBUG)
-fh = logging.FileHandler('../logs/graph.log')
-fh.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-log.addHandler(fh)
+# log = logging.getLogger('graph.py')
+# log.setLevel(logging.DEBUG)
+# fh = logging.FileHandler('../logs/graph.log')
+# fh.setLevel(logging.DEBUG)
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# fh.setFormatter(formatter)
+# log.addHandler(fh)
 
 
 def networkx2igraph(nxGraph):
