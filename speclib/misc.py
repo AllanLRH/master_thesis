@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn import decomposition
 import multiprocessing
+import random
 
 
 def nanEqual(a, b):
@@ -139,3 +140,12 @@ def lstDct2dct(lst):
             Warning('Keys are being overwritten: {}'.format(keyIntersection))
         retDct.update(dct)
     return retDct
+
+
+def randomSample(itr, n):
+    if len(itr) <= n:
+        raise ValueError("'itr' must be longer that n")
+    ret = set()
+    while len(ret) < n:
+        ret.add(random.choice(itr))
+    return ret
