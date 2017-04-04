@@ -71,12 +71,16 @@ def test_removeSubCommunitiesDumb():
     assert thf.isArrRowSetEqual(new, dfExpected)
 
 
-def test_upperTril2adjMat():
-    m = np.array([[0, 1, 2], [1, 0, 3], [2, 3, 0]])
+def test_adjMatUpper2array():
+    m = np.array([[0, 1, 2],
+                  [1, 0, 3],
+                  [2, 3, 0]])
     assert np.all(graph.adjMatUpper2array(m) == np.array([1, 2, 3]))
 
 
-def test_adjMatUpper2array():
-    m = np.array([[0, 1, 2], [1, 0, 3], [2, 3, 0]])
+def test_upperTril2adjMat():
+    m = np.array([[0, 1, 2],
+                  [1, 0, 3],
+                  [2, 3, 0]])
     u = np.array([1, 2, 3])
     assert np.all(graph.upperTril2adjMat(u) == m)
