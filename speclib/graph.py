@@ -6,10 +6,7 @@ import networkx as nx
 import pandas as pd
 import igraph as ig
 import collections
-import itertools
 # import logging
-import misc
-# from . import misc
 
 
 # log = logging.getLogger('graph.py')
