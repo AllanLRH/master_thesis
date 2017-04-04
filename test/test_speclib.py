@@ -84,3 +84,14 @@ def test_upperTril2adjMat():
                   [2, 3, 0]])
     u = np.array([1, 2, 3])
     assert np.all(graph.upperTril2adjMat(u) == m)
+
+
+def test_adjMatUpper2array_and_upperTril2adjMat():
+    symmetricMat = np.array([[0, 1, 2, 4, 7],
+                             [1, 0, 3, 5, 8],
+                             [2, 3, 0, 6, 9],
+                             [4, 5, 6, 0, 10],
+                             [7, 8, 9, 10, 0]])
+    tmp0 = graph.adjMatUpper2array(symmetricMat)
+    tmp1 = graph.upperTril2adjMat(tmp0)
+    assert np.all(symmetricMat == tmp1)

@@ -84,7 +84,11 @@ def upperTril2adjMat(up):
     """
     if up.ndim != 1:
         raise ValueError("The input m must have exactly 1 dimmension.")
-    ad = np.zeros((up.size, up.size), dtype=up.dtype)
+    # For a a quadratic matrix of size (n x n) the number of elements above the diagonal,
+    # s, must be s = (n^2 - n)/2.
+    # Solving the equation for n yields n = 1/s + sqrt(1/4 + 2s)
+    matSize = int(1/2 + np.sqrt(1/4+2*up.size))
+    ad = np.zeros((matSize, matSize), dtype=up.dtype)
     ad[np.triu_indices_from(ad, +1)] = up
     ad += ad.T
     return ad
