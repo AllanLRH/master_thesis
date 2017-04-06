@@ -221,7 +221,7 @@ def communityDf2Pca(userDf, communityDf, bins):
               and the values are the corresponding pca objects.
     """
     communityPcaDct = dict()
-    uniqueBins = userDf['tbin'].unique()
+    uniqueBins = userDf[bins].unique()
     upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
     # Exclude column with clique size (optionally included)
     for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
