@@ -147,11 +147,23 @@ def lstDct2dct(lst):
 
 
 def randomSample(itr, n):
+    """Draw n samples from iterable, where each element can only be drawn once.
+
+    Args:
+        itr (iterable): Iterable to draw from.
+        n (int): number of elements to draw.
+
+    Returns:
+        list: n elements from itr.
+
+    Raises:
+        ValueError: If the requested number of draws isn't smaller then the length if itr.
+    """
     if len(itr) <= n:
         raise ValueError("'itr' must be longer that n")
-    ret = set()
-    while len(ret) < n:
-        ret.add(random.choice(itr))
+    idx = np.arange(len(itr))
+    np.random.shuffle(idx)
+    ret = [itr[i] for i in idx[:n]]
     return ret
 
 
