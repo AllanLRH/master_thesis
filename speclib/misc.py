@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn import decomposition
 import multiprocessing
 import random
@@ -149,3 +150,18 @@ def randomSample(itr, n):
     while len(ret) < n:
         ret.add(random.choice(itr))
     return ret
+
+
+def getFirstDayInTimeseries(ts):
+    """Given a Pandas time series, get the Timestamp for the start of the day for the
+    earliest entry in the time series.
+
+    Args:
+        ts (Series[Tiemstamp]): Pandas Series with Timestamps (datetime might also work).
+
+    Returns:
+        Timestamp: Pandas Timestamp matching the data for the first entry in ts.
+    """
+    t0 = ts.min()
+    t0d = t0.date()
+    return pd.Timestamp(t0d)
