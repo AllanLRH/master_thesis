@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from sklearn import decomposition
 import multiprocessing
-import random
 
 
 def nanEqual(a, b):
