@@ -48,7 +48,15 @@ def isSymmetric(m):
     """
     if m.ndim != 2:
         raise ValueError("Input must have exactly 2 dimmensions.")
-    return np.allclose(m, m.T)
+    try:
+        ans = np.allclose(m, m.T)
+    except TypeError as e:
+        try:
+            ans = np.allclose(m.todense(), m.todense().T)
+        except Exception:
+            raise e
+    return ans
+
 
 
 def adjMatUpper2array(m):
