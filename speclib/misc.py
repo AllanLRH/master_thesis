@@ -71,7 +71,7 @@ def timedelta2unit(timedelta, unit):
     return _inner(timedelta, unit.lower())
 
 
-def standardizeData(data):
+def standardizeData(data, getStdMean=False):
     """
     Normalize the data by substracting the mean from each feature,
     and dividing by the standard deviation.
@@ -81,6 +81,8 @@ def standardizeData(data):
     # set values of where there's no data to 1.0, since we're dividing with the std
     std[mean == 0] = 1.0
     normData = (data - mean)/std
+    if getStdMean:
+        return (normData, std, mean)
     return normData
 
 
@@ -94,9 +96,11 @@ def pcaFit(toPca, **kwargs):
     Returns:
         PCA: Fitted PCA instance.
     """
-    toPca = standardizeData(toPca)
+    toPca, std, mean = standardizeData(toPca, getStdMean=True)
     pca = decomposition.PCA(**kwargs)
     pca.fit(toPca)
+    pca.std = std
+    pca.mean = mean
     return pca
 
 
