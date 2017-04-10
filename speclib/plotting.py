@@ -236,7 +236,8 @@ def plotPunchcard(data):
     ax.set_ylim(0, data.shape[0])
     tickmarks = np.arange(0, 7*24, 24) + 12
     ax.set_xticks(tickmarks)
-    ax.set_xticklabels(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], rotation=45)
+    ax.set_xticklabels(['Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                        'Friday', 'Saturday', 'Sunday'], rotation=45)
     ax.grid()
     for idx in np.arange(24, 7*24, 24):
         ax.axvline(x=idx, linestyle='--', color='white', linewidth=1.5, zorder=3)
