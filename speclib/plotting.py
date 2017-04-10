@@ -9,6 +9,13 @@ import palettable
 import itertools
 
 
+def rgb(r, g, b):
+    """Turn 0-255 spaced RGB-values into a 0-1 spaced numpy array,
+    which is readable by Matplotlib.
+    """
+    return [np.array([r, g, b])/255]
+
+
 def looseAxesLimits(ax, loosen=0.05):
     """The default Matplotlib plot have very tight axes.
        This function loosenens the axes.
@@ -236,6 +243,86 @@ def plotPunchcard(data):
     ax.set_yticklabels([])
     ax.set_ylabel('Users')
     return fig, ax
+
+
+def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout=None,
+                      kwLayout=None, kwNode=None, kwEdge=None):
+    """Draw a weighted graph.
+
+    Args:
+        g (Networkx graph): Graph to be plottet
+        normailzeWeights (bool, optional): Normalize weight to be in range 0-1 before
+                                           applying weightFunc. Default = True.
+        weightFunc (function, optional): Function to apply to weight before it's drawn as
+                                         a link. Default: 2.5 * weight + 1.
+        ax (axes, optional): Matplotlib axes to plot on.
+        layout (dict of layout engine, optional): A position dict or a layout engine.
+        kwLayout (dict, optional): Keyword arguments to layout engine.
+        kwNode (dict, optional): Keyword arguments to nx.draw_networkx_nodes.
+        kwEdge (dict, optional): Keyword arguments to nx.draw_networkx_edges.
+
+    Returns:
+        axes: Matplotlib axes.
+
+    Raises:
+        ValueError: If there's a weight < 0.
+    """
+    # The default weight func, used to adjust the width of the link-lines, as they might
+    # otherwise disappear
+    if weightFunc is None:
+        weightFunc = lambda weight: 2.5*weight + 1
+
+    # Check for negative weights, and define the
+    # weight-normalization function if necessary
+    weightLst = [g[edge[0]][edge[1]]['weight'] for edge in g.edges_iter()]
+    if normailzeWeights:
+        weightMin = min(weightLst)
+        if weightMin < 0:
+            raise ValueError("Can't handle negative weights.")
+        weightMax = max(weightLst)
+        weightNorm = lambda weight: weight/weightMax
+    else:
+        weightNorm = lambda weight: weight
+
+    # Dicts with default arguments to the functions nx.draw_networkx_nodes and
+    # nx.draw_networkx_edges
+    # The dicts are updated with the user supplied arguments kwNode and kwEdge
+    kwargsNode = {'node_color': rgb(39, 139, 176), 'node_size': 50}
+    kwargsEdge = {'edge_color': rgb(186, 199, 207)}
+    if kwNode is not None:
+        kwargsNode.update(kwNode)
+    if kwEdge is not None:
+        kwargsEdge.update(kwEdge)
+
+    # Create axes if none were given by the user
+    if ax is None:
+        _, ax = plt.subplots()
+
+    if layout is None:  # User didn't supply custom layout specificaiton
+        # Get positions for nodes using Fruchterman Reingold layout
+        # Initial positioning, notmally only using 50 iterations
+        # Also avaiable in; nx.spring_layout
+        pos = nx.drawing.layout.spring_layout(g, iterations=100)
+        # Fine tune the layout, starting with the previous layout
+        pos = nx.drawing.layout.spring_layout(g, pos=pos, iterations=30)
+    elif isinstance(layout, dict):  # layout is a position dict, just use the provided layout
+        pos = layout
+    else:  # User supplied layout engine
+        # Don't use keyword expansion with None, which is the default value
+        kwLayout = dict() if kwLayout is None else kwLayout
+        pos = layout(g, **kwLayout)
+
+    # Draw nodes
+    nx.draw_networkx_nodes(g, pos, ax=ax, **kwargsNode)
+
+    # Draw edges
+    for edge in g.edges_iter():
+        weight = g[edge[0]][edge[1]]['weight']
+        nx.draw_networkx_edges(g, pos, ax=ax, edgelist=[edge],
+                               width=weightFunc(weightNorm(weight)), **kwargsEdge)
+
+    return ax
+
 
 
 if __name__ == '__main__':
