@@ -227,12 +227,16 @@ def communityDf2Pca(userDf, communityDf, bins):
     for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
         community = community.dropna().tolist()
         communitySubDf = userDf2CliqueDf(userDf, community)
-        toPcaRaw = np.zeros((upperTrilSize(len(community)), uniqueBins.size))  # noqa
+        toPcaRaw = np.zeros((upperTrilSize(len(community)), uniqueBins.size))
         for i, tbin in enumerate(uniqueBins):
             mask = (communitySubDf[bins] == tbin).values
             gSubBin = graph.userDF2nxGraph(communitySubDf[mask])
             adjMatSubBin = nx.adjacency_matrix(gSubBin, community)
+            ismatrixSymmtric = graph.isSymmetric(adjMatSubBin)
+            if not ismatrixSymmtric:
+                raise Warning('Matrix is not symmetric')
             toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatSubBin)
         pca = misc.pcaFit(toPcaRaw)
+        pca.symmetric = ismatrixSymmtric
         communityPcaDct[tuple(community)] = pca
     return communityPcaDct
