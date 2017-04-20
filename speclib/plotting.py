@@ -247,7 +247,8 @@ def plotPunchcard(data):
 
 
 def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout=None,
-                      kwLayout=None, kwNode=None, kwEdge=None):
+                      nodeLabels=True, edgeLabels=False, kwLayout=None,
+                      kwNode=None, kwEdge=None, kwNodeLabel=None, kwEdgeLabel=None):
     """Draw a weighted graph.
 
     Args:
@@ -257,17 +258,36 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
         weightFunc (function, optional): Function to apply to weight before it's drawn as
                                          a link. Default: 2.5 * weight + 1.
         ax (axes, optional): Matplotlib axes to plot on.
-        layout (dict of layout engine, optional): A position dict or a layout engine.
+        layout (dict or layout engine, optional): A position dict or a layout engine.
+        nodeLabels (bool or dict, optional): Draw node labels if True (default True), or
+                                             use provided dict for naming.
+                                             Default name is the string representation of
+                                             the node name.
+        edgeLabels (bool or dict, optional): Draw edge labels if True (default False), or
+                                             use provided dict .
+                                             Default edge labels are the edge weights.
         kwLayout (dict, optional): Keyword arguments to layout engine.
         kwNode (dict, optional): Keyword arguments to nx.draw_networkx_nodes.
         kwEdge (dict, optional): Keyword arguments to nx.draw_networkx_edges.
+        kwNodeLabel (None, optional): Keyword arguments to nx.drawing.draw_networkx_labels.
+        kwEdgeLabel (None, optional): Keyword arguments to nx.drawing.draw_networkx_edge_labels.
 
     Returns:
         axes: Matplotlib axes.
 
     Raises:
         ValueError: If there's a weight < 0.
+        ValueError: If the input for .
     """
+
+    # Create axes if none were given by the user
+    if ax is None:
+        _, ax = plt.subplots()
+
+    # ****************************************************************************
+    # *                                  Weights                                 *
+    # ****************************************************************************
+
     # The default weight func, used to adjust the width of the link-lines, as they might
     # otherwise disappear
     if weightFunc is None:
@@ -275,7 +295,7 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
 
     # Check for negative weights, and define the
     # weight-normalization function if necessary
-    weightLst = [g[edge[0]][edge[1]]['weight'] for edge in g.edges_iter()]
+    weightLst = [g[edge[0]][edge[1]]['weight'] for edge in g.edges()]
     if normailzeWeights:
         weightMin = min(weightLst)
         if weightMin < 0:
@@ -285,19 +305,29 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
     else:
         weightNorm = lambda weight: weight
 
+    # ****************************************************************************
+    # *                           Update with default values                     *
+    # ****************************************************************************
+
     # Dicts with default arguments to the functions nx.draw_networkx_nodes and
     # nx.draw_networkx_edges
     # The dicts are updated with the user supplied arguments kwNode and kwEdge
     kwargsNode = {'node_color': rgb(39, 139, 176), 'node_size': 50}
     kwargsEdge = {'edge_color': rgb(186, 199, 207)}
+    kwargsNodeLabel = {'font_size': 9}
+    kwargsEdgeLabel = {'font_size': 9}
     if kwNode is not None:
         kwargsNode.update(kwNode)
     if kwEdge is not None:
         kwargsEdge.update(kwEdge)
+    if kwNodeLabel is not None:
+        kwargsNodeLabel.update(kwNodeLabel)
+    if kwEdgeLabel is not None:
+        kwargsEdgeLabel.update(kwEdgeLabel)
 
-    # Create axes if none were given by the user
-    if ax is None:
-        _, ax = plt.subplots()
+    # ****************************************************************************
+    # *                                  Layout                                  *
+    # ****************************************************************************
 
     if layout is None:  # User didn't supply custom layout specificaiton
         # Get positions for nodes using Fruchterman Reingold layout
@@ -313,17 +343,47 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
         kwLayout = dict() if kwLayout is None else kwLayout
         pos = layout(g, **kwLayout)
 
-    # Draw nodes
+    # ****************************************************************************
+    # *                                Draw nodes                                *
+    # ****************************************************************************
+
     nx.draw_networkx_nodes(g, pos, ax=ax, **kwargsNode)
 
-    # Draw edges
-    for edge in g.edges_iter():
+    # ****************************************************************************
+    # *                                Draw edges                                *
+    # ****************************************************************************
+
+    for edge in g.edges():
         weight = g[edge[0]][edge[1]]['weight']
         nx.draw_networkx_edges(g, pos, ax=ax, edgelist=[edge],
                                width=weightFunc(weightNorm(weight)), **kwargsEdge)
 
-    return ax
+    # ****************************************************************************
+    # *                             Draw node labels                             *
+    # ****************************************************************************
 
+    if isinstance(nodeLabels, bool) and nodeLabels:
+        nodeLabels = None  # Use default names (node names)
+    elif isinstance(nodeLabels, dict):
+        pass  # use nodeLabels-dict as input to name inputs
+    else:
+        raise ValueError("Invaid input for nodeLabels, must be a bool or dict.")
+    if nodeLabels is not False:  # None, the default value, would evalueate as False
+        nx.drawing.draw_networkx_labels(g, pos, nodeLabels, ax=ax, **kwargsNodeLabel)
+
+    # ****************************************************************************
+    # *                             Draw edge labels                             *
+    # ****************************************************************************
+    if isinstance(edgeLabels, bool) and edgeLabels:
+        edgeLabels = nx.get_edge_attributes(g, 'weight')  # {edge: weight} dict
+    elif isinstance(edgeLabels, dict):
+        pass  # use edgeLabels-dict as input to name inputs
+    else:
+        raise ValueError("Invaid input for edgeLabels, must be a bool or dict.")
+    if edgeLabels:
+        nx.drawing.draw_networkx_edge_labels(g, pos, edgeLabels, ax=ax, **kwargsEdgeLabel)
+
+    return ax
 
 
 if __name__ == '__main__':
