@@ -220,23 +220,31 @@ def communityDf2Pca(userDf, communityDf, bins):
         dict: Dictionary where the keys is the tuple with the usernames in the community,
               and the values are the corresponding pca objects.
     """
-    communityPcaDct = dict()
+    communityPcaDct = dict()  # Dict containing community: pca-object (return value)
     uniqueBins = userDf[bins].unique()
     upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
-    # Exclude column with clique size (optionally included)
+    # Exclude column with clique size (optionally included in input)
     for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
+        # list of usernames in community
         community = community.dropna().tolist()
+        # Strip communication outside of clique
         communitySubDf = userDf2CliqueDf(userDf, community)
-        toPcaRaw = np.zeros((upperTrilSize(len(community)), uniqueBins.size))
+        # Preallocate array for the PCA analysis
+        toPcaRaw = np.zeros(upperTrilSize(len(community), uniqueBins.size))
         for i, tbin in enumerate(uniqueBins):
+            # Mask out current timebin events
             mask = (communitySubDf[bins] == tbin).values
+            # Construct a graoh from the masked communication...
             gSubBin = graph.userDF2nxGraph(communitySubDf[mask])
-            adjMatSubBin = nx.adjacency_matrix(gSubBin, community)
+            # ... and get the adjacency-matrix for the graph
+            adjMatSubBin = nx.adjacency_matrix(gSubBin, community)  # TODO: community-argument not necessary?
+            # If the matrix is symmetric,
             ismatrixSymmtric = graph.isSymmetric(adjMatSubBin)
             if not ismatrixSymmtric:
                 raise Warning('Matrix is not symmetric')
             toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatSubBin)
-        pca = misc.pcaFit(toPcaRaw)
+        #  Tha PCA input data is now build, so we do the PCA analysis
+        pca = misc.pcaFit(toPcaRaw, standardizeData=True)
         pca.symmetric = ismatrixSymmtric
         communityPcaDct[tuple(community)] = pca
     return communityPcaDct
