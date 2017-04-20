@@ -86,21 +86,25 @@ def standardizeData(data, getStdMean=False):
     return normData
 
 
-def pcaFit(toPca, **kwargs):
+def pcaFit(toPca, standardizeData=True, **kwargs):
     """Standardize data, create a PCA object and fit the data.
 
     Args:
         toPca (np.array): Data to perform PCA analysis on.
+        standardizeData (bool, optional): Standardize data if True, leave as be othewise.
         **kwargs (dict, optional): Additional keyword arguments to PCA.
 
     Returns:
         PCA: Fitted PCA instance.
     """
-    toPca, std, mean = standardizeData(toPca, getStdMean=True)
+    if standardizeData:
+        toPca, std, mean = standardizeData(toPca, getStdMean=True)
+    else:
+        mean, std = np.NaN, np.NaN
     pca = decomposition.PCA(**kwargs)
     pca.fit(toPca)
-    pca.std = std
-    pca.mean = mean
+    pca.norm_std = std
+    pca.norm_mean = mean
     return pca
 
 
