@@ -58,7 +58,6 @@ def isSymmetric(m):
     return ans
 
 
-
 def adjMatUpper2array(m):
     """Given an (adjacency) matrix, return the upper triangular part as a 1d array.
 
@@ -70,7 +69,7 @@ def adjMatUpper2array(m):
 
     Raises:
         ValueError: If input have wrong dimmensions.
-        ValueError: If isn't a square matrix.
+        ValueError: If input isn't a square matrix.
     """
     if m.ndim != 2:
         raise ValueError("The input m must have exactly 2 dimmensions.")
