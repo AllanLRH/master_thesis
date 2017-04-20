@@ -94,7 +94,11 @@ def upperTril2adjMat(up):
     # For a a quadratic matrix of size (n x n) the number of elements above the diagonal,
     # s, must be s = (n^2 - n)/2.
     # Solving the equation for n yields n = 1/s + sqrt(1/4 + 2s)
-    matSize = int(1/2 + np.sqrt(1/4+2*up.size))
+    matSize = 1/2 + np.sqrt(1/4+2*up.size)
+    if not np.allclose(matSize, round(matSize)):
+        raise ValueError("The input is not a valid size, since it doesn't fit with " +
+                         "an upper diagonal. (matrix size = {:.3f})".format(matSize))
+    matSize = int(matSize)
     ad = np.zeros((matSize, matSize), dtype=up.dtype)
     ad[np.triu_indices_from(ad, +1)] = up
     ad += ad.T
