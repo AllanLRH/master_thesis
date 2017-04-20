@@ -230,7 +230,7 @@ def communityDf2Pca(userDf, communityDf, bins):
         # Strip communication outside of clique
         communitySubDf = userDf2CliqueDf(userDf, community)
         # Preallocate array for the PCA analysis
-        toPcaRaw = np.zeros(upperTrilSize(len(community), uniqueBins.size))
+        toPcaRaw = np.zeros((upperTrilSize(len(community)), uniqueBins.size))
         for i, tbin in enumerate(uniqueBins):
             # Mask out current timebin events
             mask = (communitySubDf[bins] == tbin).values
