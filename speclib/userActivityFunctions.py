@@ -244,7 +244,7 @@ def communityDf2Pca(userDf, communityDf, bins):
                 raise Warning('Matrix is not symmetric')
             toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatSubBin)
         #  Tha PCA input data is now build, so we do the PCA analysis
-        pca = misc.pcaFit(toPcaRaw, standardizeData=True)
+        pca = misc.pcaFit(toPcaRaw, performStandardization=True)
         pca.symmetric = ismatrixSymmtric
         communityPcaDct[tuple(community)] = pca
     return communityPcaDct
