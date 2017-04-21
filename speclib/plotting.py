@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import palettable
 import itertools
-import graph
+from speclib import graph
 
 
 def rgb(r, g, b):
