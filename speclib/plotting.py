@@ -1,5 +1,6 @@
 #!/usr/bin/env ipython
 # -*- coding: utf8 -*-
+
 from collections import Iterable
 import numpy as np
 import matplotlib as mpl
@@ -7,6 +8,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import palettable
 import itertools
+import graph
 
 
 def rgb(r, g, b):
@@ -386,6 +388,62 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
         nx.drawing.draw_networkx_edge_labels(g, pos, edgeLabels, ax=ax, **kwargsEdgeLabel)
 
     return ax
+
+
+class PcaPlotter(object):
+    """Plots the PCA"""
+
+    def __init__(self, pca, explanationCut=0.95, comDelta=1e-6):
+        super(PcaPlotter, self).__init__()
+        self.pca = pca
+        self.comDelta = comDelta
+        self.setExplanationCut(explanationCut)
+        self._makeGraphList()
+
+    def setExplanationCut(self, val):
+        self._explanationCut = val
+        self.n = (np.cumsum(self.pca.explained_variance_ratio_) <=
+                  self.pca.explained_variance_ratio_.sum()*self._explanationCut).sum()
+        self.firstN = np.abs(self.pca.components_[:, :self.n])
+
+    def plotHeatmap(self, ax=None, cmap='RdBu_r'):
+        if ax is None:
+            fig, ax = plt.subplots()
+        else:
+            fig = ax.get_figure()
+        pc = ax.pcolorfast(self.pca.components_[:, :self.n], cmap=cmap,
+                           vmin=-np.abs(self.firstN).max(), vmax=np.abs(self.firstN).max())
+        fig.colorbar(pc)
+        return (fig, ax)
+
+    def _makeGraphList(self):
+        firstN = self.firstN + self.firstN.min()  # noqa
+        firstN[firstN < self.comDelta] = 0.0
+        firstN /= firstN.sum()
+        firstN *= self.n
+        self.graphLst = [nx.from_numpy_matrix(graph.upperTril2adjMat(firstN[:, i])) for i in range(self.n)]
+
+    def plotGraphs(self, weightFunc=None, layout=None, kwargs=None, weightMultiply=1000):
+        if weightFunc is None:
+            weighFunc = lambda w: 5*w + 0.5
+        if layout is None:
+            layout = nx.drawing.layout.circular_layout(self.graphLst[0])
+        for i in range(self.n):
+            fig, ax = plt.subplots(figsize=(10, 6))
+            edgeLabels = {edge: '{:.0f}'.format(np.round(weightMultiply*weight)) for (edge, weight)
+                          in nx.get_edge_attributes(self.graphLst[i], 'weight').items()}
+            drawWeightedGraph(self.graphLst[i], ax=ax, layout=layout, normailzeWeights=False,
+                              weightFunc=weighFunc, nodeLabels=True, edgeLabels=edgeLabels)
+            fig.suptitle(f'Vector {i+1}/{self.n}')
+            yield (fig, ax)
+
+    def plotStandardization(self, smooth=8):
+        fig, axi = plt.subplots(2, 1)
+        for ax, n, lbl in zip(axi, [1, smooth], ['', ' (smoothed)']):
+            ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_mean, 'same'), label='norm_mean' + lbl, color='#20a365')
+            ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_std, 'same'), label='norm_std' + lbl, color='#ea8a3f')
+            ax.legend(loc='best')
+        return (fig, axi)
 
 
 if __name__ == '__main__':
