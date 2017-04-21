@@ -314,8 +314,8 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
     # The dicts are updated with the user supplied arguments kwNode and kwEdge
     kwargsNode = {'node_color': rgb(39, 139, 176), 'node_size': 50}
     kwargsEdge = {'edge_color': rgb(186, 199, 207)}
-    kwargsNodeLabel = {'font_size': 9}
-    kwargsEdgeLabel = {'font_size': 9}
+    kwargsNodeLabel = {'font_size': 10}
+    kwargsEdgeLabel = {'font_size': 10}
     if kwNode is not None:
         kwargsNode.update(kwNode)
     if kwEdge is not None:
@@ -361,25 +361,27 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
     # ****************************************************************************
     # *                             Draw node labels                             *
     # ****************************************************************************
-
+    if not (isinstance(nodeLabels, bool) or isinstance(nodeLabels, dict)):
+        raise ValueError("Invaid input for nodeLabels, must be a bool or dict.")
     if isinstance(nodeLabels, bool) and nodeLabels:
-        nodeLabels = None  # Use default names (node names)
+        nodeLabels = {node: str(node) for node in g.nodes()}
     elif isinstance(nodeLabels, dict):
         pass  # use nodeLabels-dict as input to name inputs
     else:
-        raise ValueError("Invaid input for nodeLabels, must be a bool or dict.")
+        pass
     if nodeLabels is not False:  # None, the default value, would evalueate as False
         nx.drawing.draw_networkx_labels(g, pos, nodeLabels, ax=ax, **kwargsNodeLabel)
 
     # ****************************************************************************
     # *                             Draw edge labels                             *
     # ****************************************************************************
+    if not (isinstance(edgeLabels, bool) or isinstance(edgeLabels, dict)):
+        raise ValueError("Invaid input for edgeLabels, must be a bool or dict.")
     if isinstance(edgeLabels, bool) and edgeLabels:
-        edgeLabels = nx.get_edge_attributes(g, 'weight')  # {edge: weight} dict
+        edgeLabels = {edge: '{:.3e}'.format(weight) for (edge, weight) in
+                      nx.get_edge_attributes(g, 'weight').items()}  # {edge: weight} dict
     elif isinstance(edgeLabels, dict):
         pass  # use edgeLabels-dict as input to name inputs
-    else:
-        raise ValueError("Invaid input for edgeLabels, must be a bool or dict.")
     if edgeLabels:
         nx.drawing.draw_networkx_edge_labels(g, pos, edgeLabels, ax=ax, **kwargsEdgeLabel)
 
