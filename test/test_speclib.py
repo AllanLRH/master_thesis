@@ -75,7 +75,8 @@ def test_adjMatUpper2array():
     m = np.array([[0, 1, 2],
                   [1, 0, 3],
                   [2, 3, 0]])
-    assert np.all(graph.adjMatUpper2array(m) == np.array([1, 2, 3]))
+    res = graph.adjMatUpper2array(m)
+    assert np.all(res == np.array([1, 2, 3]))
 
 
 def test_upperTril2adjMat():
@@ -83,7 +84,8 @@ def test_upperTril2adjMat():
                   [1, 0, 3],
                   [2, 3, 0]])
     u = np.array([1, 2, 3])
-    assert np.all(graph.upperTril2adjMat(u) == m)
+    res = graph.upperTril2adjMat(u)
+    assert np.all(res == m)
 
 
 def test_adjMatUpper2array_and_upperTril2adjMat():
@@ -95,3 +97,16 @@ def test_adjMatUpper2array_and_upperTril2adjMat():
     tmp0 = graph.adjMatUpper2array(symmetricMat)
     tmp1 = graph.upperTril2adjMat(tmp0)
     assert np.all(symmetricMat == tmp1)
+
+
+def test_upperTril2adjMat_and_adjMatUpper2array_with_chararray():
+    for key in [list('ABCD'), ('u0676', 'u0993', 'u0618', 'u0388', 'u0645', 'u0446', 'u0683')]:
+        n = len(key)
+        mat = np.empty((n, n), dtype=object)
+        for i in range(n):
+            for j in range(n):
+                if i != j:
+                    mat[i, j] = set([key[i], key[j]])  # use sets because order is irrelevant
+        upperTril = graph.adjMatUpper2array(mat)
+        restored = graph.upperTril2adjMat(upperTril)
+        assert np.all(restored == mat)

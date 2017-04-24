@@ -123,9 +123,18 @@ def upperTril2adjMat(up):
         raise ValueError("The input is not a valid size, since it doesn't fit with " +
                          "an upper diagonal. (matrix size = {:.3f})".format(matSize))
     matSize = int(matSize)
-    ad = np.zeros((matSize, matSize), dtype=up.dtype)
+    # It's a numeric matrix
+    if up.dtype != 'object':
+        ad = np.zeros((matSize, matSize), dtype=up.dtype)
+        ad[np.triu_indices_from(ad, +1)] = up
+        ad += ad.T
+        return ad
+    # It's an array with tuples of usernames
+    ad = np.empty((matSize, matSize), dtype=up.dtype)
     ad[np.triu_indices_from(ad, +1)] = up
-    ad += ad.T
+    adt = ad.T
+    nullIdx = pd.isnull(ad)
+    ad[nullIdx] = adt[nullIdx]
     return ad
 
 
