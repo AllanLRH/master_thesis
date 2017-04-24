@@ -9,16 +9,21 @@ def nanEqual(a, b):
        NaN's as equal.
        Inputs must both have the 'shape'-attribute and be of equal shape.
 
-    Args:
-        a (array): First array
-        b (array): Second array
+    Parameters
+    ----------
+    a : array
+        First array
+    b : array
+        Second array
 
-    Returns:
-        boolean array
+    Returns
+    -------
+    boolean array
 
-    Raises:
-        ValueError: If any of the inputs doesn't have the 'shape' attribute.
-        ValueError: The inputs aren't of equal shape.
+    Raises
+    ------
+    ValueError
+    The inputs aren't of equal shape.
     """
     if not (hasattr(a, 'shape') or hasattr(b, 'shape')):
         raise ValueError("Inputs a nad b must both have the shape-attribute (like numpy arrays)")
@@ -32,26 +37,43 @@ def timedelta2unit(timedelta, unit):
     """Convert a timedelta or iterable with Timedeltas to
        a numeric value matching a given unit.
 
-    Args:
-        timedelta (pd.Timedelta): Timedelta to convert. Can be an itetable of Timdeltas.
-        unit (str): Unit to convert timedeltas to. Valid arguments are {'s', 'h', 'd', 'y'}.
+    Parameters
+    ----------
+    timedelta : pd.Timedelta
+        Timedelta to convert. Can be an itetable of Timdeltas.
+    unit : str
+        Unit to convert timedeltas to. Valid arguments are {'s', 'h', 'd', 'y'}.
 
-    Returns:
-        np.double: Numpy array of timedelta values matching given unit.
+    Returns
+    -------
+    np.double
+        Numpy array of timedelta values matching given unit.
 
-    Raises:
-        ValueError: If input(s) lack(s) the 'total_seconds' method.
+    Raises
+    ------
+    ValueError
+    If input(s) lack(s) the 'total_seconds' method.
     """
 
     def _inner(time, unit):
         """Convert a pd.Timedelta ('time') to a numeric value matching 'unit'self.
 
-        Args:
-            time (pd.Timedelta): Timedelta to convert.
-            unit (str): String indicating unit, same as outer function.
+        Parameters
+        ----------
+        time : pd.Timedelta
+            Timedelta to convert.
+        unit : str
+            String indicating unit, same as outer function.
 
-        Returns:
-            double: time converted to a double matching given 'unit'
+        Returns
+        -------
+        double
+            time converted to a double matching given 'unit'
+
+        Raises
+        ------
+        ValueError
+            If input `time` is missing the attribute total_seconds.
         """
         if not hasattr(time, 'total_seconds'):
             raise ValueError(('The input (or the elements of the iterable)' +
@@ -75,6 +97,21 @@ def standardizeData(data, getStdMean=False):
     """
     Normalize the data by substracting the mean from each feature,
     and dividing by the standard deviation.
+
+    Parameters
+    ----------
+    data : array
+        Data to be standardized columnwise.
+    getStdMean : bool, optional
+        return the standard deviation and mean for the data before the stnadardization,
+        along with the data iteself.
+
+    Returns
+    -------
+    array
+        The snandardized data, and depending on the flag getStdMean, also the std and
+        mean of the data.
+
     """
     mean = data.mean(axis=0)
     std = data.std(axis=0)
@@ -89,13 +126,19 @@ def standardizeData(data, getStdMean=False):
 def pcaFit(toPca, performStandardization=True, **kwargs):
     """Standardize data, create a PCA object and fit the data.
 
-    Args:
-        toPca (np.array): Data to perform PCA analysis on.
-        performStandardization (bool, optional): Standardize data if True, leave as be othewise.
-        **kwargs (dict, optional): Additional keyword arguments to PCA.
+    Parameters
+    ----------
+    toPca : np.array
+        Data to perform PCA analysis on.
+    performStandardization : bool, optional
+        Standardize data if True, leave as be othewise.
+    **kwargs : dict, optional
+        Additional keyword arguments to PCA.
 
-    Returns:
-        PCA: Fitted PCA instance.
+    Returns
+    -------
+    PCA
+        Fitted PCA instance.
     """
     if performStandardization:
         toPca, std, mean = standardizeData(toPca, getStdMean=True)
@@ -112,14 +155,20 @@ def mapAsync(func, funcargLst, n=None):
     """Given a function and an iterable with tuple-packed arguments, evalueate the
     the function in parallel using multiple processors.
 
-    Args:
-        func (function): Function to evalueate.
-        funcargLst (list): List with tuples containing arguemnts for func.
-        n (int, optional): Number of processors to use. Default is 16 or number of
-                           processors - 1 (if there isn't 16 processors avaiable).
+    Parameters
+    ----------
+    func : function
+        Function to evalueate.
+    funcargLst : list
+        List with tuples containing arguemnts for func.
+    n : int, optional
+        Number of processors to use. Default is 16 or number of processors - 1
+        (if there isn't 16 processors avaiable).
 
-    Returns:
-        list: List with result.
+    Returns
+    -------
+    list
+        List with result.
     """
     if n is None:
         n = 16 if 16 < multiprocessing.cpu_count() else multiprocessing.cpu_count() - 1
@@ -135,11 +184,15 @@ def lstDct2dct(lst):
     """Merge a list of dicts into a single dict.
     Raises warning if there's overlapping key values.
 
-    Args:
-        lst (list): List with dictionaries.
+    Parameters
+    ----------
+    lst : list
+        List with dictionaries.
 
-    Returns:
-        dict: Merged dictionary.
+    Returns
+    -------
+    dict
+        Merged dictionary.
     """
     retDct = dict()
     for dct in lst:
@@ -153,15 +206,22 @@ def lstDct2dct(lst):
 def randomSample(itr, n):
     """Draw n samples from iterable, where each element can only be drawn once.
 
-    Args:
-        itr (iterable): Iterable to draw from.
-        n (int): number of elements to draw.
+    Parameters
+    ----------
+    itr : iterable
+        Iterable to draw from.
+    n : int
+        number of elements to draw.
 
-    Returns:
-        list: n elements from itr.
+    Returns
+    -------
+    list
+        n elements from itr.
 
-    Raises:
-        ValueError: If the requested number of draws isn't smaller then the length if itr.
+    Raises
+    ------
+    ValueError
+    If the requested number of draws isn't smaller then the length if itr.
     """
     if len(itr) <= n:
         raise ValueError("'itr' must be longer that n")
@@ -175,11 +235,15 @@ def getFirstDayInTimeseries(ts):
     """Given a Pandas time series, get the Timestamp for the start of the day for the
     earliest entry in the time series.
 
-    Args:
-        ts (Series[Tiemstamp]): Pandas Series with Timestamps (datetime might also work).
+    Parameters
+    ----------
+    ts : Series[Tiemstamp]
+        Pandas Series with Timestamps (datetime might also work).
 
-    Returns:
-        Timestamp: Pandas Timestamp matching the data for the first entry in ts.
+    Returns
+    -------
+    Timestamp
+        Pandas Timestamp matching the data for the first entry in ts.
     """
     t0 = ts.min()
     t0d = t0.date()

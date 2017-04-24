@@ -14,13 +14,19 @@ def getComdataMean(df, dataCol, datasizeCol):
     of the most contacted telephone number for each person, the second number us the
     average for the second-most contacted person for all users and so on.
 
-    Args:
-        df (DataFrame): DataFrame like comFreq (see userActivity.ipynb)
-        dataCol (str): Column with data source to use from df
-        datasizeCol (str): Column containing counts of unique values from dataCol
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame like comFreq (see userActivity.ipynb)
+    dataCol : str
+        Column with data source to use from df
+    datasizeCol : str
+        Column containing counts of unique values from dataCol
 
-    Returns:
-        np.array: Mean values of occurences for all uses most contacted numbers.
+    Returns
+    -------
+    np.array
+        Mean values of occurences for all uses most contacted numbers.
     """
     data = np.NaN * np.zeros((df.index.size, df[datasizeCol].max()))
     for i, user in enumerate(df.index):
@@ -34,12 +40,17 @@ def df2punchcard(df, binwidth=3600):
     """Make a punchcard over all time for the communication-dataframe df.
        I suspect it's buggy!
 
-    Args:
-        df (DataFrame): DataFrame with communication events.
-        binwidth (int, optional): Bin witdh in seconds, default i 3600 (= 1 hour).
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame with communication events.
+    binwidth : int, optional
+        Bin witdh in seconds, default i 3600 (= 1 hour).
 
-    Returns:
-        Array: 2D array with users on the y-axis and timebins on the x-axis.
+    Returns
+    -------
+    Array
+        2D array with users on the y-axis and timebins on the x-axis.
     """
     minInt, maxInt = df.timeint.min(), df.timeint.max()
     deltaInt = maxInt - minInt
@@ -58,13 +69,19 @@ def df2punchcard(df, binwidth=3600):
 def mutualContact(df, user0, user1):
     """Return true if user0 nad user1 have contacted each other.
 
-    Args:
-        df (DataFrame): DataFrame as the on loaded by loadUsersParallel.
-        user0 (str): Username to test.
-        user1 (str): Username to test.
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame as the on loaded by loadUsersParallel.
+    user0 : str
+        Username to test.
+    user1 : str
+        Username to test.
 
-    Returns:
-        bool: True of there's mutual contact
+    Returns
+    -------
+    bool
+        True of there's mutual contact
     """
     mutualContact = set()
     if (user0, user1) in mutualContact:
@@ -83,13 +100,19 @@ def userDf2CliqueDf(df, chosenUserLst, associatedUserColumn='contactedUser'):
     """Given a user DataFrame and a list of users, return a user DataFrame which only
     contains communication in between the users in the given list.
 
-    Args:
-        df (DataFrame): DataFrame, must have 'user' as an index.
-        chosenUserLst (list): List with chosen users.
-        associatedUserColumn (str, optional): Column name containing contacted users.
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame, must have 'user' as an index.
+    chosenUserLst : list
+        List with chosen users.
+    associatedUserColumn : str, optional
+        Column name containing contacted users.
 
-    Returns:
-        DataFrame: With entries not involving users from chosenUserLst removed.
+    Returns
+    -------
+    DataFrame
+        With entries not involving users from chosenUserLst removed.
     """
     df = df.loc[chosenUserLst]
     return df[df[associatedUserColumn].isin(chosenUserLst)]
@@ -102,18 +125,28 @@ def userDf2weeklyTimebinDf(df, bins):
     Ex: All thuesdays with hourly-bin 3 is combined, regardles of the actual date.
 
     Args
-        df (DataFrame): User DataFrame.
-        bins (str, int, or dict): Specification of bins...
-              str:  Name of column with bin values.
-              int:  Number of euqally spaced bins pr. 24 hours,
-              dict: A mapping for every hour to a bin value
+        df (DataFrame):
+        bins
 
-    Yields:
-        DataFrame: With events from bin associated with current iteration.
+    Yields
+    ------
+    DataFrame
+        With events from bin associated with current iteration.
 
-    Raises:
-        ValueError: If an invalid column name is provided in bin argument.
-        ValueError: If a bins dict doesn't contain mapping for all hours.
+    Raises
+    ------
+    ValueError
+    If a bins dict doesn't contain mapping for all hours.
+
+    Parameters
+    ----------
+    df : DataFrame
+        User DataFrame.
+    bins : (str, int, or dict):
+        Specification of bins...
+         - str:  Name of column with bin values.
+         - int:  Number of euqally spaced bins pr. 24 hours,
+         - dict: A mapping for every hour to a bin value.
     """
     df = df.copy()  # work in a copy of the input DataFrame
 
@@ -145,19 +178,25 @@ def userDf2timebinAdjMat(df, bins, chosenUserLst):
     """Given a user DataFrame, return a matrix where each column is the rows/columns
     from an adjacency matrix.
 
-    Args:
-        df (DataFrame): User DataFrame, must have 'user' as index and 'timestamp' as
-                        a column.
-        bins (str, int, or dict): Specification of bins...
-              str:  Name of column with bin values.
-              int:  Number of euqally spaced bins pr. 24 hours,
-              dict: A mapping for every hour to a bin value
-        chosenUserLst (iterable): Iterable (e.g. list) with user names from the index.
+    Parameters
+    ----------
+    df : DataFrame
+        User DataFrame, must have 'user' as index and 'timestamp' as
+        a column.
+    bins : str, int, or dict
+        Specification of bins...
+        str:  Name of column with bin values.
+        int:  Number of euqally spaced bins pr. 24 hours,
+        dict: A mapping for every hour to a bin value
+    chosenUserLst : iterable
+        Iterable (e.g. list) with user names from the index.
 
-    Returns:
-        np.array: Array where each column is the combined columns from the adjacency
-                  matrix, constructed from the events in a corresponding time bin.
-                  Thus the units is activity on the y axis and timebins on the x axis.
+    Returns
+    -------
+    np.array
+        Array where each column is the combined columns from the adjacency
+        matrix, constructed from the events in a corresponding time bin.
+        Thus the units is activity on the y axis and timebins on the x axis.
     """
     aggLst = list()
     for itrDf in userDf2weeklyTimebinDf(df, bins):
@@ -179,18 +218,24 @@ def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=N
     4) Do PCA analysis, and save the explained variance ratio for all communities, as
         well as their community size.
 
-    Args:
-        userDf (DataFrame): DataFrame containing user activity.
-        communityDf (DataFrame): DataFrame with communities, where each line contains the
-            user names of the members of the community (padded with NaN/None if
-            necessary).
-        bins (str, int, or dict): int is number of bins pr 24 hours. See the
-        communitySizeUnique (ints in iterable, optional): Community size to analyze.
-        documentation for userDf2timebinAdjMat for the other options
+    Parameters
+    ----------
+    userDf : DataFrame
+        DataFrame containing user activity.
+    communityDf : DataFrame
+        DataFrame with communities, where each line contains the
+        user names of the members of the community (padded with NaN/None if
+        necessary).
+    bins : str, int, or dict
+        int is number of bins pr 24 hours. See the
+    communitySizeUnique : ints in iterable, optional
+        Community size to analyze.
 
-    Returns:
-        dict: keys is community size, values are list with arrays containing the
-              explained variance ratio from the PCA anaysis.
+    Returns
+    -------
+    dict
+        keys is community size, values are list with arrays containing the
+        explained variance ratio from the PCA anaysis.
     """
     communityPcaDct = dict()
     communitySize = communityDf.count(axis=1)
@@ -211,14 +256,25 @@ def communityDf2Pca(userDf, communityDf, bins):
     """Given a Dataframe with communities, return the fitted PCA class instance for all
     in a dict, where the keys is a tuple with the community members.
 
-    Args:
-        userDf (DataFrame): DataFrame with user activity.
-        communityDf (DataFrame): DataFrame with communities. Integer columns are excluded.
-        bins (str): A string identifying the bin column of the DataFrame.
+    Parameters
+    ----------
+    userDf : DataFrame
+        DataFrame with user activity.
+    communityDf : DataFrame
+        DataFrame with communities. Integer columns are excluded.
+    bins : str
+        A string identifying the bin column of the DataFrame.
 
-    Returns:
-        dict: Dictionary where the keys is the tuple with the usernames in the community,
-              and the values are the corresponding pca objects.
+    Returns
+    -------
+    dict
+        Dictionary where the keys is the tuple with the usernames in the community,
+        and the values are the corresponding pca objects.
+
+    Raises
+    ------
+    Warning
+        If matrix is not symmetric
     """
     communityPcaDct = dict()  # Dict containing community: pca-object (return value)
     uniqueBins = userDf[bins].unique()

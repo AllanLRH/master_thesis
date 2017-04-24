@@ -12,8 +12,8 @@ from speclib import graph
 
 
 def rgb(r, g, b):
-    """Turn 0-255 spaced RGB-values into a 0-1 spaced numpy array,
-    which is readable by Matplotlib.
+    """Turn 0-255 spaced RGB-values into a 0-1 spaced numpy array, which is readable
+    by Matplotlib.
     """
     return [np.array([r, g, b])/255]
 
@@ -22,20 +22,24 @@ def looseAxesLimits(ax, loosen=0.05):
     """The default Matplotlib plot have very tight axes.
        This function loosenens the axes.
 
-    Args:
-        ax (axis): The axes-handle for the relevant axis.
-        loosen (float/int or tuple, default = 0.05): The fractional amount to adjust the plot.
-                   - If a float is passed, the plot distance will be modified by the same
-                   value in all directions.
-                   - If a tuple with 2 floats is passed, the first float will be applid in
-                   the horizontal direction, and the second float will be applied in the
-                   vertical direction.
-                   - If a tuple with 4 floats is passed, the floats will be used when
-                   adjusting the left, right, bottom and top directions.
+    Parameters
+    ----------
+    ax : axis
+        The axes-handle for the relevant axis.
+    loosen : float/int or tuple, default = 0.05
+        The fractional amount to adjust the plot.
+        - If a float is passed, the plot distance will be modified by the same value in
+          all directions.
+        - If a tuple with 2 floats is passed, the first float will be applid in the
+          horizontal direction, and the second float will be applied in the vertical
+          direction.
+        - If a tuple with 4 floats is passed, the floats will be used when adjusting the
+          left, right, bottom and top directions.
 
-    Raises:
-        ValueError: If loosen is not a float, 2-element tuple (2-tuple) or 4-tuple.
-        ValueError: If contents in a loosen-tuple is not all floats.
+    Raises
+    ------
+    ValueError
+        If contents in a loosen-tuple is not all floats.
     """
     # Get current min and max value for the axes, calculate the vertical and horizontal ranges
     axminX, axmaxX = ax.get_xlim()
@@ -70,14 +74,17 @@ def barSBS(ax, *args, offset=0.04, extraGroupSpace=None):
     """Plots dataseries as a bar chart, with the series bars next to each other.
     The passed order is preserved.
 
-    Args:
-        ax (axes): Axes to plot on.
-        *args (dict): Data series contained in a dict. 'y' and 'label' are required keys,
-                      referenceing to data and label respectively. 'x' is x-values and
-                      is optional.
-        offset (float, optional): Space between individual bars, default 0.04.
-        extraGroupSpace (float, optional): Extra space between groups, default is 0 for
-                                           less than 4 groups.
+    Parameters
+    ----------
+    ax : axes
+        Axes to plot on.
+    *args : dict
+        Data series contained in a dict. 'y' and 'label' are required keys, referenceing
+        to data and label respectively. 'x' is x-values and is optional.
+    offset : float, optional
+        Space between individual bars, default 0.04.
+    extraGroupSpace : float, optional
+        Extra space between groups, default is 0 for less than 4 groups.
     """
     dataDicts = args
     if extraGroupSpace is None:
@@ -114,21 +121,32 @@ def countsOnBarPlot(ax):
 def plotNeatoGraph(g, plotSettings=None, labels=None, fig_ax=None):
     """Plot a NetworkX graph, optionally add labels, and modify plot settings.
 
-    Args:
-        g (NetworkX graph): The graph to plot.
-        plotSettings (dict, optional): Update plottting preference, options and defaults is:
-                                        * 'node_color':   'steelblue',
-                                        * 'edge_color':   'slategray',
-                                        * 'figsize':      (16, 9),
-                                        * 'font_color':   'mediumaquamarine',
-                                        * 'font_size':    15,
-                                        * 'font_weight':  'bold'
-        labels (dict, optional): A dict with {'node': 'label'}.
-        fig_ax (tuple, optional): Tuple containing (fig, ax) (Matplotlib figure and Axis).
-        figsize (tuple, optional): Matplotlib figure size,
+    Parameters
+    ----------
+    g : NetworkX graph
+        The graph to plot.
+    plotSettings : dict, optional
+        Update plottting preference, options and defaults is:
+        * 'node_color':   'steelblue',
+        * 'edge_color':   'slategray',
+        * 'figsize':      (16, 9),
+        * 'font_color':   'mediumaquamarine',
+        * 'font_size':    15,
+        * 'font_weight':  'bold'
+    labels : dict, optional
+        A dict with {'node': 'label'}.
+    fig_ax : tuple, optional
+        Tuple containing (fig, ax) (Matplotlib figure and Axis).
 
-    Returns:
-        (fig, ax): figure and axis
+    Returns
+    -------
+    (fig, ax)
+        figure and axis
+
+    Deleted Parameters
+    ------------------
+    figsize : tuple, optional
+        Matplotlib figure size,
     """
     ps = {'node_color': 'steelblue',
           'edge_color':  'slategray',
@@ -154,9 +172,12 @@ def plotNeatoGraph(g, plotSettings=None, labels=None, fig_ax=None):
 def nxQuickDraw(G, **kwargs):
     """Quickly draw a networkx graph.
 
-    Args:
-        G (nx.Graph-like): Graph to draw, can be Graph, DiGramh, MultiGraph or DiMutiGraph.
-        **kwargs: Additional keyword arguments to nx.draw.
+    Parameters
+    ----------
+    G : nx.Graph-like
+        Graph to draw, can be Graph, DiGramh, MultiGraph or DiMutiGraph.
+    **kwargs
+        Additional keyword arguments to nx.draw.
     """
     kwDct = dict(with_labels=True,  # Use some sane defaults
                  node_color='lightblue',
@@ -172,15 +193,24 @@ def nxQuickDraw(G, **kwargs):
 def barFractionPlot(df, ax=None, userOrder=None):
     """Plots a horizontal stacked bar chart colored by percent.
 
-    Args:
-        df (DataFrame): 1 dimmensional dataframe.
-        ax (axis, optional): Axis to plot on.
+    Parameters
+    ----------
+    df : DataFrame
+        1 dimmensional dataframe.
+    ax : axis, optional
+        Axis to plot on.
+    userOrder : list, optional
+        Use this order of users.
 
-    Returns:
-        axis: Axis, given or created.
+    Returns
+    -------
+    axis
+        Axis, given or created.
 
-    Raises:
-        ValueError: If len(df.shape) > 1
+    Raises
+    ------
+    ValueError
+    If len(df.shape) > 1
     """
     if len(df.shape) > 1:
         raise ValueError("Only 1-dimmensional dataFrames are accepted")
@@ -224,12 +254,16 @@ def barFractionPlot(df, ax=None, userOrder=None):
 def plotPunchcard(data):
     """Plots a "punchcard of user activity, using the pcolor plot function."
 
-    Args:
-        data (2d array): An matrix with activity binned hourly.
-                         Users along the y-axis, hours along the x-axis.
+    Parameters
+    ----------
+    data : 2d array
+        An matrix with activity binned hourly.
+        Users along the y-axis, hours along the x-axis.
 
-    Returns:
-        Figure, Axis: Figure and axis of plot.
+    Returns
+    -------
+    Figure, Axis
+        Figure and axis of plot.
     """
     fig, ax = plt.subplots()
     pc = ax.pcolorfast(data, cmap=mpl.cm.viridis)
@@ -253,33 +287,44 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
                       kwNode=None, kwEdge=None, kwNodeLabel=None, kwEdgeLabel=None):
     """Draw a weighted graph.
 
-    Args:
-        g (Networkx graph): Graph to be plottet
-        normailzeWeights (bool, optional): Normalize weight to be in range 0-1 before
-                                           applying weightFunc. Default = True.
-        weightFunc (function, optional): Function to apply to weight before it's drawn as
-                                         a link. Default: 2.5 * weight + 1.
-        ax (axes, optional): Matplotlib axes to plot on.
-        layout (dict or layout engine, optional): A position dict or a layout engine.
-        nodeLabels (bool or dict, optional): Draw node labels if True (default True), or
-                                             use provided dict for naming.
-                                             Default name is the string representation of
-                                             the node name.
-        edgeLabels (bool or dict, optional): Draw edge labels if True (default False), or
-                                             use provided dict .
-                                             Default edge labels are the edge weights.
-        kwLayout (dict, optional): Keyword arguments to layout engine.
-        kwNode (dict, optional): Keyword arguments to nx.draw_networkx_nodes.
-        kwEdge (dict, optional): Keyword arguments to nx.draw_networkx_edges.
-        kwNodeLabel (None, optional): Keyword arguments to nx.drawing.draw_networkx_labels.
-        kwEdgeLabel (None, optional): Keyword arguments to nx.drawing.draw_networkx_edge_labels.
+    Parameters
+    ----------
+    g : Networkx graph
+        Graph to be plottet
+    normailzeWeights : bool, optional
+        Normalize weight to be in range 0-1 before applying weightFunc. Default = True.
+    weightFunc : function, optional
+        Function to apply to weight before it's drawn as a link. Default: 2.5 * weight + 1.
+    ax : axes, optional
+        Matplotlib axes to plot on.
+    layout : dict or layout engine, optional
+        A position dict or a layout engine.
+    nodeLabels : bool or dict, optional
+        Draw node labels if True (default True), or use provided dict for naming.
+        Default name is the string representation of the node name.
+    edgeLabels : bool or dict, optional
+        Draw edge labels if True (default False), or use provided dict .
+        Default edge labels are the edge weights.
+    kwLayout : dict, optional
+        Keyword arguments to layout engine.
+    kwNode : dict, optional
+        Keyword arguments to nx.draw_networkx_nodes.
+    kwEdge : dict, optional
+        Keyword arguments to nx.draw_networkx_edges.
+    kwNodeLabel : None, optional
+        Keyword arguments to nx.drawing.draw_networkx_labels.
+    kwEdgeLabel : None, optional
+        Keyword arguments to nx.drawing.draw_networkx_edge_labels.
 
-    Returns:
-        axes: Matplotlib axes.
+    Returns
+    -------
+    axes
+        Matplotlib axes.
 
-    Raises:
-        ValueError: If there's a weight < 0.
-        ValueError: If the input for .
+    Raises
+    ------
+    ValueError
+    If the input for .
     """
 
     # Create axes if none were given by the user

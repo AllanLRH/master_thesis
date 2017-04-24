@@ -23,11 +23,15 @@ def networkx2igraph(nxGraph):
     Note that labels are lost.
     Only tested for binary adjacency matrices.
 
-    Args:
-        nxGraph (networkx.Graph): Graph to convert.
+    Parameters
+    ----------
+    nxGraph : networkx.Graph
+        Graph to convert.
 
-    Returns:
-        igraph.Graph: Converted graph.
+    Returns
+    -------
+    igraph.Graph
+        Converted graph.
     """
     return ig.Graph.Adjacency(
         nx.to_numpy_matrix(nxGraph).tolist()
@@ -37,14 +41,20 @@ def networkx2igraph(nxGraph):
 def isSymmetric(m):
     """Check if a matrix (Numpy array) is summetric
 
-    Args:
-        m (aray): 2d array
+    Parameters
+    ----------
+    m : aray
+        2d array
 
-    Returns:
-        bool: True if symmetric, false otherwise.
+    Returns
+    -------
+    bool
+        True if symmetric, false otherwise.
 
-    Raises:
-        ValueError: It input doesn't have exactly 2 dimmensions.
+    Raises
+    ------
+    ValueError
+    It input doesn't have exactly 2 dimmensions.
     """
     if m.ndim != 2:
         raise ValueError("Input must have exactly 2 dimmensions.")
@@ -61,15 +71,20 @@ def isSymmetric(m):
 def adjMatUpper2array(m):
     """Given an (adjacency) matrix, return the upper triangular part as a 1d array.
 
-    Args:
-        m (array): 2d array (adjacency matrix).
+    Parameters
+    ----------
+    m : array
+        2d array (adjacency matrix).
 
-    Returns:
-        array: 1d array with upper triangular part of matrix.
+    Returns
+    -------
+    array
+        1d array with upper triangular part of matrix.
 
-    Raises:
-        ValueError: If input have wrong dimmensions.
-        ValueError: If input isn't a square matrix.
+    Raises
+    ------
+    ValueError
+    If input isn't a square matrix.
     """
     if m.ndim != 2:
         raise ValueError("The input m must have exactly 2 dimmensions.")
@@ -83,11 +98,20 @@ def upperTril2adjMat(up):
     """Given the upper triangular part of a quadratic matrix (excluding the diagonal,
     which is assumed to be 0), construct the corresponding symmetric matrix.
 
-    Args:
-        up (array): Upper triangular part of quadratic matrix
+    Parameters
+    ----------
+    up : array
+        Upper triangular part of quadratic matrix
 
-    Returns:
-        array: Symmetric matrix where upper and lower parts are both occupied by `up`.
+    Returns
+    -------
+    array
+        Symmetric matrix where upper and lower parts are both occupied by `up`.
+
+    Raises
+    ------
+    ValueError
+        If input is not a valid size for constrcting a square matrix.
     """
     if up.ndim != 1:
         raise ValueError("The input m must have exactly 1 dimmension.")
@@ -109,11 +133,15 @@ def igraph2networkx(igGraph):
     """Convert a Igraph graph to an Networkx graph.
     Only tested for binary adjacency matrices.
 
-    Args:
-        igGraph (igraph.Graph): Graph to convert.
+    Parameters
+    ----------
+    igGraph : igraph.Graph
+        Graph to convert.
 
-    Returns:
-        networkx.Graph: Converted graph.
+    Returns
+    -------
+    networkx.Graph
+        Converted graph.
     """
     return nx.from_numpy_matrix(
         np.array(
@@ -128,16 +156,20 @@ def _userDF2communicationDictOfDicts(df, userColumn='user',
     Turn a DataFrame with user data into a dict of dicts, which is easily converted to a
     Networkx Graph or and adjacency-matrix-like DataFrame.
 
-    Args:
-        df (DataFrame): DataFrame as the one loaded by loadUsersParallel.
-        userColumn (str, optional): Name of the level in the index containing,
-                                    users initiating the communication.
-        associatedUserColumn (str, optional): Name of the column containing users
-                                              communicated to or associated with.
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame as the one loaded by loadUsersParallel.
+    userColumn : str, optional
+        Name of the level in the index containing, users initiating the communication.
+    associatedUserColumn : str, optional
+        Name of the column containing users communicated to or associated with.
 
-    Returns:
-        Dict: Dict of dicts, listing connections and the numbers of events from outer
-              key (user) to inner key (user).
+    Returns
+    -------
+    Dict
+        Dict of dicts, listing connections and the numbers of events from outer
+        key (user) to inner key (user).
     """
     userIndex = np.sort(df.index.get_level_values(userColumn).unique())
     communicationDct = dict()
@@ -151,20 +183,23 @@ def userDF2nxGraph(df, userColumn='user', associatedUserColumn='contactedUser',
                    comtype=None, graphType=nx.Graph()):
     """Convert user DataFrame to a Networkx Graph.
 
-    Args:
-        df (DataFrame): DataFrame as the one loaded by loadUsersParallel.
-        userColumn (str, optional): Name of the level in the index containing,
-                                    users initiating the communication.
-        associatedUserColumn (str, optional): Name of the column containing users
-                                              communicated to or associated with.
-        comtype (str, optional): Filter communication type.
-        graphType (nx.Graph-like, optional): Graph type to create, pass an empty instance.
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame as the one loaded by loadUsersParallel.
+    userColumn : str, optional
+        Name of the level in the index containing, users initiating the communication.
+    associatedUserColumn : str, optional
+        Name of the column containing users communicated to or associated with.
+    comtype : str, optional
+        Filter communication type.
+    graphType : nx.Graph-like, optional
+        Graph type to create, pass an empty instance.
 
-    Returns:
-        nx.Graph: A Networkx graph.
-
-    Deleted Parameters:
-        diGraph (bool, optional): Set to True to return a DiGraph rather thatn a Graph.
+    Returns
+    -------
+    nx.Graph
+        A Networkx graph.
     """
     if comtype is not None:
         df = df[df.index.get_level_values('comtype') == comtype]
@@ -179,16 +214,21 @@ def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contac
                              comtype=None):
     """Create an adjacency-matrix like DataFrame from the regular communication DataFrame.
 
-    Args:
-        df (DataFrame): DataFrame as the one loaded by loadUsersParallel.
-        userColumn (str, optional): Name of the level in the index containing,
-                                    users initiating the communication.
-        associatedUserColumn (str, optional): Name of the column containing users
-                                              communicated to or associated with.
-        comtype (str, optional): Filter communication type.
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame as the one loaded by loadUsersParallel.
+    userColumn : str, optional
+        Name of the level in the index containing, users initiating the communication.
+    associatedUserColumn : str, optional
+        Name of the column containing users communicated to or associated with.
+    comtype : str, optional
+        Filter communication type.
 
-    Returns:
-        DataFrame: Adjacency-matrix like DataFrame
+    Returns
+    -------
+    DataFrame
+        Adjacency-matrix like DataFrame
     """
     if comtype is not None:
         df = df[df.index.get_level_values('comtype') == comtype]
@@ -214,21 +254,28 @@ def _isSubCommunity(bigSetLst, smallDfRows):
         if keep:  # append to returnLst if necessary
             returnLst.append(small)
     return {len(small): returnLst}
+
+
+def removeSubCommunities(comDf, comSize=None, n=None):
+    df = comDf.select_dtypes(exclude=['int'])
     if isinstance(comSize, str):
         comSize = comDf[comSize]
     else:
-        comSize = comDf.select_dtypes(exclude=['int']).count(axis=1)
-    log.debug("comSize, after if statement: {}".format(comSize))
-    log.debug('comSize.max(): {}'.format(comSize.max()))
-    for s in range(comSize.max()):
-        log.debug("s: {}".format(s))
-        for _, comBig in comDf[comSize == s].iterrows():
-            big = set(comBig.dropna())
-            for _, comSmall in comDf[comSize < s].iterrows():
-                small = set(comSmall.dropna())
-                logging.debug("small.issubset(big): {}".format(small.issubset(big)))
-                if not small.issubset(big):
-                    yield comSmall
+        comSize = df.count(axis=1)
+    df = comDf.select_dtypes(exclude=['int'])
+    sizeArr = np.unique(comSize)[::-1]  # clique sizes, largest first
+    retDct = dict()
+    retDct[sizeArr[0]] = df[comSize == sizeArr[0]].apply(lambda row: set(row.dropna()),
+                                                         axis=1).tolist()
+    retDct.update({k: list() for k in sizeArr[1:]})
+    for i in range(sizeArr.shape[0] - 1):
+        high = sizeArr[i]
+        low = sizeArr[i + 1]
+        smallCommunities = df[comSize == low]
+        res = _isSubCommunity(retDct[high], smallCommunities)
+        for k in res.keys():
+            retDct[k].append(res[k])
+    return retDct
 
 
 def removeSubCommunitiesDumb(df):

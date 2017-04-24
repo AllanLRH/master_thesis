@@ -13,14 +13,20 @@ import collections
 def loadPythonSyntaxFile(filepath):
     """Loads data stored in a text file, where each line is a python dict.
 
-    Args:
-        filepath (str): Path of file to be read
+    Parameters
+    ----------
+    filepath : str
+        Path of file to be read.
 
-    Returns:
-        list: Return a list containing all the dicts from the file.
+    Returns
+    -------
+    list
+        Return a list containing all the dicts from the file.
 
-    Raises:
-        FileNotFoundError: If filepath doesn't point to a .txt-file.
+    Raises
+    ------
+    FileNotFoundError
+    If filepath doesn't point to a .txt-file.
     """
     if not os.path.isfile(filepath) or not filepath.lower().endswith(".txt"):
         raise FileNotFoundError("The file {} doesn't seem to exist".format(filepath))
@@ -39,18 +45,25 @@ def loadUser2(user, datapath='/lscr_paper/allan/telephone',
               dataFilter=('sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call')):
     """Loads a users data as dict.
 
-    Args:
-        user (str): Name of user data folder
-        datapath (str, optional): Path to folder which contains user data folder.
-        dataFilter (Iterable containing str, optional): Only return certain datasets from
-            a user. Allowed values are 'sms', 'question', 'gps', 'bluetooth', 'screen',
-            'facebook' and 'call'.
+    Parameters
+    ----------
+    user : str
+        Name of user data folder
+    datapath : str, optional
+        Path to folder which contains user data folder.
+    dataFilter : Iterable containing str, optional
+        Only return certain datasets from a user. Allowed values are 'sms', 'question',
+        'gps', 'bluetooth', 'screen', 'facebook' and 'call'.
 
-    Returns:
-        dict: User data in a dict, maps to None for missing data types.
+    Returns
+    -------
+    dict
+        User data in a dict, maps to None for missing data types.
 
-    Raises:
-        ValueError: If a wrong parameter is passed to dataFilter
+    Raises
+    ------
+    ValueError
+    If a wrong parameter is passed to dataFilter
     """
     userPath = os.path.join(datapath, user)
     userDict = dict()
@@ -79,18 +92,25 @@ def loadUser(user, datapath='/lscr_paper/allan/data/Telefon/userfiles',
              dataFilter=('sms', 'question', 'gps', 'bluetooth', 'screen', 'facebook', 'call')):
     """Loads a users data as dict.
 
-    Args:
-        user (str): Name of user data folder
-        datapath (str, optional): Path to folder which contains user data folder.
-        dataFilter (Iterable containing str, optional): Only return certain datasets from
-            a user. Allowed values are 'sms', 'question', 'gps', 'bluetooth', 'screen',
-            'facebook' and 'call'.
+    Parameters
+    ----------
+    user : str
+        Name of user data folder
+    datapath : str, optional
+        Path to folder which contains user data folder.
+    dataFilter : Iterable containing str, optional
+        Only return certain datasets from a user. Allowed values are 'sms', 'question',
+        'gps', 'bluetooth', 'screen', 'facebook' and 'call'.
 
-    Returns:
-        dict: User data in a dict, maps to None for missing data types.
+    Returns
+    -------
+    dict
+        User data in a dict, maps to None for missing data types.
 
-    Raises:
-        ValueError: If a wrong parameter is passed to dataFilter
+    Raises
+    ------
+    ValueError
+    If a wrong parameter is passed to dataFilter
     """
     # Turn "/foo/bar/baz/gps_log.txt" -> "gps"
     _filepath2dictkey = lambda el: el.rsplit(os.path.sep, maxsplit=1)[1].split("_")[0]
@@ -131,15 +151,20 @@ def _loadUserHandler(userSpec):
 def loadUserParallel(userSpec, n=None):
     """Loads users in parallel.
 
-    Args:
-        userSpec (tuple): Contains (username, useralias) or (username, useralias, dataFilter).
-                          See the documentation for loadUser2 (which uses theese arguments).
-        n (None, optional): Number of provessor cores to use when loading the users in parallel.
-                            Default is 16, but will fall back to number of cores minus 1 if 16
-                            cores aren't avaiable.
+    Parameters
+    ----------
+    userSpec : tuple
+        Contains (username, useralias) or (username, useralias, dataFilter).
+        See the documentation for loadUser2 (which uses theese arguments).
+    n : None, optional
+        Number of provessor cores to use when loading the users in parallel.
+        Default is 16, but will fall back to number of cores minus 1 if 16 cores
+        aren't avaiable.
 
-    Returns:
-        dict: Dictionary representation of all users. Can easily be converted to pandas DataFrame.
+    Returns
+    -------
+    dict
+        Dictionary representation of all users. Can easily be converted to pandas DataFrame.
     """
     if n is None:
         n = 16 if 16 < cpu_count() else cpu_count() - 1
@@ -156,12 +181,17 @@ def loadUserPhonenumberDict(useralias=None, filepath="/lscr_paper/allan/phonenum
     """Loads the dictionary which relates a phone number to a user.
     Format is phoneID -> userID
 
-    Args:
-        useralias (Useralias, optional): An Useralias instance, may be None.
-        filepath (str, optional): Path to the phonenumbers.p pickle-file.
+    Parameters
+    ----------
+    useralias : Useralias, optional
+        An Useralias instance, may be None.
+    filepath : str, optional
+        Path to the phonenumbers.p pickle-file.
 
-    Returns:
-        dict: phoneID -> userID
+    Returns
+    -------
+    dict
+        phoneID -> userID
     """
     with open(filepath, "rb") as fid:
         data = pickle.load(fid)
@@ -180,11 +210,14 @@ class Useralias(object):
     unknown users, whereas previous look-up users aliases is saved, and returned when
     asked for.
 
-    Attributes:
-        formatStr (str): String template for returned aliases. Must be compatible with
-        the .format()-method
-        i (int): Holds value for the next user in the sequence
-        userdct (dict): Holds previously seen hash -> alias pairs
+    Attributes
+    ----------
+    formatStr : str
+        String template for returned aliases. Must be compatible with
+    i : int
+        Holds value for the next user in the sequence
+    userdct : dict
+        Holds previously seen hash -> alias pairs the .format()-method
     """
 
     def __init__(self, formatStr="u{:04d}"):
@@ -206,11 +239,15 @@ class Useralias(object):
     def lookup(self, alias):
         """Reverse lookup: given a useralias, return the username (hash-like string)
 
-        Args:
-            alias (str): useralias, default on the form u0001, u0123, u0435, u1023 and so on....
+        Parameters
+        ----------
+        alias : str
+            useralias, default on the form u0001, u0123, u0435, u1023 and so on....
 
-        Returns:
-            TYPE: Original username (hash-like), that is, the name of the user data-folder.
+        Returns
+        -------
+        dict
+            Original username (hash-like), that is, the name of the user data-folder.
         """
         if len(self.reversed) != len(self.userdct):
             self.reversed = {v: k for (k, v) in self.userdct.items()}
@@ -220,13 +257,18 @@ class Useralias(object):
 def dict2DataFrame(dct, useralias):
     """Convert the dict-based output from loadUser to a DataFrame
 
-    Args:
-        dct (dict): A single communication typy dict from a user, as returned by loadUser.
-        useralias (Useralias): A Useralias-instance or a dict mapping hashlike
-                               usernames to a human readable format.
+    Parameters
+    ----------
+    dct : dict
+        A single communication typy dict from a user, as returned by loadUser.
+    useralias : Useralias
+        A Useralias-instance or a dict mapping hashlike usernames to a human
+        readable format.
 
-    Returns:
-        DataFrame: Pandas DataFrame with 'user' and 'comtype' as the index, and columns:
+    Returns
+    -------
+    DataFrame
+        Pandas DataFrame with 'user' and 'comtype' as the index, and columns:
         - body: Hash of SMS body, NaN for calls
         - duration: Duration of call, NaN for SMS
         - number: Hash of recieving number
@@ -262,16 +304,21 @@ def _user2DataFrameHandler(args):
 def users2DataFrame(dct, useralias, n=None):
     """Convert a dict of users into a DataFrame using multiple CPU cores.
 
-    Args:
-        dct (dict): Dict of users like the one returned by loadUserParallel.
-        useralias (Useralias): An Useralias-instance.
-        n (None, optional): Number of CPU cores to use.
-                            Default is 16, but will fall back to number of cores
-                            minus 1 if 16 cores aren't avaiable.
+    Parameters
+    ----------
+    dct : dict
+        Dict of users like the one returned by loadUserParallel.
+    useralias : Useralias
+        An Useralias-instance.
+    n : None, optional
+        Number of CPU cores to use.
+        Default is 16, but will fall back to number of cores minus 1 if 16 cores
+        aren't avaiable.
 
-    Returns:
-        DataFrame: All the users from dct as a DataFrame, as the one returned
-                   from dict2DataFrame.
+    Returns
+    -------
+    DataFrame
+        All the users from dct as a DataFrame, as the one returned from dict2DataFrame.
     """
     if n is None:
         n = 16 if 16 < cpu_count() else cpu_count() - 1
@@ -294,13 +341,18 @@ def quickSaveHdf5(filepath, *data):
     Data is converted to a pandas Series or DataFrame if it's too high dimmensioal for
     a Series to be used.
 
-    Args:
-        filepath (str): Path to HDF5 file.
-        *data: Data to be saved. Can either be a dict or two iterables containing keys
-               and the data to save.
+    Parameters
+    ----------
+    filepath : str
+        Path to HDF5 file.
+    *data
+        Data to be saved. Can either be a dict or two iterables containing keys and the
+        data to save.
 
-    Raises:
-        ValueError: If *data input is not correct.
+    Raises
+    ------
+    ValueError
+    If *data input is not correct.
     """
 
     def saveElement(key, data, store):
@@ -308,10 +360,14 @@ def quickSaveHdf5(filepath, *data):
         Tries to convert everything to a Pandas Series or DataFrame if it's too
         high dimmensioal.
 
-        Args:
-            key (str): Key to save data under.
-            data: Data to save.
-            store (HDFStore): The HDFStore in which the file is saved.
+        Parameters
+        ----------
+        key : str
+            Key to save data under.
+        data
+            Data to save.
+        store : HDFStore
+            The HDFStore in which the file is saved.
         """
         if not isinstance(data, (pd.DataFrame, pd.Series)):
             try:
