@@ -391,9 +391,39 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
 
 
 class PcaPlotter(object):
-    """Class functioning as a convinience wrapper for plotting the of the PCA objects."""
+    """Class functioning as a convinience wrapper for plotting the of the PCA objects.
+
+    Attributes
+    ----------
+    comDelta : float
+        Cutoff value for when a value in the eigenvector is considerd a connection.
+    firstN : array
+        The first N eignvectors, explaining at least `explanationCut` of variance.
+    graphLst : list
+        List with graphs generated from firstN.
+    n : int
+        Number of eigenvectors used, equal to len(firstN).
+    pca : pca
+        pca instance from scikit learn.
+    users : tuple
+        tuple with users in community in the pca.
+    """
 
     def __init__(self, pca, users, explanationCut=0.95, comDelta=1e-6):
+        """Initializer for the PcaPlotter class.
+
+        Parameters
+        ----------
+        pca : pca
+            pca instance from scikit learn.
+        users : tuple
+            tuple with users in community in the pca.
+        explanationCut : float, optional
+            Cutoff value determening how much of the variance should be explaned by the
+            eigenvectors / principal components.
+        comDelta : float, optional
+            Cutoff value for when a value in the eigenvector is considerd a connection.
+        """
         super(PcaPlotter, self).__init__()
         self.pca = pca
         self.users = users
@@ -402,12 +432,42 @@ class PcaPlotter(object):
         self._makeGraphList()
 
     def setExplanationCut(self, val):
+        """Set cut value for fraction of explanied variance.
+
+        Parameters
+        ----------
+        val : float
+            Cut value in range [0, 1].
+
+        Raises
+        ------
+        ValueError
+            If val is out of bounds.
+        """
+        if val < 0.0 or val > 1.0:
+            raise ValueError(f"val must be between 0.0 and 1.0 (was {val})")
         self._explanationCut = val
         self.n = (np.cumsum(self.pca.explained_variance_ratio_) <=
                   self.pca.explained_variance_ratio_.sum()*self._explanationCut).sum()
         self.firstN = np.abs(self.pca.components_[:, :self.n])
 
     def plotHeatmap(self, ax=None, cmap='RdBu_r'):
+        """Plot a heatmap of the eigenvectors, number if vectors determed by
+        explanationCut.
+
+        Parameters
+        ----------
+        ax : axsi, optional
+            Axis to draw on.
+        cmap : str, optional
+            Colormap to use.
+            A diverging map is preferred.
+
+        Returns
+        -------
+        tuple
+            Figure and axis used for the plot.
+        """
         if ax is None:
             fig, ax = plt.subplots()
         else:
@@ -418,6 +478,13 @@ class PcaPlotter(object):
         return (fig, ax)
 
     def _makeGraphList(self):
+        """Construct a lidt of graphs from the eigenvectors.
+
+        Returns
+        -------
+        list
+            List of graphs.
+        """
         firstN = self.firstN + self.firstN.min()  # noqa
         firstN[firstN < self.comDelta] = 0.0
         firstN /= firstN.sum()
@@ -425,6 +492,26 @@ class PcaPlotter(object):
         self.graphLst = [nx.from_numpy_matrix(graph.upperTril2adjMat(firstN[:, i])) for i in range(self.n)]
 
     def plotGraphs(self, weightFunc=None, layout=None, kwargs=None, weightMultiply=1000):
+        """Plot the graphs corresponding to the eigenvectors/principal components.
+        Note that is't a generator, so it needs to be depleted in order to produce all
+        the plots.
+
+        Parameters
+        ----------
+        weightFunc : function, optional
+            function for transformaing the weight, see docs for drawWeightedGraph.
+        layout : dict, optional
+            Dict with layout, as specified på Networkx.
+        kwargs : dict, optional
+            Keyword arguments to drawWeightedGraph.
+        weightMultiply : int, optional
+            Multiply weights with this int, in order to get human readable values.
+
+        Yields
+        ------
+        tuple
+            Figure and axis used for the plot.
+        """
         if weightFunc is None:
             weighFunc = lambda w: 5*w + 0.5
         if layout is None:
@@ -439,6 +526,20 @@ class PcaPlotter(object):
             yield (fig, ax)
 
     def plotStandardization(self, smooth=8):
+        """Plot the standardisation values used when standardizing the data before the PCA
+        algorithm processed it.
+        Procuces two plots, an unsmoothed and a smoothed one.
+
+        Parameters
+        ----------
+        smooth : int, optional
+            Size of running average for bottom window.
+
+        Returns
+        -------
+        tuple
+            Figure and axis used for the plot.
+        """
         fig, axi = plt.subplots(2, 1)
         for ax, n, lbl in zip(axi, [1, smooth], ['', ' (smoothed)']):
             ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_mean, 'same'), label='norm_mean' + lbl, color='#20a365')
