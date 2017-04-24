@@ -391,11 +391,12 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
 
 
 class PcaPlotter(object):
-    """Plots the PCA"""
+    """Class functioning as a convinience wrapper for plotting the of the PCA objects."""
 
-    def __init__(self, pca, explanationCut=0.95, comDelta=1e-6):
+    def __init__(self, pca, users, explanationCut=0.95, comDelta=1e-6):
         super(PcaPlotter, self).__init__()
         self.pca = pca
+        self.users = users
         self.comDelta = comDelta
         self.setExplanationCut(explanationCut)
         self._makeGraphList()
@@ -434,7 +435,7 @@ class PcaPlotter(object):
                           in nx.get_edge_attributes(self.graphLst[i], 'weight').items()}
             drawWeightedGraph(self.graphLst[i], ax=ax, layout=layout, normailzeWeights=False,
                               weightFunc=weighFunc, nodeLabels=True, edgeLabels=edgeLabels)
-            fig.suptitle(f'Vector {i+1}/{self.n}')
+            fig.suptitle(f'Vector {i+1}/{self.n}, {len(self.users)} users')
             yield (fig, ax)
 
     def plotStandardization(self, smooth=8):
