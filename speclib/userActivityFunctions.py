@@ -290,7 +290,7 @@ def communityDf2Pca(userDf, communityDf, bins):
         for i, tbin in enumerate(uniqueBins):
             # Mask out current timebin events
             mask = (communitySubDf[bins] == tbin).values
-            # Construct a graoh from the masked communication...
+            # Construct a graph from the masked communication...
             gSubBin = graph.userDF2nxGraph(communitySubDf[mask])
             # ... and get the adjacency-matrix for the graph
             adjMatSubBin = nx.adjacency_matrix(gSubBin, community)  # TODO: community-argument not necessary?
