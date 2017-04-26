@@ -188,38 +188,76 @@ def _userDF2communicationDictOfDicts(df, userColumn='user',
     return communicationDct
 
 
-def userDF2nxGraph(df, userColumn='user', associatedUserColumn='contactedUser',
-                   comtype=None, graphType=nx.Graph()):
+def userDf2nxGraph(df, userIndexColumn='user', associatedUserColumn='contactedUser',
+                   eventKeyColumn=None, graphtype=nx.Graph, removeDegreeZero=True):
     """Convert user DataFrame to a Networkx Graph.
 
     Parameters
     ----------
     df : DataFrame
         DataFrame as the one loaded by loadUsersParallel.
-    userColumn : str, optional
+    userIndexColumn : str, optional
         Name of the level in the index containing, users initiating the communication.
     associatedUserColumn : str, optional
         Name of the column containing users communicated to or associated with.
-    comtype : str, optional
-        Filter communication type.
-    graphType : nx.Graph-like, optional
-        Graph type to create, pass an empty instance.
+    eventKeyColumn : str, optional
+        Column for association/comminucation, only relevant when graphType is nx.MultiDiGraph
+    graphtype : nx.Graph-like, optional
+        Graph type to create.
+    removeDegreeZero : bool, optional
+        Remove nodes with degree 0.
 
     Returns
     -------
-    nx.Graph
-        A Networkx graph.
+    Graph
+        A Networkx graph of the type specified in graphType, default is a nx.Graph.
     """
-    if comtype is not None:
-        df = df[df.index.get_level_values('comtype') == comtype]
-    df = df.groupby([userColumn, associatedUserColumn]).comtype.count()
-    df = pd.DataFrame(df.reset_index()).rename(columns={'comtype': 'weight'})
-    g = nx.from_pandas_dataframe(df, source=userColumn, target=associatedUserColumn,
-                                 edge_attr=['weight'])
+
+    def buildGraph(df):
+        # Loop over all users
+        for usr in df.index.get_level_values(userIndexColumn).unique():
+            # Get activity as {'contactedUserName': number of events}
+            activity = df.loc[[usr]][associatedUserColumn].value_counts().to_dict()
+            # Loop over events in activity-dict:
+            for rec, weight in activity.items():
+                # Add node if it's not allreaddy there, using the number of events as weight
+                if not g.has_edge(usr, rec):
+                    g.add_edge(usr, rec, weight=weight)
+                else:
+                    # If the node exists (possible for undirected graphs), just add to the weight
+                    g[usr][rec]['weight'] += weight
+        return g
+
+    g = graphtype()  # instantiate graph
+    # Add all users from df
+    g.add_nodes_from(df.index.get_level_values(userIndexColumn).unique().tolist())
+    # Just build the graph
+    if not isinstance(g, nx.MultiDiGraph) and eventKeyColumn is None:
+        g = buildGraph(df)
+    else:  # It's a graph partotioned by multiple types of communication/assiciation...
+        # For each event type...
+        for eventKey in df[eventKeyColumn].unique():
+            # ... build a DataFrame containing just that type of events...
+            try:
+                eventKeyDf = df[df[eventKeyColumn] == eventKey]
+            except KeyError as e:  # eventKeyColumn might refer to an index-column
+                eventKeyDf = df[df.index.get_level_values(eventKeyColumn) == eventKey]
+            # ... and build a graph from that DataFrame...
+            eventKeyGraph = buildGraph(eventKeyDf)
+            # ... from which the edges are extracted, and "injected" with the eventKey...
+            eventKeyEdges = ((ui, ur, eventKeyColumn, weight) for (ui, ur, weight) in
+                             eventKeyGraph.edges(data=True))
+            # ... which which are used to populate the MultiDiGraph
+            g.add_nodes_from(eventKeyEdges)
+
+    # Remove degree zero nodes?
+    if removeDegreeZero:
+        nodesToRemove = [node for (node, degree) in g.degree() if degree == 0]
+        g.remove_nodes_from(nodesToRemove)
     return g
 
 
-def userDF2activityDataframe(df, userColumn='user', associatedUserColumn='contactedUser',
+def userDf2activityDataframe(df, userColumn='user', associatedUserColumn='contactedUser',
                              comtype=None):
     """Create an adjacency-matrix like DataFrame from the regular communication DataFrame.
 

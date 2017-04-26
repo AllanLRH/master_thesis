@@ -7,7 +7,9 @@ import numpy as np
 import sys
 import os
 import inspect
-import itertools
+import itertools  # noqa
+import networkx as nx
+from io import StringIO
 a = inspect.currentframe()
 b = inspect.getfile(a)
 c = os.path.abspath(b)
@@ -15,7 +17,6 @@ d = os.path.dirname(c)
 e = os.path.split(d)
 sys.path.append(e[0])
 from speclib import misc, graph, plotting, loaders, userActivityFunctions  # noqa
-import thf
 
 
 def test_mutualContact():
@@ -110,3 +111,78 @@ def test_upperTril2adjMat_and_adjMatUpper2array_with_chararray():
         upperTril = graph.adjMatUpper2array(mat)
         restored = graph.upperTril2adjMat(upperTril)
         assert np.all(restored == mat)
+
+
+@pytest.fixture
+def userDf2nxGraphDataFrame():
+    csv = """user,comtype,contactedUser
+             # u1
+             u1,sms,u2
+             u1,sms,u2
+             u1,call,u2
+             u1,sms,u3
+             u1,call,u3
+             u1,call,u4
+             # u2
+             u2,sms,u3
+             u2,sms,u4
+             u2,sms,u1
+             # u3
+             u3,call,u5
+             u3,call,u4
+             u3,call,u4
+             u3,sms,u4
+             u3,call,u5
+             # u4
+             u4,call,u1
+             u4,call,u1
+             u4,call,u1
+             u4,sms,u5
+             # u5
+             u5,call,u4
+             u5,sms,u4
+             u5,sms,u4"""
+    csv = StringIO('\n'.join(ln.strip() for ln in csv.splitlines()
+                             if not ln.strip().startswith('#')))
+    df = pd.DataFrame.from_csv(csv)
+    return df
+
+
+def networkEdgesSort(edgeLst):
+    sortKey = lambda edge: str(edge[0]) + str(edge[1])
+    return sorted(edgeLst, key=sortKey)
+
+
+def test_userDf2nxGraph_Graph(userDf2nxGraphDataFrame):
+    df = userDf2nxGraphDataFrame
+    g = graph.userDf2nxGraph(df, graphtype=nx.Graph)
+    gEdgesExpected = [('u1', 'u2', {'weight': 4}),
+                      ('u1', 'u3', {'weight': 2}),
+                      ('u1', 'u4', {'weight': 4}),
+                      ('u2', 'u3', {'weight': 1}),
+                      ('u2', 'u4', {'weight': 1}),
+                      ('u3', 'u4', {'weight': 3}),
+                      ('u3', 'u5', {'weight': 2}),
+                      ('u4', 'u5', {'weight': 4})]
+    gEdgesExpected = networkEdgesSort(gEdgesExpected)
+    gEdgesActual = networkEdgesSort(g.edges(data=True))
+    assert gEdgesExpected == gEdgesActual
+
+
+def test_userDf2nxGraph_DiGraph(userDf2nxGraphDataFrame):
+    df = userDf2nxGraphDataFrame
+    g = graph.userDf2nxGraph(df, graphtype=nx.DiGraph)
+    gEdgesExpected = [('u1', 'u2', {'weight': 3}),
+                      ('u1', 'u3', {'weight': 2}),
+                      ('u1', 'u4', {'weight': 1}),
+                      ('u2', 'u1', {'weight': 1}),
+                      ('u2', 'u3', {'weight': 1}),
+                      ('u2', 'u4', {'weight': 1}),
+                      ('u3', 'u5', {'weight': 2}),
+                      ('u3', 'u4', {'weight': 3}),
+                      ('u4', 'u1', {'weight': 3}),
+                      ('u4', 'u5', {'weight': 1}),
+                      ('u5', 'u4', {'weight': 3})]
+    gEdgesExpected = networkEdgesSort(gEdgesExpected)
+    gEdgesActual = networkEdgesSort(g.edges(data=True))
+    assert gEdgesExpected == gEdgesActual
