@@ -9,6 +9,7 @@ import os
 import inspect
 import itertools  # noqa
 import networkx as nx
+from random import choice
 from io import StringIO
 a = inspect.currentframe()
 b = inspect.getfile(a)
@@ -186,3 +187,24 @@ def test_userDf2nxGraph_DiGraph(userDf2nxGraphDataFrame):
     gEdgesExpected = networkEdgesSort(gEdgesExpected)
     gEdgesActual = networkEdgesSort(g.edges(data=True))
     assert gEdgesExpected == gEdgesActual
+
+
+@pytest.mark.slow()
+def test_userDf2nxGraph_Graph_random_data():
+    """
+    Try to make the graph construction crash
+    """
+    for N, nUsers in zip([2, 10, 100, 500, 2000, 5000], [2, 4, 10, 2, 3000, 2300]):
+        for _ in range(30):
+            fstr = 'u{:0%dd}' % len(str(nUsers))
+            us = [fstr.format(i) for i in range(nUsers)]
+            data = list()
+            while len(data) < N:
+                u = choice(us)
+                uss = list(set(us) - {u, })
+                ch = choice(uss)
+                tp = choice(['call', 'sms'])
+                data.append([u, tp, ch])
+            df = pd.DataFrame(data, columns='user comtype contactedUser'.split())
+            df = df.set_index(['user', 'comtype'], drop=False)
+            graph.userDf2nxGraph(df)
