@@ -6,6 +6,8 @@ import pandas as pd
 from speclib import graph
 import networkx as nx
 from speclib import misc
+from multiprocessing import Pool, cpu_count
+import sys
 
 
 def getComdataMean(df, dataCol, datasizeCol):
@@ -252,6 +254,29 @@ def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=N
     return communityPcaDct
 
 
+def prepareCommunityRawData(userDf, communityLst, uniqueBins, bins):
+    upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
+    # Strip communication outside of clique
+    communitySubDf = userDf2CliqueDf(userDf, communityLst)
+    # Preallocate array for the PCA analysis
+    toPcaRaw = np.zeros((upperTrilSize(len(communityLst)), uniqueBins.size))
+    symmetric = list()
+    for i, tbin in enumerate(uniqueBins):
+        # Mask out current timebin events
+        mask = (communitySubDf[bins] == tbin).values
+        # Construct a graph from the masked communication...
+        gSubBin = graph.userDf2nxGraph(communitySubDf[mask])
+        # ... and get the adjacency-matrix for the graph
+        adjMatSubBin = nx.adjacency_matrix(gSubBin, communityLst)  # TODO: community-argument not necessary?
+        # If the matrix is symmetric,
+        ismatrixSymmtric = graph.isSymmetric(adjMatSubBin)
+        symmetric.append(ismatrixSymmtric)
+        if not ismatrixSymmtric:
+            raise Warning('Matrix is not symmetric for community {}.'.format(communityLst))
+        toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatSubBin)
+    return toPcaRaw, np.all(symmetric)
+
+
 def communityDf2Pca(userDf, communityDf, bins):
     """Given a Dataframe with communities, return the fitted PCA class instance for all
     in a dict, where the keys is a tuple with the community members.
@@ -278,29 +303,60 @@ def communityDf2Pca(userDf, communityDf, bins):
     """
     communityPcaDct = dict()  # Dict containing community: pca-object (return value)
     uniqueBins = userDf[bins].unique()
-    upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
     # Exclude column with clique size (optionally included in input)
     for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
         # list of usernames in community
         community = community.dropna().tolist()
-        # Strip communication outside of clique
-        communitySubDf = userDf2CliqueDf(userDf, community)
-        # Preallocate array for the PCA analysis
-        toPcaRaw = np.zeros((upperTrilSize(len(community)), uniqueBins.size))
-        for i, tbin in enumerate(uniqueBins):
-            # Mask out current timebin events
-            mask = (communitySubDf[bins] == tbin).values
-            # Construct a graph from the masked communication...
-            gSubBin = graph.userDF2nxGraph(communitySubDf[mask])
-            # ... and get the adjacency-matrix for the graph
-            adjMatSubBin = nx.adjacency_matrix(gSubBin, community)  # TODO: community-argument not necessary?
-            # If the matrix is symmetric,
-            ismatrixSymmtric = graph.isSymmetric(adjMatSubBin)
-            if not ismatrixSymmtric:
-                raise Warning('Matrix is not symmetric')
-            toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatSubBin)
-        #  Tha PCA input data is now build, so we do the PCA analysis
+        # Make the raw data for the PCA algorithm
+        toPcaRaw, symmetric = prepareCommunityRawData(userDf, community, uniqueBins, bins)
+        # Tha PCA input data is now build, so we do the PCA analysis
         pca = misc.pcaFit(toPcaRaw, performStandardization=True)
-        pca.symmetric = ismatrixSymmtric
+        pca.Allsymmetric = symmetric
         communityPcaDct[tuple(community)] = pca
     return communityPcaDct
+
+
+def communityDf2PcaHdfParallel(userDf, communityDf, bins, storePath, n=None, chunksize=None):
+    """Given a Dataframe with communities, return the fitted PCA class instance for all
+    in a dict, where the keys is a tuple with the community members.
+
+    Parameters
+    ----------
+    userDf : DataFrame
+        DataFrame with user activity.
+    communityDf : DataFrame
+        DataFrame with communities. Integer columns are excluded.
+    bins : str
+        A string identifying the bin column of the DataFrame.
+
+    Returns
+    -------
+    dict
+        Dictionary where the keys is the tuple with the usernames in the community,
+        and the values are the corresponding pca objects.
+
+    Raises
+    ------
+    Warning
+        If matrix is not symmetric
+    """
+    if n is None:
+        n = 16 if 16 < cpu_count() else cpu_count() - 1
+    chunksize = 3*n if chunksize is None else chunksize
+    communityDfSplit = np.split(communityDf.select_dtypes(exclude=['int']),
+                                np.arange(3, communityDf.shape[0], chunksize))
+    with pd.HDFStore(storePath, 'w') as hdfstore:
+        with Pool(processes=n) as pool:
+            for i, comDf in enumerate(communityDfSplit):
+                print('Processing community:\n\n', comDf)
+                res = pool.starmap(communityDf2Pca, [ (userDf, row, bins) for row in  # noqa
+                                   np.split(comDf, np.arange(1, comDf.shape[0])) ])   # noqa
+                for dct in res:
+                    print("%r\n" % dct)
+                print('\n\n')
+                sys.stdout.flush()
+                index, data = list(), list()
+                for dct in res:
+                    index.append(tuple(dct.keys())[0])
+                    data.append(tuple(dct.values())[0])
+                hdfstore[f'df{i}'] = pd.DataFrame(data=data, index=index, columns=['pca'])
