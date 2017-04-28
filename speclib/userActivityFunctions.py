@@ -8,6 +8,7 @@ import networkx as nx
 from speclib import misc
 from multiprocessing import Pool, cpu_count
 import sys
+from hashlib import md5
 
 
 def getComdataMean(df, dataCol, datasizeCol):
@@ -351,12 +352,13 @@ def communityDf2PcaHdfParallel(userDf, communityDf, bins, storePath, n=None, chu
                 print('Processing community:\n\n', comDf)
                 res = pool.starmap(communityDf2Pca, [ (userDf, row, bins) for row in  # noqa
                                    np.split(comDf, np.arange(1, comDf.shape[0])) ])   # noqa
-                for dct in res:
-                    print("%r\n" % dct)
-                print('\n\n')
                 sys.stdout.flush()
                 index, data = list(), list()
+                tohash = ''
                 for dct in res:
-                    index.append(tuple(dct.keys())[0])
+                    key = tuple(dct.keys())[0]
+                    index.append(key)
                     data.append(tuple(dct.values())[0])
-                hdfstore[f'df{i}'] = pd.DataFrame(data=data, index=index, columns=['pca'])
+                    tohash += str(key)
+                hashkey = 'var__' + md5(tohash.encode('utf-8')).hexdigest()
+                hdfstore[hashkey] = pd.DataFrame(data=data, index=index, columns=['pca'])
