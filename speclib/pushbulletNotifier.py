@@ -43,7 +43,7 @@ class JobNotification(object):
         self.endTime = datetime.datetime.now()
         callerFilename = inspect.stack()[1].filename
         if exception:
-            title = "Error! {callerFilename} have crashed!".format(callerFilename=callerFilename)
+            title = "Error! {callerFilename} have thrown an exception!".format(callerFilename=callerFilename)
         else:
             title = "{callerFilename} is done".format(callerFilename=callerFilename)
         msgLst = ["Runtime: {timeDelta}", "Started: {timeStarted}", "Finished: {timeEnded}"]
