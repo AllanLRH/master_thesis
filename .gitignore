@@ -19,3 +19,4 @@ userPCA/useralias.pk
 ._.TemporaryItems
 *.pickle
 logs/
+.idea
