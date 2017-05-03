@@ -255,7 +255,7 @@ def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=N
     return communityPcaDct
 
 
-def prepareCommunityRawData(userDf, communityLst, uniqueBins, bins):
+def prepareCommunityRawData(userDf, communityLst, uniqueBins, binColumn):
     """Construct a matrix where each column consists of the stacked columns from other
     generated adjacency matrices.
 
@@ -267,7 +267,7 @@ def prepareCommunityRawData(userDf, communityLst, uniqueBins, bins):
         A List with the usernames in the community.
     uniqueBins : List
         The unique bins in userDf.
-    bins : str
+    binColumn : str
         The column in userDf containing the bin value for the entries.
 
     Returns
@@ -290,7 +290,7 @@ def prepareCommunityRawData(userDf, communityLst, uniqueBins, bins):
     symmetric = list()
     for i, tbin in enumerate(uniqueBins):
         # Mask out current timebin events
-        mask = (communitySubDf[bins] == tbin).values
+        mask = (communitySubDf[binColumn] == tbin).values
         # Construct a graph from the masked communication...
         gSubBin = graph.userDf2nxGraph(communitySubDf[mask])
         # ... and get the adjacency-matrix for the graph
