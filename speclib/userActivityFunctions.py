@@ -256,6 +256,32 @@ def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=N
 
 
 def prepareCommunityRawData(userDf, communityLst, uniqueBins, bins):
+    """Construct a matrix where each column consists of the stacked columns from other
+    generated adjacency matrices.
+
+    Parameters
+    ----------
+    userDf : DataFrame
+        DataFrame containing the user activity data.
+    communityLst : List
+        A List with the usernames in the community.
+    uniqueBins : List
+        The unique bins in userDf.
+    bins : str
+        The column in userDf containing the bin value for the entries.
+
+    Returns
+    -------
+    tuple(array, bool)
+        A tuple where the first element are the matrix to perform PCA analysis on.
+        The second element are True if all the generated adjacency matrices were
+        symmetric, False otherwise.
+
+    Raises
+    ------
+    Warning
+        If all adjacency matrices are symmetric.
+    """
     upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
     # Strip communication outside of clique
     communitySubDf = userDf2CliqueDf(userDf, communityLst)
