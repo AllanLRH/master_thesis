@@ -138,6 +138,14 @@ def upperTril2adjMat(up):
     return ad
 
 
+def vec2squareMat(v):
+    matSize = np.sqrt(v.size)
+    if not np.allclose(matSize, np.round(matSize)):
+        raise ValueError("The size of the vector ({v.size}) are not compatible with a square matrix")
+    matSize = int(matSize)
+    return v.reshape(matSize, -1).T
+
+
 def igraph2networkx(igGraph):
     """Convert a Igraph graph to an Networkx graph.
     Only tested for binary adjacency matrices.
