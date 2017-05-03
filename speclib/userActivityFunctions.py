@@ -272,36 +272,36 @@ def prepareCommunityRawData(userDf, communityLst, uniqueBins, binColumn, graphty
 
     Returns
     -------
-    tuple(array, bool)
-        A tuple where the first element are the matrix to perform PCA analysis on.
-        The second element are True if all the generated adjacency matrices were
-        symmetric, False otherwise.
-
-    Raises
-    ------
-    Warning
-        If all adjacency matrices are symmetric.
+    array
+        The matrix to perform PCA analysis on.
     """
-    upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
     # Strip communication outside of clique
-    communitySubDf = userDf2CliqueDf(userDf, communityLst)
-    # Preallocate array for the PCA analysis
-    toPcaRaw = np.zeros((upperTrilSize(len(communityLst)), uniqueBins.size))
-    symmetric = list()
-    for i, tbin in enumerate(uniqueBins):
-        # Mask out current timebin events
-        mask = (communitySubDf[binColumn] == tbin).values
-        # Construct a graph from the masked communication...
-        gSubBin = graph.userDf2nxGraph(communitySubDf[mask], graphtype=graphtype)
-        # ... and get the adjacency-matrix for the graph
-        adjMatSubBin = nx.adjacency_matrix(gSubBin, communityLst)  # TODO: community-argument not necessary?
-        # If the matrix is symmetric,
-        ismatrixSymmtric = graph.isSymmetric(adjMatSubBin)
-        symmetric.append(ismatrixSymmtric)
-        if not ismatrixSymmtric:
-            raise Warning('Matrix is not symmetric for community {}.'.format(communityLst))
-        toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatSubBin)
-    return toPcaRaw, np.all(symmetric)
+    communityDf = userDf2CliqueDf(userDf, communityLst)
+    if graphtype is nx.Graph:
+        upperTrilSize = lambda communitySize: int((communitySize**2 - communitySize)//2)
+        # Preallocate array for the PCA analysis
+        toPcaRaw = np.zeros((upperTrilSize(len(communityLst)), uniqueBins.size))
+        for i, tbin in enumerate(uniqueBins):
+            # Mask out current timebin events
+            mask = (communityDf[binColumn] == tbin).values
+            # Construct a graph from the masked communication...
+            gTbin = graph.userDf2nxGraph(communityDf[mask], graphtype=graphtype)
+            # ... and get the adjacency-matrix for the graph
+            adjMatTbin = nx.adjacency_matrix(gTbin, communityLst)  # NOTE: community-argument not necessary?
+            # If the matrix is symmetric,
+            toPcaRaw[:, i] = graph.adjMatUpper2array(adjMatTbin)
+        return toPcaRaw
+    else:  # graphtype is nx.DiGraph
+        stackMatColmns = lambda mat: np.squeeze(np.concatenate(np.hsplit(mat, range(1, mat.shape[1]))))
+        nUsers = len(communityLst)
+        nTimebins = len(uniqueBins)
+        toPcaRaw = np.zeros((nUsers**2, nTimebins))  # Consider removing diagonal values
+        for i, tbin in enumerate(uniqueBins):
+            mask = communityDf[binColumn] == tbin
+            gTbin = graph.userDf2nxGraph(communityDf[mask], graphtype=graphtype)
+            adjMatTbin = nx.adjacency_matrix(gTbin, communityLst).todense()  # NOTE: community-argument not necessary?
+            toPcaRaw[:, i] = stackMatColmns(adjMatTbin)
+        return toPcaRaw
 
 
 def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph):
@@ -335,11 +335,11 @@ def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph):
         # list of usernames in community
         community = community.dropna().tolist()
         # Make the raw data for the PCA algorithm
-        toPcaRaw, symmetric = prepareCommunityRawData(userDf, community, uniqueBins,
-                                                      binColumn, graphtype)
+        toPcaRaw = prepareCommunityRawData(userDf, community, uniqueBins, binColumn,
+                                           graphtype)
         # Tha PCA input data is now build, so we do the PCA analysis
         pca = misc.pcaFit(toPcaRaw, performStandardization=True)
-        pca.Allsymmetric = symmetric
+        pca.symmetric = True if graphtype is nx.Graph else False
         communityPcaDct[tuple(community)] = pca
     return communityPcaDct
 

@@ -534,7 +534,14 @@ class PcaPlotter(object):
         firstN[firstN < self.comDelta] = 0.0
         firstN /= firstN.sum()
         firstN *= self.n
-        self.graphLst = [nx.from_numpy_matrix(graph.upperTril2adjMat(firstN[:, i])) for i in range(self.n)]
+        self.graphLst = list()
+        for i in range(self.n):
+            if self.pca.symmetric:
+                adjmat = graph.upperTril2adjMat(firstN[:, i])
+            else:
+                adjmat = graph.vec2squareMat(firstN[:, i])
+            g = nx.from_numpy_matrix(adjmat)
+            self.graphLst.append(g)
 
     def plotGraphs(self, weightFunc=None, layout=None, kwargs=None, weightMultiply=1000):
         """Plot the graphs corresponding to the eigenvectors/principal components.
