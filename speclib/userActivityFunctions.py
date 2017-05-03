@@ -278,7 +278,7 @@ def prepareCommunityRawData(userDf, communityLst, uniqueBins, bins):
     return toPcaRaw, np.all(symmetric)
 
 
-def communityDf2Pca(userDf, communityDf, bins):
+def communityDf2Pca(userDf, communityDf, binColumn):
     """Given a Dataframe with communities, return the fitted PCA class instance for all
     in a dict, where the keys is a tuple with the community members.
 
@@ -288,7 +288,7 @@ def communityDf2Pca(userDf, communityDf, bins):
         DataFrame with user activity.
     communityDf : DataFrame
         DataFrame with communities. Integer columns are excluded.
-    bins : str
+    binColumn : str
         A string identifying the bin column of the DataFrame.
 
     Returns
@@ -303,13 +303,13 @@ def communityDf2Pca(userDf, communityDf, bins):
         If matrix is not symmetric
     """
     communityPcaDct = dict()  # Dict containing community: pca-object (return value)
-    uniqueBins = userDf[bins].unique()
+    uniqueBins = userDf[binColumn].unique()
     # Exclude column with clique size (optionally included in input)
     for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
         # list of usernames in community
         community = community.dropna().tolist()
         # Make the raw data for the PCA algorithm
-        toPcaRaw, symmetric = prepareCommunityRawData(userDf, community, uniqueBins, bins)
+        toPcaRaw, symmetric = prepareCommunityRawData(userDf, community, uniqueBins, binColumn)
         # Tha PCA input data is now build, so we do the PCA analysis
         pca = misc.pcaFit(toPcaRaw, performStandardization=True)
         pca.Allsymmetric = symmetric
@@ -317,7 +317,7 @@ def communityDf2Pca(userDf, communityDf, bins):
     return communityPcaDct
 
 
-def communityDf2PcaHdfParallel(userDf, communityDf, bins, storePath, n=None, chunksize=None):
+def communityDf2PcaHdfParallel(userDf, communityDf, binColumn, storePath, n=None, chunksize=None):
     """Given a Dataframe with communities, return the fitted PCA class instance for all
     in a dict, where the keys is a tuple with the community members.
 
@@ -327,7 +327,7 @@ def communityDf2PcaHdfParallel(userDf, communityDf, bins, storePath, n=None, chu
         DataFrame with user activity.
     communityDf : DataFrame
         DataFrame with communities. Integer columns are excluded.
-    bins : str
+    binColumn : str
         A string identifying the bin column of the DataFrame.
 
     Returns
@@ -350,7 +350,7 @@ def communityDf2PcaHdfParallel(userDf, communityDf, bins, storePath, n=None, chu
         with Pool(processes=n) as pool:
             for i, comDf in enumerate(communityDfSplit):
                 print('Processing community:\n\n', comDf)
-                res = pool.starmap(communityDf2Pca, [ (userDf, row, bins) for row in  # noqa
+                res = pool.starmap(communityDf2Pca, [ (userDf, row, binColumn) for row in  # noqa
                                    np.split(comDf, np.arange(1, comDf.shape[0])) ])   # noqa
                 sys.stdout.flush()
                 index, data = list(), list()
