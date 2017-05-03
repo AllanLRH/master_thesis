@@ -523,7 +523,7 @@ class PcaPlotter(object):
         return (fig, ax)
 
     def _makeGraphList(self):
-        """Construct a lidt of graphs from the eigenvectors.
+        """Construct a list of graphs from the eigenvectors.
 
         Returns
         -------
