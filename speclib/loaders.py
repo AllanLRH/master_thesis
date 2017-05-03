@@ -277,10 +277,6 @@ def dict2DataFrame(dct, useralias):
         - hour: Hour of the day when the envent occured
     """
     df = pd.DataFrame(dct)
-    if 'id' in df.columns:
-        df = df.drop("id", axis=1)
-    if 'type' in df.columns:
-        df = df.drop('type', axis=1)
     df.rename(columns={'timestamp': 'timeint'}, inplace=True)
     df['timestamp'] = df.timeint.astype('datetime64[s]')  # convert Unix integer timestamps to datetime-objects
     df["weekday"] = df.timestamp.dt.weekday  # Add weekday column

@@ -255,7 +255,7 @@ def communityDf2PcaExplVarRatio(userDf, communityDf, bins, communitySizeUnique=N
     return communityPcaDct
 
 
-def prepareCommunityRawData(userDf, communityLst, uniqueBins, binColumn):
+def prepareCommunityRawData(userDf, communityLst, uniqueBins, binColumn, graphtype=nx.Graph):
     """Construct a matrix where each column consists of the stacked columns from other
     generated adjacency matrices.
 
@@ -292,7 +292,7 @@ def prepareCommunityRawData(userDf, communityLst, uniqueBins, binColumn):
         # Mask out current timebin events
         mask = (communitySubDf[binColumn] == tbin).values
         # Construct a graph from the masked communication...
-        gSubBin = graph.userDf2nxGraph(communitySubDf[mask])
+        gSubBin = graph.userDf2nxGraph(communitySubDf[mask], graphtype=graphtype)
         # ... and get the adjacency-matrix for the graph
         adjMatSubBin = nx.adjacency_matrix(gSubBin, communityLst)  # TODO: community-argument not necessary?
         # If the matrix is symmetric,
@@ -304,7 +304,7 @@ def prepareCommunityRawData(userDf, communityLst, uniqueBins, binColumn):
     return toPcaRaw, np.all(symmetric)
 
 
-def communityDf2Pca(userDf, communityDf, binColumn):
+def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph):
     """Given a Dataframe with communities, return the fitted PCA class instance for all
     in a dict, where the keys is a tuple with the community members.
 
@@ -335,7 +335,8 @@ def communityDf2Pca(userDf, communityDf, binColumn):
         # list of usernames in community
         community = community.dropna().tolist()
         # Make the raw data for the PCA algorithm
-        toPcaRaw, symmetric = prepareCommunityRawData(userDf, community, uniqueBins, binColumn)
+        toPcaRaw, symmetric = prepareCommunityRawData(userDf, community, uniqueBins,
+                                                      binColumn, graphtype)
         # Tha PCA input data is now build, so we do the PCA analysis
         pca = misc.pcaFit(toPcaRaw, performStandardization=True)
         pca.Allsymmetric = symmetric
