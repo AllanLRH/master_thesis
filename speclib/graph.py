@@ -91,7 +91,7 @@ def adjMatUpper2array(m):
     if m.shape[0] != m.shape[1]:
         raise ValueError('The input must be a square matrix (it was {})'.format(m.shape))
     i, j = np.triu_indices_from(m, k=1)
-    return m[i, j]
+    return np.squeeze(np.array(m[i, j]))
 
 
 def upperTril2adjMat(up):
