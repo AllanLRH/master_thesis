@@ -1,0 +1,24 @@
+--- BACKUP__init__.py	2017-05-08 14:21:51.883347586 +0200
++++ __init__.py	2017-05-08 14:23:56.073515536 +0200
+@@ -13,8 +13,6 @@
+ """
+ 
+ 
+-
+-from io import StringIO
+ from warnings import warn
+ 
+ import os
+@@ -351,7 +349,11 @@
+         context.show_page()
+         surface.finish()
+         # Return the raw SVG representation
+-        return io.getvalue().encode("utf-8")
++        result = io.getvalue()
++        if hasattr(result, "encode"):
++            return result.encode("utf-8")          # for Python 2.x
++        else:
++            return result.decode("utf-8")          # for Python 3.x
+ 
+     @property
+     def bounding_box(self):
