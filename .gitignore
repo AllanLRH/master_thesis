@@ -20,3 +20,4 @@ userPCA/useralias.pk
 *.pickle
 logs/
 .idea
+tryout/*.pdf
