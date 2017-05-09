@@ -1,4 +1,4 @@
-#!/lscr_paper/allan/miniconda3/envs/msth/bin/python
+#!/lscr_paper/allan/miniconda3/envs/py36/bin/python
 
 import sys
 import psutil
