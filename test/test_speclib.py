@@ -9,6 +9,7 @@ import os
 import inspect
 import itertools  # noqa
 import networkx as nx
+import igraph as ig
 from random import choice
 from io import StringIO
 a = inspect.currentframe()
@@ -18,6 +19,7 @@ d = os.path.dirname(c)
 e = os.path.split(d)
 sys.path.append(e[0])
 from speclib import misc, graph, plotting, loaders, userActivityFunctions  # noqa
+from pudb import set_trace
 
 
 def test_mutualContact():
@@ -37,6 +39,8 @@ def test_mutualContact():
 
 def f(x, y):
     return int(x**2 + y)
+
+
 def test_mapAsync():  # noqa
     itr = list(zip(range(10), range(10, 101, 10)))
     trueVal = [f(*tup) for tup in itr]
@@ -208,3 +212,26 @@ def test_userDf2nxGraph_Graph_random_data():
             df = pd.DataFrame(data, columns='user comtype contactedUser'.split())
             df = df.set_index(['user', 'comtype'], drop=False)
             graph.userDf2nxGraph(df)
+
+
+def test_networkx2igraph():
+    n = 10
+    p = 0.65
+    nxm = (np.random.rand(n, n) > p) * np.random.randint(0, 100, (n, n))
+    np.fill_diagonal(nxm, 0)
+    nxg = nx.from_numpy_matrix(nxm, create_using=nx.DiGraph())
+    igg = graph.networkx2igraph(nxg)
+    igm = np.array(igg.get_adjacency(attribute='weight').data)
+    assert np.allclose(igm, nxm)
+
+
+def test_igraph2networkx():
+    n = 10
+    p = 0.65
+    igm = (np.random.rand(n, n) > p) * np.random.randint(0, 100, (n, n))
+    igg = ig.Graph.Adjacency((igm > 0).tolist(), mode=ig.ADJ_DIRECTED)
+    igg.es['weight'] = igm[igm.nonzero()]
+    nxg = graph.igraph2networkx(igg)
+    nxm = nx.adjacency_matrix(nxg).todense()
+    assert np.allclose(igm, nxm)
+

@@ -6,6 +6,7 @@ import networkx as nx
 import pandas as pd
 import igraph as ig
 import collections
+from speclib import misc
 # import logging
 
 
@@ -21,7 +22,6 @@ import collections
 def networkx2igraph(nxGraph):
     """Convert a Networkx graph to an Igraph graph.
     Note that labels are lost.
-    Only tested for binary adjacency matrices.
 
     Parameters
     ----------
@@ -33,9 +33,15 @@ def networkx2igraph(nxGraph):
     igraph.Graph
         Converted graph.
     """
-    return ig.Graph.Adjacency(
-        nx.to_numpy_matrix(nxGraph).tolist()
-        )  # noqa
+    # Get adjacency matrox for networkx graph
+    nxAdj = np.array(nx.adjacency_matrix(nxGraph).todense())
+    # Use the binary adjacency matrix to construct the igraph graph
+    igGraph = ig.Graph.Adjacency((nxAdj > 0).tolist(), mode=ig.ADJ_DIRECTED)
+    # assign weights from the adjacency matrix to the igraph graph
+    igGraph.es['weight'] = nxAdj[nxAdj.nonzero()]
+    # Assign node names from the networkx graph to the igraph graph
+    igGraph.vs['label'] = list(nxGraph.nodes())
+    return igGraph
 
 
 def isSymmetric(m):
@@ -148,7 +154,6 @@ def vec2squareMat(v):
 
 def igraph2networkx(igGraph):
     """Convert a Igraph graph to an Networkx graph.
-    Only tested for binary adjacency matrices.
 
     Parameters
     ----------
@@ -160,11 +165,11 @@ def igraph2networkx(igGraph):
     networkx.Graph
         Converted graph.
     """
-    return nx.from_numpy_matrix(
-        np.array(
-            igGraph.get_adjacency().data
-            )
-        )  # noqa
+    igAdj = np.array(igGraph.get_adjacency(attribute='weight').data)
+    if isSymmetric(igAdj):
+        return nx.from_numpy_matrix(igAdj, create_using=nx.Graph())
+    else:
+        return nx.from_numpy_matrix(igAdj, create_using=nx.DiGraph())
 
 
 def _userDF2communicationDictOfDicts(df, userColumn='user',
