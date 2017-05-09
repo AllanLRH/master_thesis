@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx
+import igraph as ig
 import palettable
 import itertools
 from speclib import graph
@@ -606,6 +607,117 @@ class PcaPlotter(object):
             ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_std, 'same'), label='norm_std' + lbl, color='#ea8a3f')
             ax.legend(loc='best')
         return (fig, axi)
+
+
+def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
+           layout='kamada_kawai', weightFunc=None, **kwargs):
+    """Plot a graph using the igraph engine (Cairo). If a networkx-graph is given, it's
+    converted to an igraph-graph.
+
+    Parameters
+    ----------
+    g : nx.Graph, nx.DiGraph or ig.Graph
+        Graph to plot.
+    filename : str, optional
+        Filename to export graph to. The file format is guessed from the file extension.
+    bbox : tuple, optional
+        Tuple with integers, specifying the canvas size.
+    margin : int, optional
+        Margin around nodes. Necessary to aboud cut-off lines when plotting curved edges.
+    nodeLabels : bool or list, optional
+        If true, extract the node (vertice) labels from the graph. If it's a list, use that list.
+    layout : str or layout-list, optional
+        The layout to use, can be a string which will generate a layout, or it can be a previously computed layout.
+    weightFunc : function, optional
+        Function to compute the weights, with max weight == 5.
+    **kwargs
+        Additional arguments passed to the function, described below:
+
+    # ****************************************************************************
+    # *                       docs from the igraph tutorial                      *
+    # ****************************************************************************
+
+    Node (vertice) related attributes
+    ---------------------------------
+    vertex_color:
+        Color of the vertex.
+    vertex_label:
+        Label of the vertex.
+    vertex_label_angle:
+        The placement of the vertex label on the circle around the vertex. This is an
+        angle in radians, with zero belonging to the right side of the vertex.
+    vertex_label_color:
+        Color of the vertex label.
+    vertex_label_dist:
+        Distance of the vertex label from the vertex itself, relative to the vertex
+        size.
+    vertex_label_size:
+        Font size of the vertex label.
+    vertex_order:
+        Drawing order of the vertices. Vertices with a smaller order parameter will be
+        drawn first.
+    vertex_shape:
+        Shape of the vertex. Known shapes are: rectangle, circle, hidden, triangle-up,
+        triangle-down. Several aliases are also accepted, see drawing.known_shapes.
+    vertex_size:
+        Size of the vertex in pixels.
+
+    Edge related attributes
+    -----------------------
+    edge_color:
+        Color of the edge.
+    edge_curved:
+        The curvature of the edge. Positive values correspond to edges curved in CCW
+        direction, negative numbers correspond to edges curved in clockwise (CW)
+        direction. Zero represents straight edges. True is interpreted as 0.5, False is
+        interpreted as zero. This is useful to make multiple edges visible. See also the
+        autocurve keyword argument to plot().
+    edge_arrow_size:
+        Size (length) of the arrowhead on the edge if the graph is directed, relative to
+        15 pixels.
+    edge_arrow_width:
+        Width of the arrowhead on the edge if the graph is directed, relative to 10
+        pixels.
+    edge_width:
+        Width of the edge in pixels.
+
+    Plot related attributes
+    -----------------------
+    autocurve:
+        Whether to determine the curvature of the edges automatically in graphs with
+        multiple edges. The default is True for graphs with less than 10.000 edges and
+        False otherwise.
+    bbox:
+        The bounding box of the plot. This must be a tuple containing the desired width
+        and height of the plot. The default plot is 600 pixels wide and 600 pixels high.
+    layout:
+        The layout to be used. It can be an instance of Layout, a list of tuples
+        containing X-Y coordinates, or the name of a layout algorithm. The default is
+        auto, which selects a layout algorithm automatically based on the size and
+        connectedness of the graph.
+    margin:
+        The top, right, bottom and left margins of the plot in pixels. This argument
+        must be a list or tuple and its elements will be re-used if you specify a list
+        or tuple with less than four elements.
+
+    """
+    if isinstance(g, (nx.Graph, nx.DiGraph)):
+        g = graph.networkx2igraph(g)
+    kwargs.setdefault("vertex_size", 25)
+    kwargs.setdefault("vertex_color", 'rgb(126, 172, 194)')
+    kwargs.setdefault('vertex_label_color', 'rgb(0, 11, 79)')
+    kwargs.setdefault('edge_color', 'rgb(0.2, 0.2, 0.2, 0.35)')
+
+    if isinstance(layout, str):
+        layout = g.layout(layout)
+    if nodeLabels is True:
+        kwargs.setdefault('nodeLabels', g.vs['label'])
+    if weightFunc is None:
+        weightFunc = lambda g: [1 + 4*wt/max(g.es['weight']) for wt in g.es['weight']]
+    kwargs.setdefault("edge_width", weightFunc(g))
+    if filename is None:
+        return ig.plot(g, layout=layout, margin=margin, bbox=bbox, **kwargs)
+    return ig.plot(g, filename, layout=layout, margin=margin, bbox=bbox, **kwargs)
 
 
 if __name__ == '__main__':
