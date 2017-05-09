@@ -9,6 +9,7 @@ import networkx as nx
 import palettable
 import itertools
 from speclib import graph
+from speclib import netgraph
 
 
 def rgb(r, g, b):
@@ -575,6 +576,13 @@ class PcaPlotter(object):
             drawWeightedGraph(self.graphLst[i], ax=ax, layout=layout, normailzeWeights=False,
                               weightFunc=weighFunc, nodeLabels=True, edgeLabels=edgeLabels)
             fig.suptitle(f'Vector {i+1}/{self.n}, {len(self.users)} users')
+            yield (fig, ax)
+
+    def plotWeightedGraphs(self):
+        for g in self.graphLst:
+            adjmat = nx.adjacency_matrix(g).todense()
+            fig, ax = plt.subplots(figsize=(10, 6))
+            netgraph.draw(adjmat, ax=ax)
             yield (fig, ax)
 
     def plotStandardization(self, smooth=8):
