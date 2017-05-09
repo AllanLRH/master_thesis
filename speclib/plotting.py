@@ -720,6 +720,27 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
     return ig.plot(g, filename, layout=layout, margin=margin, bbox=bbox, **kwargs)
 
 
+def jitter_layout(layout, scale=1/7):
+    """Add noise/a jitter to the layout position if the noedes.
+
+    Parameters
+    ----------
+    layout : layout (nested list)
+        list-list with coordinates.
+    scale : float, optional
+        Scaling factor for how much jutter to add.
+        A large scaling factor results in more jitter.
+
+    Returns
+    -------
+    layout (nested list)
+        The jittered layout coordinates.
+    """
+    layout = np.array(layout)
+    layout *= 1.0 + ((np.random.randn(*layout.shape) - 0.5)*scale)
+    return layout.tolist()
+
+
 if __name__ == '__main__':
     d0 = {'y': (5 + np.random.randn(24))**2, 'label': 'SMS'}
     d1 = {'y': (5 + np.random.randn(24))**2, 'label': 'Call'}
