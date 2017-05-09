@@ -1,0 +1,42 @@
+--- BACKUP__init__.py	2017-05-08 14:39:16.720736756 +0200
++++ __init__.py	2017-05-09 16:00:19.804978672 +0200
+@@ -333,27 +333,26 @@
+                     # we wait here a little bit. Yes, this is quite hackish :(
+                     time.sleep(5)
+ 
+-    def _repr_svg_(self):
+-        """Returns an SVG representation of this plot as a string.
++    def _repr_png_(self):
++        """Returns a PNG representation of this plot as a string.
+ 
+         This method is used by IPython to display this plot inline.
+         """
+-        io = BytesIO()
+-        # Create a new SVG surface and use that to get the SVG representation,
+-        # which will end up in io
+-        surface = cairo.SVGSurface(io, self.bbox.width, self.bbox.height)
++        # Create a new image surface and use that to get the PNG representation
++        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(self.bbox.width),
++                                     int(self.bbox.height))
+         context = cairo.Context(surface)
+         # Plot the graph on this context
+         self.redraw(context)
+-        # No idea why this is needed but python crashes without
++        # No idea why this is needed but Python crashes without this
+         context.show_page()
++        # Write the PNG representation
++        io = BytesIO()
++        surface.write_to_png(io)
++        # Finish the surface
+         surface.finish()
+-        # Return the raw SVG representation
+-        result = io.getvalue()
+-        if hasattr(result, "encode"):
+-            return result.encode("utf-8")          # for Python 2.x
+-        else:
+-            return result.decode("utf-8")          # for Python 3.x
++        # Return the PNG representation
++        return io.getvalue()
+ 
+     @property
+     def bounding_box(self):
