@@ -225,6 +225,22 @@ def test_networkx2igraph():
     assert np.allclose(igm, nxm)
 
 
+def test_networkx2igraph_2():
+    adjmat = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.15242509441228824, 0.020137859867919047],
+                       [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                       [0.0, 0.0, 0.0, 0.0, 0.0, 0.3307617816934398, 0.0],
+                       [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                       [0.0, 0.0, 0.0, 0.0, 0.0, 0.11917719307637024, 0.0],
+                       [0.0, 0.0, 0.0, 0.0, 0.20086614426486896, 0.061391688291027646, 0.0012991302827179624],
+                       [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+    nxg = nx.from_numpy_matrix(adjmat, create_using=nx.DiGraph())
+    nxg_adjmat = nx.adjacency_matrix(nxg).todense()
+    assert np.allclose(nxg_adjmat, adjmat)
+    igg = graph.networkx2igraph(nxg)
+    igg_adjmat = np.array(igg.get_adjacency(attribute='weight').data)
+    assert np.allclose(nxg_adjmat, igg_adjmat)
+
+
 def test_igraph2networkx():
     n = 10
     p = 0.65
