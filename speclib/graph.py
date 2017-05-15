@@ -145,6 +145,23 @@ def upperTril2adjMat(up):
 
 
 def vec2squareMat(v):
+    """Reshapes a vector into a square matrix by "unstacking" the columns.
+
+    Parameters
+    ----------
+    v : np.array
+        Array to reshape, must have dimmension 1.
+
+    Returns
+    -------
+    np.array
+        Square matrix.
+
+    Raises
+    ------
+    ValueError
+        If the vector size is not compatible with a square matrix.
+    """
     matSize = np.sqrt(v.size)
     if not np.allclose(matSize, np.round(matSize)):
         raise ValueError("The size of the vector ({v.size}) are not compatible with a square matrix")
