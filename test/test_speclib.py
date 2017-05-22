@@ -252,14 +252,47 @@ def test_igraph2networkx():
     assert np.allclose(igm, nxm)
 
 
-def swapMatrixCols():
+def test_swapMatrixCols():
     m = np.array([[0, 1, 2],
                   [3, 4, 5],
                   [6, 7, 8]])
     # Swap column 0 and 1
-    m_expected = np.array([[0, 1, 2],
-                           [3, 4, 5],
-                           [6, 7, 8]])
-    assert np.allclose(misc.swapMatrixCols(m), m_expected)
+    m_expected = np.array([[1, 0, 2],
+                           [4, 3, 5],
+                           [7, 6, 8]])
+    assert np.allclose(misc.swapMatrixCols(m, 0, 1), m_expected)
 
-# def test_swapMatroxRows()
+
+def test_swapMatrixRows():
+    m = np.array([[0, 1, 2],
+                  [3, 4, 5],
+                  [6, 7, 8]])
+    # Swap row 1 and 2
+    m_expected = np.array([[0, 1, 2],
+                           [6, 7, 8],
+                           [3, 4, 5]])
+    assert np.allclose(misc.swapMatrixRows(m, 1, 2), m_expected)
+
+
+def test_swapMatrixCols_inplace_true():
+    m = np.array([[0, 1, 2],
+                  [3, 4, 5],
+                  [6, 7, 8]])
+    # Swap column 0 and 1
+    m_expected = np.array([[1, 0, 2],
+                           [4, 3, 5],
+                           [7, 6, 8]])
+    misc.swapMatrixCols(m, 0, 1, inplace=True)
+    assert np.allclose(m, m_expected)
+
+
+def test_swapMatrixRows_inplace_true():
+    m = np.array([[0, 1, 2],
+                  [3, 4, 5],
+                  [6, 7, 8]])
+    # Swap row 1 and 2
+    m_expected = np.array([[0, 1, 2],
+                           [6, 7, 8],
+                           [3, 4, 5]])
+    misc.swapMatrixRows(m, 1, 2, inplace=True)
+    assert np.allclose(m, m_expected)

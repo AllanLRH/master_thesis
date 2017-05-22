@@ -248,3 +248,27 @@ def getFirstDayInTimeseries(ts):
     t0 = ts.min()
     t0d = t0.date()
     return pd.Timestamp(t0d)
+
+
+def swapMatrixRows(m, r0, r1, inplace=False):
+    if inplace:
+        m[[r0, r1]] = m[[r1, r0]]
+        return None
+    # Don't modify matrix inplace
+    mt = m.copy()
+    mt[[r0, r1]] = mt[[r1, r0]]
+    return mt
+
+
+def swapMatrixCols(m, c0, c1, inplace=False):
+    if inplace:
+        col0 = m[:, c0].copy()
+        m[:, c0] = m[:, c1]
+        m[:, c1] = col0
+        return None
+    # Don't modify the matrix inplace
+    mt = m.copy()
+    mt[:, c0] = m[:, c1]  # copy from original, unmodified matrix
+    mt[:, c1] = m[:, c0]  # copy from original, unmodified matrix
+    return mt
+
