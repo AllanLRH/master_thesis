@@ -7,6 +7,7 @@ import pandas as pd
 import igraph as ig
 import collections
 from speclib import misc
+import itertools
 # import logging
 
 
@@ -354,3 +355,28 @@ def removeSubCommunitiesDumb(df):
     ret = pd.DataFrame((tuple(el) for el in clearedSet))
     ret = ret.iloc[np.argsort(ret.count(axis=1))[::-1]].reset_index(drop=True)
     return ret
+
+
+def dotAllMatCols(m0, m1):
+    if m0.ndim != 2 or (m0.shape[0] != m0.shape[1]) or (m0.shape != m1.shape):
+        raise ValueError(f"The input must be two 2D square matrices of the same " +
+                         "size (m0.shape = {m0.shape}, m1.shape = {m1.shape})")
+    m0t = m0.T
+    m1t = m1.T
+    m0tc = np.zeros_like(m0t)  # Placeholder in memory for transposed array to be modified
+    prodLst = list()  # List for accumumations of results
+    # # Permutations of columns
+    # permutations = [(0, 0)] + [(i, j) for i in range(m0.shape[0]) for j in range(i)]
+    # Permutations of columns
+    permutations = itertools.product(range(m0.shape[0]), range(m0.shape[0]))
+    # Remove symmetric mirrored permutaions, such as (1, 2) and (2, 1)
+    permutations = list({tuple(sorted(el, reverse=True)) for el in permutations})
+    # Remove non-permuting indexes like (1,1) and (0,0)
+    permutations = [el for el in permutations if (el[0] != el[1] or el[0] == 0)]
+    for (i0, i1) in permutations:
+        np.copyto(m0tc, m0t)
+        m0tc[[i0, i1]] = m0tc[[i1, i0]]
+        prod = np.dot(m0tc.reshape(-1), m1t.reshape(-1))
+        prodLst.append((prod, (i0, i1)))
+    prodLst.sort(key=lambda x: x[0], reverse=True)
+    return prodLst
