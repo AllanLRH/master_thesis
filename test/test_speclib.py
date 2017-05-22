@@ -296,3 +296,16 @@ def test_swapMatrixRows_inplace_true():
                            [3, 4, 5]])
     misc.swapMatrixRows(m, 1, 2, inplace=True)
     assert np.allclose(m, m_expected)
+
+
+def test_swapRowColIdx():
+    m = np.array([[ 0,  1,  2,  3],
+                  [ 4,  5,  6,  7],
+                  [ 8,  9, 10, 11],
+                  [12, 13, 14, 15]])
+    m_expected = np.array([[ 0,  2,  1,  3],
+                           [ 8, 10,  9, 11],
+                           [ 4,  6,  5,  7],
+                           [12, 14, 13, 15]])
+    m_out = graph.swapRowColIdx(m, 1, 2)
+    assert np.allclose(m_out, m_expected)

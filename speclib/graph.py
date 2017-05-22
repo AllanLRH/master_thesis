@@ -333,6 +333,35 @@ def removeSubCommunities(comDf, comSize=None, n=None):
     return retDct
 
 
+def swapRowColIdx(m, i0, i1, inplace=False):
+    """swap col and row of matrix.
+
+    Parameters
+    ----------
+    m : ndarray
+        Matrix for swapping
+    i0 : int
+        First index for row/column
+    i1 : int
+        Second index for row/column
+    inplace : bool, optional
+        Do the swapping inplace, default False
+
+    Returns
+    -------
+    ndarray or None
+        Returns the permuted matrix, or None if oermutation is done inplace.
+    """
+    if inplace:
+        misc.swapMatrixCols(m, i0, i1, inplace=inplace)
+        misc.swapMatrixRows(m, i0, i1, inplace=inplace)
+        return None
+    # Don't permute inplace
+    mt = misc.swapMatrixCols(m, i0, i1)
+    mt = misc.swapMatrixRows(mt, i0, i1)
+    return mt
+
+
 def removeSubCommunitiesDumb(df):
     dct = collections.defaultdict(list)
     for _, row in df.select_dtypes(exclude=['int']).iterrows():
