@@ -252,21 +252,14 @@ def test_igraph2networkx():
     assert np.allclose(igm, nxm)
 
 
-def test_dotAllMatCols():
-    m0 = np.array([[0, 2],
-                   [1, 3]])
-    m1 = np.array([[1, 3],
-                   [2, 4]])
-    assert graph.dotAllMatCols(m0, m1) == [(20, (0, 0)), (12, (1, 0))]
-    m2 = np.array([[0, 1, 2],
-                   [3, 0, 5],
-                   [6, 7, 0]])
-    m3 = np.array([[0, 2, 3],
-                   [4, 0, 6],
-                   [7, 8, 0]])
-    assert len(graph.dotAllMatCols(m2, m3)) == 4
-    assert graph.dotAllMatCols(m2, m3) == [(148), (0, 0),
-                                           (133), (0, 1),
-                                           (128), (2, 1),
-                                           (61), (0, 2)]
+def swapMatrixCols():
+    m = np.array([[0, 1, 2],
+                  [3, 4, 5],
+                  [6, 7, 8]])
+    # Swap column 0 and 1
+    m_expected = np.array([[0, 1, 2],
+                           [3, 4, 5],
+                           [6, 7, 8]])
+    assert np.allclose(misc.swapMatrixCols(m), m_expected)
 
+# def test_swapMatroxRows()
