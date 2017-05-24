@@ -26,18 +26,21 @@ def networkx2igraph(nxGraph):
 
     Parameters
     ----------
-    nxGraph : networkx.Graph
+    nxGraph : networkx.Graph or networkx.DiGraph
         Graph to convert.
 
     Returns
     -------
     igraph.Graph
-        Converted graph.
+        Converted graph, unweighted if input was a nx.Graph, weighted otherwise.
     """
     # Get adjacency matrox for networkx graph
     nxAdj = np.array(nx.adjacency_matrix(nxGraph).todense())
     # Use the binary adjacency matrix to construct the igraph graph
-    igGraph = ig.Graph.Adjacency((nxAdj > 0).tolist(), mode=ig.ADJ_DIRECTED)
+    if isinstance(nxGraph, nx.DiGraph):
+        igGraph = ig.Graph.Adjacency((nxAdj > 0).tolist(), mode=ig.ADJ_DIRECTED)
+    else:
+        igGraph = ig.Graph.Adjacency((nxAdj > 0).tolist(), mode=ig.ADJ_UNDIRECTED)
     # assign weights from the adjacency matrix to the igraph graph
     igGraph.es['weight'] = nxAdj[nxAdj.nonzero()]
     # Assign node names from the networkx graph to the igraph graph
