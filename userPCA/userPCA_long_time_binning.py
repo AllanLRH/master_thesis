@@ -116,8 +116,14 @@ try:
 
 
     def handle_community2pca(com):
-        ret = (com, userActivityFunctions.community2Pca(df, com, 'tbin', nx.DiGraph, True))
+        try:
+            ret = (com, userActivityFunctions.community2Pca(df, com, 'tbin', nx.DiGraph, True))
+        except ValueError as e:
+            print("An error was encountered, continueing execution")
+            print(e)
+            ret = [com, None]
         return ret
+
 
 
     savename = 'pca_result_clique.pickle'
