@@ -119,8 +119,10 @@ try:
         try:
             ret = (com, userActivityFunctions.community2Pca(df, com, 'tbin', nx.DiGraph, True))
         except ValueError as e:
+            se = str(e)
             print("An error was encountered, continueing execution")
             print(e)
+            jn.send(e)
             ret = [com, None]
         return ret
 
