@@ -358,6 +358,7 @@ def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph,
         # Tha PCA input data is now build, so we do the PCA analysis
         pca = misc.pcaFit(toPcaRaw, performStandardization=True)
         pca.symmetric = True if graphtype is nx.Graph else False
+        pca.community = tuple(community)
         communityPcaDct[tuple(community)] = pca
     return communityPcaDct
 
@@ -390,6 +391,7 @@ def community2Pca(userDf, community, binColumn, graphtype=nx.DiGraph, excludeDia
     # Tha PCA input data is now build, so we do the PCA analysis
     pca = misc.pcaFit(toPcaRaw, performStandardization=True)
     pca.symmetric = True if graphtype is nx.Graph else False
+    pca.community = tuple(community)
     return pca
 
 
