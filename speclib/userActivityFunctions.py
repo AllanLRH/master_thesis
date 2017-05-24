@@ -9,6 +9,7 @@ from speclib import misc
 from multiprocessing import Pool, cpu_count
 import sys
 from hashlib import md5
+import warnings
 
 
 def getComdataMean(df, dataCol, datasizeCol):
@@ -117,6 +118,9 @@ def userDf2CliqueDf(df, chosenUserLst, associatedUserColumn='contactedUser'):
     DataFrame
         With entries not involving users from chosenUserLst removed.
     """
+    if not isinstance(chosenUserLst, list):
+        warnings.warn(f'Input is not list, but {type(chosenUserLst)}. Will attempt to convert to list')
+    chosenUserLst = list(chosenUserLst)
     df = df.loc[chosenUserLst]
     return df[df[associatedUserColumn].isin(chosenUserLst)]
 
