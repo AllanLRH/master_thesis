@@ -122,27 +122,30 @@ try:
             se = str(e)
             print("An error was encountered, continueing execution")
             print(e)
-            jn.send(e)
+            try:
+                jn.send(e)
+            except:
+                pass
             ret = [com, None]
         return ret
 
 
 
-    savename = 'pca_result_clique.pickle'
-    communityLst = [row.dropna().tolist() for (i, row) in cliqueDf.drop('cliqueSize', axis=1).iterrows()]
-    with Pool(16) as pool:
-        call = pool.map_async(handle_community2pca, communityLst)
-        call.wait()
-        res = call.get()
-        for k, v in res:
-            print(k, v)
-        if os.path.exists(savename) and os.path.isfile(savename):
-            os.remove(savename)
-        with open(savename, 'bw') as fid:
-            pickle.dump(res, fid, protocol=3)
+    # savename = 'pca_result_clique.pickle'
+    # communityLst = [row.dropna().tolist() for (i, row) in cliqueDf.drop('cliqueSize', axis=1).iterrows()]
+    # with Pool(16) as pool:
+    #     call = pool.map_async(handle_community2pca, communityLst)
+    #     call.wait()
+    #     res = call.get()
+    #     for k, v in res:
+    #         print(k, v)
+    #     if os.path.exists(savename) and os.path.isfile(savename):
+    #         os.remove(savename)
+    #     with open(savename, 'bw') as fid:
+    #         pickle.dump(res, fid, protocol=3)
 
     savename = 'pca_result_community.pickle'
-    communityLst = [row.dropna().tolist() for (i, row) in communityDf.drop('communitySize', axis=1).iterrows()]
+    communityLst = [row.dropna().tolist() for (i, row) in communityDf.iterrows()]
     with Pool(16) as pool:
         call = pool.map_async(handle_community2pca, communityLst)
         call.wait()
