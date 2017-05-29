@@ -117,10 +117,14 @@ def userDf2CliqueDf(df, chosenUserLst, associatedUserColumn='contactedUser'):
     -------
     DataFrame
         With entries not involving users from chosenUserLst removed.
+
+    Raises
+    ------
+    ValueError
+        When chosenUserLst isn't a list
     """
     if not isinstance(chosenUserLst, list):
-        warnings.warn(f'Input is not list, but {type(chosenUserLst)}. Will attempt to convert to list')
-    chosenUserLst = list(chosenUserLst)
+        raise ValueError(f'Input is not list, but {type(chosenUserLst)}.')
     df = df.loc[chosenUserLst]
     return df[df[associatedUserColumn].isin(chosenUserLst)]
 
