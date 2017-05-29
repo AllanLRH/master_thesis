@@ -371,8 +371,11 @@ def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph,
     return communityPcaDct
 
 
-def community2Pca(userDf, community, binColumn, graphtype=nx.DiGraph, excludeDiagonal=False):
+def community2Pca(userDf, community, binColumn, graphtype=nx.DiGraph,
+                  excludeDiagonal=False, fitFunction=misc.pcaFit, fitFunctionKwargs=None):
     """Given a community, return the fitted PCA class instance for the community.
+    Unless specified through fitFunctionKwargs, performStandardization is set to True in
+    the fitFunction call.
 
     Parameters
     ----------
@@ -386,18 +389,26 @@ def community2Pca(userDf, community, binColumn, graphtype=nx.DiGraph, excludeDia
         Graph type to use, default nx.Graph.
     excludeDiagonal : bool, optional
         Exclude diagonal from the stacked vectors, default False.
+    fitFunction : function, optional
+        Function to user for the fitting, default is misc.pcaFit.
+    fitFunctionKwargs : Dict, optional
+        Dict with arguments to be passed to fitFunction.
 
-    No Longer Returned
-    ------------------
-    pca
-        sklearn PCA object.
+    Returns
+    -------
+    class instance
+        Class instance returned by fitFunction, default sklearn.decomposition.PCA with
+        monkey-patched variables mean and std, if performStandardization is True.
 
     """
     uniqueBins = userDf[binColumn].unique()
     toPcaRaw = prepareCommunityRawData(userDf, community, uniqueBins, binColumn,
                                        graphtype, excludeDiagonal)
     # Tha PCA input data is now build, so we do the PCA analysis
-    pca = misc.pcaFit(toPcaRaw, performStandardization=True)
+    if fitFunctionKwargs is None:
+        fitFunctionKwargs = dict()
+    fitFunctionKwargs.setdefault('performStandardization', True)
+    pca = fitFunction(toPcaRaw, **fitFunctionKwargs)
     pca.symmetric = True if graphtype is nx.Graph else False
     pca.community = tuple(community)
     return pca

@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn import decomposition
 import multiprocessing
+import time
 
 
 def nanEqual(a, b):
@@ -149,6 +150,36 @@ def pcaFit(toPca, performStandardization=True, **kwargs):
     pca.norm_std = std
     pca.norm_mean = mean
     return pca
+
+
+def icaFit(toIca, performStandardization=True, **kwargs):
+    """Standardize data, create a ICA object and fit the data.
+
+    Parameters
+    ----------
+    toIca : np.array
+        Data to perform ICA analysis on.
+    performStandardization : bool, optional
+        Standardize data if True, leave as be othewise.
+    random_state : np.random.RandomState, optional
+        Random state used for the analyses, default seed is int(time.time() * 1e6)
+    **kwargs : dict, optional
+        Additional keyword arguments to ICA.
+
+    Returns
+    -------
+    ICA
+        Fitted ICA instance.
+    """
+    if performStandardization:
+        toIca, std, mean = standardizeData(toIca, getStdMean=True)
+    else:
+        mean, std = np.NaN, np.NaN
+    ica = decomposition.FastICA(**kwargs)
+    ica.fit(toIca)
+    ica.norm_std = std
+    ica.norm_mean = mean
+    return ica
 
 
 def mapAsync(func, funcargLst, n=None):
