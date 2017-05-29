@@ -53,7 +53,6 @@ try:
     df = tmp.set_index(['user', 'comtype'], drop=False)
     del tmp
 
-
     # # Turn data into a Networkx graph.
     # Require mutual contact inititive for all nodes for a connection to exist in the
     # undirected graph g
@@ -69,8 +68,6 @@ try:
 
     # Ensure that the graph contains the correct number of nodes
     assert len(list(g.nodes())) == len(set(df.index.get_level_values('user').tolist() + df.contactedUser.tolist()))
-
-
 
     # # Clique detection
     cliqueDf = pd.DataFrame(nx.clique.find_cliques_recursive(g))
@@ -100,7 +97,7 @@ try:
 
     # Binning is simply performed by integer division with a suiting bin width.
     # I choose 8 hours:
-    bw8h = 60**2*8
+    bw8h = 60**2 * 8
     df['tbin'] = (df.timeint - t0d) // bw8h
 
     # Sample one clique of each size
@@ -108,28 +105,23 @@ try:
     # Perform pca analysis
     # set_trace()
 
-
     # dct = dict()
     # for com in [tuple(row.dropna().tolist()) for (i, row) in ccdfs.drop('cliqueSize', axis=1).iterrows()]:
     #     dct[com] = userActivityFunctions.communityDf2Pca(df, ccdfs, 'tbin', graphtype=nx.DiGraph)
     #     print(com, dct[com], sep='\n', end='\n------------------------\n\n')
 
-
     def handle_community2pca(com):
         try:
             ret = (com, userActivityFunctions.community2Pca(df, com, 'tbin', nx.DiGraph, True))
         except ValueError as e:
-            se = str(e)
             print("An error was encountered, continueing execution")
             print(e)
             try:
                 jn.send(e)
-            except:
+            except:  # noqa
                 pass
             ret = [com, None]
         return ret
-
-
 
     # savename = 'pca_result_clique.pickle'
     # communityLst = [row.dropna().tolist() for (i, row) in cliqueDf.drop('cliqueSize', axis=1).iterrows()]
