@@ -77,6 +77,7 @@ try:
     cliqueDf = cliqueDf.sort_values('cliqueSize', ascending=False)
     cliqueDf = cliqueDf.reset_index(drop=True)
     cliqueDf = cliqueDf[cliqueDf.cliqueSize > 2]
+    cliqueDf = cliqueDf.drop('cliqueSize', axis=1)
 
     # Find communities
     communityDf = pd.DataFrame(sorted(nx.algorithms.community.k_clique_communities(g, 5),
@@ -102,7 +103,7 @@ try:
     df['tbin'] = (df.timeint - t0d) // bw8h
 
     # Sample one clique of each size
-    ccdfs = pd.DataFrame([cliqueDf[cliqueDf.cliqueSize == i].iloc[0] for i in cliqueDf.cliqueSize.unique()])
+    # ccdfs = pd.DataFrame([cliqueDf[cliqueDf.cliqueSize == i].iloc[0] for i in cliqueDf.cliqueSize.unique()])
     # Perform ica analysis
     # set_trace()
 
@@ -128,6 +129,19 @@ try:
     communityLst = [row.dropna().tolist() for (i, row) in communityDf.iterrows()]
     with Pool(16) as pool:
         call = pool.map_async(handle_community2ica, communityLst)
+        call.wait()
+        res = call.get()
+        for k, v in res:
+            print(k, v)
+        if os.path.exists(savename) and os.path.isfile(savename):
+            os.remove(savename)
+        with open(savename, 'bw') as fid:
+            pickle.dump(res, fid, protocol=3)
+
+    savename = 'ica_result_clique.pickle'  # noqa
+    cliqueLst = [row.dropna().tolist() for (i, row) in cliqueDf.iterrows()]
+    with Pool(16) as pool:
+        call = pool.map_async(handle_community2ica, cliqueLst)
         call.wait()
         res = call.get()
         for k, v in res:
