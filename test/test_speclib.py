@@ -309,3 +309,27 @@ def test_swapRowColIdx():
                            [12, 14, 13, 15]])
     m_out = graph.swapRowColIdx(m, 1, 2)
     assert np.allclose(m_out, m_expected)
+
+
+def test_vec2squareMat_1():
+    v = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])
+    m_expected = np.array([[0, 3, 6],
+                           [1, 4, 7],
+                           [2, 5, 8]])
+    assert np.allclose(graph.vec2squareMat(v), m_expected)
+
+
+def test_vec2squareMat_2():
+    v = np.arange(7)
+    with pytest.raises(ValueError):
+        graph.vec2squareMat(v)
+
+
+def test_vec2squareMat_3():
+    v = np.array([0, 1, 2, 3, 4, 5])
+    m_expected = np.array([[0, 2, 4],
+                           [0, 0, 5],
+                           [1, 3, 0]])
+    # set_trace()
+    m_actual = graph.vec2squareMat(v, addDiagonal=True)
+    assert np.allclose(m_actual, m_expected)

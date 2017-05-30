@@ -148,13 +148,16 @@ def upperTril2adjMat(up):
     return ad
 
 
-def vec2squareMat(v):
+def vec2squareMat(v, addDiagonal=False):
     """Reshapes a vector into a square matrix by "unstacking" the columns.
 
     Parameters
     ----------
     v : np.array
         Array to reshape, must have dimmension 1.
+    addDiagonal : bool, optional
+        The input vector doesn't include the diagonal of the vector from which it was
+        created, so a 0-diagonal is added. Default False.
 
     Returns
     -------
@@ -166,11 +169,33 @@ def vec2squareMat(v):
     ValueError
         If the vector size is not compatible with a square matrix.
     """
-    matSize = np.sqrt(v.size)
-    if not np.allclose(matSize, np.round(matSize)):
-        raise ValueError("The size of the vector ({v.size}) are not compatible with a square matrix")
-    matSize = int(matSize)
-    return v.reshape(matSize, -1).T
+    if not addDiagonal:
+        matSize = np.sqrt(v.size)
+        if not np.allclose(matSize, np.round(matSize)):
+            raise ValueError("The size of the vector ({v.size})" +
+                             " are not compatible with a square matrix.")
+        matSize = int(matSize)
+        return v.reshape(matSize, -1).T
+    else:
+        l = v.size  # noqa
+        # n - sqrt(n) == l solver for n, and taking the square root to get the length of
+        # a row / column, e.g. sqrt(9) = 3, and a square matrix with 9 elemens needs to
+        # be of size (3, 3)
+        matSizeFunc = lambda l: np.sqrt((1 + 2*l)/2 + np.sqrt(1+4*l)/2)
+        matSize = matSizeFunc(l)
+        if not np.allclose(matSize, np.round(matSize)):
+            raise ValueError("The size of the vector ({v.size}) are not compatible with" +
+                             " a square matrix (without the diagonal).")
+        matSize = int(matSize)
+        mat = np.zeros((matSize, matSize))
+        i = 0
+        for c in range(matSize):
+            for r in range(matSize):
+                if r == c:
+                    continue
+                mat[r, c] = v[i]
+                i += 1
+        return mat
 
 
 def igraph2networkx(igGraph):
