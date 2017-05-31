@@ -21,6 +21,40 @@ def color2igraphColor(color):
     return colorStr
 
 
+def objDir2Df(obj):
+    """Given an object, return a DataFrame with all non-dunder parameters along with
+    theur type. If an exception are raised during determining the type, the except is
+    returned in place of the type. Object
+
+    Parameters
+    ----------
+    obj : Object
+        Object to get parameter info off.
+
+    Returns
+    -------
+    DataFrame
+        DataFrame with parameters and parameter types.
+    """
+    lst = list()
+    gen = (el for el in dir(obj) if not (el.startswith('__') and el.endswith('__')))
+    for el in gen:
+        try:
+            tup = [el, eval('type(pp.%s])' % el)]
+        except Exception as e:
+            tup = [el, e]
+        try:
+            tup.append(eval('pp.%s.shape' % el))
+        except Exception as e:
+            try:
+                tup.append(eval('len(pp.%s)') % el)
+            except Exception as e:
+                tup.append(None)
+        lst.append(tup)
+    df = pd.DataFrame(lst, columns=['parameter', 'partype', 'shape'])
+    return df
+
+
 def nanEqual(a, b):
     """Returs elementvise true for equal elements in inputs a and b, treading
        NaN's as equal.
