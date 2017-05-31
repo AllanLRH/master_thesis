@@ -4,6 +4,23 @@ from sklearn import decomposition
 import multiprocessing
 
 
+def color2igraphColor(color):
+    """Convert a color-list to an igraph color string with format 'rgb(#, #, #)'.
+
+    Parameters
+    ----------
+    color : listlike
+        List with color values.
+
+    Returns
+    -------
+    TYPE
+        igraph compatible color string.
+    """
+    colorStr = 'rgb(' + ', '.join(map(str, [128, 64, 255])) + ')'
+    return colorStr
+
+
 def nanEqual(a, b):
     """Returs elementvise true for equal elements in inputs a and b, treading
        NaN's as equal.
