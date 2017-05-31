@@ -625,11 +625,15 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
     margin : int, optional
         Margin around nodes. Necessary to aboud cut-off lines when plotting curved edges.
     nodeLabels : bool or list, optional
-        If true, extract the node (vertice) labels from the graph. If it's a list, use that list.
+        If true, extract the node (vertice) labels from the graph. If it's a list, use
+        that list.
     layout : str or layout-list, optional
-        The layout to use, can be a string which will generate a layout, or it can be a previously computed layout.
+        The layout to use, can be a string which will generate a layout, or it can be a
+        previously computed layout.
     weightFunc : function, optional
         Function to compute the weights, with max weight == 5.
+        Default is:
+        weightFunc = lambda g: [1 + 4*wt/max(g.es['weight']) for wt in g.es['weight']]
     **kwargs
         Additional arguments passed to the function, described below:
 
