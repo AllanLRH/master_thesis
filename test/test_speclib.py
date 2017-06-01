@@ -333,3 +333,49 @@ def test_vec2squareMat_3():
     # set_trace()
     m_actual = graph.vec2squareMat(v, addDiagonal=True)
     assert np.allclose(m_actual, m_expected)
+
+
+def test_genAllMatrixPermutations_1():
+    m = np.array([[0, 3, 6],
+                  [1, 4, 7],
+                  [2, 5, 8]])
+    perms = list(graph.genAllMatrixPermutations(m))
+    assert len(perms) == np.math.factorial(m.shape[0])
+
+
+def test_genAllMatrixPermutations_2():
+    m = np.array([[0, 3, 6],
+                  [1, 4, 7],
+                  [2, 5, 8]])
+    perms = list(graph.genAllMatrixPermutations(m))
+    mats = [p[1] for p in perms]
+    assert np.any([np.allclose(m, p) for p in mats])
+
+
+def test_genAllMatrixPermutations_3():
+    m = np.array([[0, 3, 6],
+                  [1, 4, 7],
+                  [2, 5, 8]])
+    perms = list(graph.genAllMatrixPermutations(m))
+    for perm, mat in perms:
+        if perm == (1, 0, 2):
+            m_expected = np.array([[4, 1, 7],
+                                   [3, 0, 6],
+                                   [5, 2, 8]])
+            assert np.allclose(mat, m_expected)
+        elif perm == (0, 2, 1):
+            m_expected = np.array([[0, 6, 3],
+                                   [2, 8, 5],
+                                   [1, 7, 4]])
+            assert np.allclose(mat, m_expected)
+        elif perm == (2, 1, 0):
+            m_expected = np.array([[8, 5, 2],
+                                   [7, 4, 1],
+                                   [6, 3, 0]])
+            assert np.allclose(mat, m_expected)
+
+
+def test_genAllMatrixPermutations_4():
+    m = np.arange(6).reshape((2, 3))
+    with pytest.raises(ValueError):
+        list(graph.genAllMatrixPermutations(m))
