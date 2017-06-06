@@ -22,6 +22,7 @@ from speclib import misc, graph, plotting, loaders, userActivityFunctions  # noq
 from pudb import set_trace
 
 
+@pytest.mark.userActivityFunctions
 def test_mutualContact():
     df = pd.DataFrame(data=[['u01', 'sms', 'u42'],
                             ['u01', 'sms', 'u03'],
@@ -41,6 +42,7 @@ def f(x, y):
     return int(x**2 + y)
 
 
+@pytest.mark.misc
 def test_mapAsync():  # noqa
     itr = list(zip(range(10), range(10, 101, 10)))
     trueVal = [f(*tup) for tup in itr]
@@ -48,6 +50,7 @@ def test_mapAsync():  # noqa
     assert trueVal == res
 
 
+@pytest.mark.graph
 def test__isSubCommunity():
     lstDf = [list('ABCD'), list('BCDE'), list('ABC'), list('ADE'), list('ABE')]
     df = pd.DataFrame(lstDf)
@@ -63,6 +66,7 @@ def test__isSubCommunity():
     assert res == {3: [{'A', 'D', 'E'}, {'A', 'B', 'E'}]}
 
 
+@pytest.mark.graph
 @pytest.mark.skip(message='Not finished yet')
 def test_removeSubCommunitiesDumb():
     lstDf = [list('ABCD'), list('BCDE'), list('ABC'), list('ADE'),
@@ -193,6 +197,7 @@ def test_userDf2nxGraph_DiGraph(userDf2nxGraphDataFrame):
     assert gEdgesExpected == gEdgesActual
 
 
+@pytest.mark.graph
 @pytest.mark.slow()
 def test_userDf2nxGraph_Graph_random_data():
     """
@@ -214,6 +219,7 @@ def test_userDf2nxGraph_Graph_random_data():
             graph.userDf2nxGraph(df)
 
 
+@pytest.mark.graph
 def test_networkx2igraph():
     n = 10
     p = 0.65
@@ -225,6 +231,7 @@ def test_networkx2igraph():
     assert np.allclose(igm, nxm)
 
 
+@pytest.mark.graph
 def test_networkx2igraph_2():
     adjmat = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.15242509441228824, 0.020137859867919047],
                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -241,6 +248,7 @@ def test_networkx2igraph_2():
     assert np.allclose(nxg_adjmat, igg_adjmat)
 
 
+@pytest.mark.graph
 def test_igraph2networkx():
     n = 10
     p = 0.65
@@ -252,6 +260,7 @@ def test_igraph2networkx():
     assert np.allclose(igm, nxm)
 
 
+@pytest.mark.misc
 def test_swapMatrixCols():
     m = np.array([[0, 1, 2],
                   [3, 4, 5],
@@ -263,6 +272,7 @@ def test_swapMatrixCols():
     assert np.allclose(misc.swapMatrixCols(m, 0, 1), m_expected)
 
 
+@pytest.mark.misc
 def test_swapMatrixRows():
     m = np.array([[0, 1, 2],
                   [3, 4, 5],
@@ -274,6 +284,7 @@ def test_swapMatrixRows():
     assert np.allclose(misc.swapMatrixRows(m, 1, 2), m_expected)
 
 
+@pytest.mark.misc
 def test_swapMatrixCols_inplace_true():
     m = np.array([[0, 1, 2],
                   [3, 4, 5],
@@ -286,6 +297,7 @@ def test_swapMatrixCols_inplace_true():
     assert np.allclose(m, m_expected)
 
 
+@pytest.mark.misc
 def test_swapMatrixRows_inplace_true():
     m = np.array([[0, 1, 2],
                   [3, 4, 5],
@@ -298,6 +310,7 @@ def test_swapMatrixRows_inplace_true():
     assert np.allclose(m, m_expected)
 
 
+@pytest.mark.graph
 def test_swapRowColIdx():
     m = np.array([[ 0,  1,  2,  3],
                   [ 4,  5,  6,  7],
@@ -311,6 +324,7 @@ def test_swapRowColIdx():
     assert np.allclose(m_out, m_expected)
 
 
+@pytest.mark.graph
 def test_vec2squareMat_1():
     v = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8])
     m_expected = np.array([[0, 3, 6],
@@ -319,12 +333,14 @@ def test_vec2squareMat_1():
     assert np.allclose(graph.vec2squareMat(v), m_expected)
 
 
+@pytest.mark.graph
 def test_vec2squareMat_2():
     v = np.arange(7)
     with pytest.raises(ValueError):
         graph.vec2squareMat(v)
 
 
+@pytest.mark.graph
 def test_vec2squareMat_3():
     v = np.array([0, 1, 2, 3, 4, 5])
     m_expected = np.array([[0, 2, 4],
@@ -335,47 +351,65 @@ def test_vec2squareMat_3():
     assert np.allclose(m_actual, m_expected)
 
 
+@pytest.mark.graph
 def test_genAllMatrixPermutations_1():
-    m = np.array([[0, 3, 6],
-                  [1, 4, 7],
-                  [2, 5, 8]])
+    m = np.array([[1, 4, 7],
+                  [2, 5, 8],
+                  [3, 6, 9]])
     perms = list(graph.genAllMatrixPermutations(m))
     assert len(perms) == np.math.factorial(m.shape[0])
 
 
+@pytest.mark.graph
 def test_genAllMatrixPermutations_2():
-    m = np.array([[0, 3, 6],
-                  [1, 4, 7],
-                  [2, 5, 8]])
+    m = np.array([[1, 4, 7],
+                  [2, 5, 8],
+                  [3, 6, 9]])
     perms = list(graph.genAllMatrixPermutations(m))
-    mats = [p[1] for p in perms]
-    assert np.any([np.allclose(m, p) for p in mats])
+    # Ensure that the original matrix is included in the permutations
+    assert np.any([np.allclose(m, p[1]) for p in perms])
 
 
+@pytest.mark.graph
 def test_genAllMatrixPermutations_3():
-    m = np.array([[0, 3, 6],
-                  [1, 4, 7],
-                  [2, 5, 8]])
+    m = np.array([[1, 4, 7],
+                  [2, 5, 8],
+                  [3, 6, 9]])
     perms = list(graph.genAllMatrixPermutations(m))
     for perm, mat in perms:
         if perm == (1, 0, 2):
-            m_expected = np.array([[4, 1, 7],
-                                   [3, 0, 6],
-                                   [5, 2, 8]])
+            m_expected = np.array([[5, 2, 8],
+                                   [4, 1, 7],
+                                   [6, 3, 9]])
             assert np.allclose(mat, m_expected)
         elif perm == (0, 2, 1):
-            m_expected = np.array([[0, 6, 3],
-                                   [2, 8, 5],
-                                   [1, 7, 4]])
+            m_expected = np.array([[1, 7, 4],
+                                   [3, 9, 6],
+                                   [2, 8, 5]])
             assert np.allclose(mat, m_expected)
         elif perm == (2, 1, 0):
-            m_expected = np.array([[8, 5, 2],
-                                   [7, 4, 1],
-                                   [6, 3, 0]])
+            m_expected = np.array([[9, 6, 3],
+                                   [8, 5, 2],
+                                   [7, 4, 1]])
             assert np.allclose(mat, m_expected)
 
 
+@pytest.mark.graph
 def test_genAllMatrixPermutations_4():
+    # Test that dhe dst-keyword works as expected
+    m = np.array([[1, 4, 7],
+                  [2, 5, 8],
+                  [3, 6, 9]])
+    dst = np.zeros_like(m)
+    normal_gen = graph.genAllMatrixPermutations(m)
+    dst_gen = graph.genAllMatrixPermutations(m, dst)
+    for ng, dg in zip(normal_gen, dst_gen):
+        assert ng[0] == dg[0]
+        assert np.allclose(ng[1], dst)
+
+
+@pytest.mark.graph
+def test_genAllMatrixPermutations_5():
     m = np.arange(6).reshape((2, 3))
     with pytest.raises(ValueError):
         list(graph.genAllMatrixPermutations(m))

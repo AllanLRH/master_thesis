@@ -419,11 +419,15 @@ def genAllMatrixPermutations(m, dst=None):
         raise ValueError("The functions only accepts square matrices")
     s = m.shape[0]
     mc0 = m.copy()
-    mc1 = m.copy()
+    if dst is None:
+        mc1 = m.copy()
     for p in itertools.permutations(list(range(s))):
         # Swap rows
         np.copyto(mc0, m[p, :])
         # Swap columns
-        np.copyto(mc1, mc0[:, p])
-        yield mc1
-
+        if dst is None:
+            np.copyto(mc1, mc0[:, p])
+            yield (p, mc1.copy())
+        else:
+            np.copyto(dst, mc0[:, p])
+            yield (p, None)
