@@ -1,19 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from copy import deepcopy as copy
+from oset import oset
+
+
+def gen_permutations(n):
+    seen = set()
+    for i in range(n):
+        prm = list()
+        for j in range(n):
+            if i != j:
+                prm.append((i, j))
+                seen.add(tuple(sorted([i, j])))
+                yield prm
 
 
 n = 4
-
-prm_lst = list()
-for i in range(n):
-    prm = list()
-    for j in range(n):
-        if i != j:
-            prm.append((i, j))
-            prm_lst.append(copy(prm))
-
-for p in prm_lst:
+seen = set()
+for p in gen_permutations(n):
     print(p)
+    seen.add(frozenset(p))
 
+print(len(list(gen_permutations(n))))
+
+print(len(seen))
