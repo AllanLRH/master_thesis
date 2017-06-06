@@ -1,0 +1,1000 @@
+history  > /lscr_paper/allan/scripts/temp/hst.txt
+history /lscr_paper/allan/scripts/temp/hst.txt
+history
+cp __init__.py /lscr_paper/allan/scripts/temp/
+vim __init__.py
+rm __init__.py.rej
+ccat __init__.py.rej
+patch -i /lscr_paper/allan/scripts/temp/igraph_svg_draw_patch.patch
+patch --help
+cp __init__.py BACKUP__init__.py
+ls
+ls /lscr_paper/allan/scripts/temp/
+ls
+cd ./py36/lib/python3.6/site-packages/igraph
+find . -name igraph
+rm -rf msth mpl2/
+2006* rm -rf msth/ mpl2
+ls
+rm -rf cairoPlay/ py27
+ls
+cd envs/
+cd ../../miniconda3/
+cat igraph_svg_draw_patch.patch
+curl https://github.com/igraph/python-igraph/commit/8864b46849b031a3013764d03e167222963c0f5d.patch > igraph_svg_draw_patch.patch
+cat igraph_svg_draw_patch.patch
+nano igraph_svg_draw_patch.patch
+cd temp/
+cdsc
+vim __init__.py
+ls
+cd lib/python3.6/site-packages/igraph/drawing/
+cd ../miniconda3/envs/cairoPlay/
+cd lib/python3.6/site-packages/igraph/drawing/
+cd
+vim __init__.py
+ls
+cd lib/python3.6/site-packages/igraph/drawing/
+find . -name igraph
+ls
+cd ../miniconda3/envs/cairoPlay/
+y
+conda install notebook -y
+which juputer
+source activate cairoPlay
+ls ../miniconda3/envs/
+which jupyter
+conda install notebook
+python
+conda install python-igraph
+conda install pythonigraph
+python
+source activate py27
+conda create -n py27 python=2.7
+ipython
+pip install python-igraph
+pip search igraph
+conda remove igraph
+ipython
+conda remove igraph
+ipython
+conda install igraph
+pip list
+ipython
+source activate cairoPlay
+ipython
+ipytho
+cd ../../scripts
+ls
+cd ../miniconda3/envs/
+conda install --help
+conda install https://anaconda.org/marufr/python-igraph
+conda install anaconda.org/marufr/python-igraph
+conda uninstall igraph
+conda list | grep igraph
+pip list | grep igraph
+ls
+l
+conda install igraph
+conda search igraph
+conda remove pycairo python-igraph
+conda install python-igraph
+pip list | grep -i graph
+conda uninstall python-igraph
+conda search igraph
+which python
+pip list | grep -i graph
+ls
+ks
+conda install python-igraph
+anaconda search -t conda sodre/python-igraph
+conda install sodre/python-igraph
+anaconda search igraph | grep -P "0\.[789]"
+anaconda search igraph | grep 0.7
+anaconda search igraph
+pip install git+https://github.com/igraph/python-igraph
+rm -rf python-igraph/
+cd ..
+python setup.py develop --c-core-url https://github.com/igraph/igraph/archive/master.tar.gz
+cd python-igraph/
+git clone https://github.com/igraph/python-igraph
+python setup.py develop --c-core-url https://github.com/igraph/igraph/archive/master.tar.gz
+cd ../..
+pip install git+https://github.com/igraph/python-igraph
+pip uninstall python-igraph
+pip list | grep -i graph
+pip uninstall igraph
+conda uninstall igraph
+python
+source activate py36
+python
+conda install cairocffi
+which python
+source activate cairoPlay
+conda create -n cairoPlay python=3.6
+ipython
+conda search cairo --channel conda-forge
+conda uninstall cairo --force
+conda config --add channels conda-forge
+anaconda --help
+anaconda install fjeffreycoker/cairocffi
+anaconda search -t conda cairocffi
+conda install anaconda-client
+anaconda search -t conda cairocffi
+conda install cairocffi
+ipython
+conda install cairo
+conda uninstall cairo --force
+conda reinstall cairo
+conda uninstall cairo
+ipython
+conda install cairo
+pip install pycairo
+pip search cairo
+pip search py2cairo
+pip search py2cairp
+echo $PYTHONPATH
+conda install py2cairo
+conda install pycairo
+conda install cairo
+conda search cairo
+conda search caito
+R
+cp TestingRpy2.ipynb TestingRpy2_3.ipynb
+vp TestingRpy2.ipynb TestingRpy2_3.ipynb
+cp TestingRpy2_2.ipynb TestingRpy2_3.ipynb
+ls
+cd scripts/tryout/
+cd tryout
+pip install rpy2
+conda search rpy2
+mv rpy2_sample_notebooks/TestingRpy2_2.ipynb scripts/tryout/
+mv rpy2_sample_notebooks/TestingRpy2.ipynb scripts/tryout/
+git clone https://github.com/michhar/rpy2_sample_notebooks
+cd ..
+ls ../miniconda3/envs/
+conda install -c r r-essentials
+which R
+r
+py.test
+ipython
+ack -A10 def --python
+screen -ls
+screen -X -S userpca kill
+screen -r userpca
+htop
+screen -r userpca
+python userPCA_long_time_binning_pool.py
+rm *.log
+python userPCA_long_time_binning_pool.py
+pudb userPCA_long_time_binning_pool.py
+python userPCA_long_time_binning_pool.py
+rm *.log
+ls *.log
+python userPCA_long_time_binning_pool.py
+pudb userPCA_long_time_binning_pool.py
+ls
+python processPcaResults.py
+ls
+cd userPCA/
+ls
+cd ../scripts
+1
+ls
+cd ../../datadump/
+gst
+git reset
+gst
+grep -iC8 "exception" example.log
+ls
+l1
+l
+l1
+l
+ls
+python userPCA_long_time_binning_pool.py 2>&1 | tee userPCA_long_time_binning_pool_output.txt
+rm errout.txt
+cat errout.txt
+rm stdout.txt
+cat stdout.txt
+python userPCA_long_time_binning_pool.py 2>errout.txt | tee -a stdout.txt
+rm *.txt
+screen -ls
+ls *.h5
+ls
+python userPCA_long_time_binning_pool.py | tee -a userPCA_long_time_binning_pool___stout.txt
+cd userPCA/
+ipython
+rm pcaRun_c*
+ipython
+ll
+ls
+rm pcaRun_c*
+ls
+rm pcaRun_c*
+ipython
+rm pcaRun_c*
+ipython
+ll
+ls
+rm pcaRun_c*
+ll
+ls
+ipython
+ll
+ls
+cd ../datadump/
+cd cd ../datadump/
+grep -iC8 "exception" example.log
+grep -iA8 "exception" example.log
+grep -iB8 "exception" example.log
+grep -i "exception" example.log
+cd userPCA/
+ls
+grep -i "exception" example.log
+grep -i "error" example.log
+grep "error" example.log
+example.log
+cat example.log
+cd userPCA/
+ls
+cat stdout.txt
+cat errout.txt
+ls *.txt
+cat stde
+ls
+cd userPCA/
+screen -R userpca
+screen -ls
+htop
+ls
+rm *Run*
+ls *Run*
+ls
+cd ../datadump/
+cd ..
+wc -l *.txt
+l
+htop
+wc -l *.txt
+cat *.txt
+rm *.txt
+ls *.txt
+cd userPCA/
+htop
+ag push --python
+ag push
+ls
+cd ../scripts
+ls
+sl
+rm *.h5
+rm pcares_try.h5
+ls
+cd ../datadump/
+cat example.log
+ls
+cd userPCA/
+ls
+screen -R userpca
+rm tmp.py
+cd ..
+cat *.txt
+screen -R userpca
+screen -r userpca
+screen -ls
+screen -X -S 7316.userPca kill
+screen -ls
+screen -X -S kill userPca
+screen -X -S kill 7316
+screen -ls
+time python userPCA_long_time_binning_pool.py
+python userPCA_long_time_binning_pool.py
+pudb userPCA_long_time_binning_pool.py
+python userPCA_long_time_binning_pool.py
+pudb userPCA_long_time_binning_pool.py
+python userPCA_long_time_binning_pool.py
+pudb userPCA_long_time_binning_pool.py
+python userPCA_long_time_binning_pool.py
+pudb userPCA_long_time_binning_pool.py
+python userPCA_long_time_binning_pool.py
+pip install showme
+python userPCA_long_time_binning_pool.py
+htop
+htlop
+python userPCA_long_time_binning_pool.py
+rm pcarun.h5
+ls
+python userPCA_long_time_binning_pool.py
+ls
+cd userPCA/
+l
+cd ../scripts
+ls
+ll
+ls
+rm pcarun.h5
+ls
+cd ../datadump/
+cat userPca_log.txt
+python userPCA_long_time_binning.py | tee userPca_log.txt
+rm userPca_log.txt
+ls
+pudb userPCA_long_time_binning.py | tee userPca_log.txt
+python userPCA_long_time_binning.py | tee userPca_log.txt
+ls
+python userPCA_long_time_binning.py | tee userPca_log.txt
+ls
+cd scripts/userPCA/
+ls
+screen -r userPca
+ccat h5cat.py
+chmod 754 h5cat.py
+wget https://raw.githubusercontent.com/jni/h5cat/master/h5cat.py
+ls
+cd ..
+l
+cd ..
+ls
+ipython userPCA_long_time_binning.py | tee userPca_log.txt
+rm userPca_log.txt
+python userPCA_long_time_binning.py | tee userPca_log.txt
+cd userPCA/
+which python
+pip install lmfit
+pip install delegator
+gp
+gst
+gc -m "Added tryout folder"
+py.test  --slow
+py.test -v
+py.test
+py.test && py.test && py.test && py.test && py.test && py.test && py.test && py.test && py.test && py.test && py.test && py.test
+py.test
+py.test --pudb
+py.test
+py.test --verbose
+py.test --pudb
+py.test
+py.test --pudb
+py.test -v
+py.test
+ipython
+gd temp/phoneToUserIdPlay.ipynb
+gst
+ack -i "def userDf" --python
+ack -i "def userDf"
+git diff userActivity/userActivity.ipynb
+gst
+ls .git
+mv ~/nbstrip.sh ..
+gst
+cp sshRelated/nbstrip.sh ~
+$(uname) == 'Linux'
+uname == 'Linux'
+uname == 'Linux
+uname
+which nbstripout
+echo $OSTYPE
+echo $OSTYPE
+echo $unamestr
+ccat `which nbstripout`
+which nbstripout
+cd ..
+ls
+cd .git
+cd ..
+ls
+cd temp
+which nbstripout
+cat .gitattributes
+find . -iname "*ipynb"
+find - iname "*ipynb"
+git diff HEAD^ userPCA/userPCA_singleClique.ipynb
+glgp
+glo -- userPCA/userPCA_singleClique.ipynb
+git log -- userPCA/userPCA_singleClique.ipynb
+git log --userPCA/userPCA_singleClique.ipynb
+git diff userPCA/userPCA_singleClique.ipynb~1 userPCA/userPCA_singleClique.ipynb
+gp
+git remote -v
+git remoteopen
+gst
+gc -m "Commit notebooks to clean up git status"
+gst
+git add userPCA/from_pandas_dataframe.ipynb userPCA/testPandas2nwtworkx.ipynb
+git add userConnectivity/userConnectivity.ipynb
+gst
+git add userActivity/userActivity.ipynb userPCA/userPCA_singleClique.ipynb
+pip install pushbullet.py
+rg -t py communityDf2PcaExplVarRatio
+rg
+gp -f
+gc --amend
+git add test/test_speclib.py
+py.test
+gp
+gc -m "upperTril2adjMat now works with matrices containing arbitrary objects"
+gst
+git add speclib/graph.py test/test_speclib.py
+git status
+py.test --pudb
+py.test
+py.test --pudb
+py.test -v
+py.test
+py.test -v
+py.test
+py.test
+py.test --pudb
+py.test
+py.test --pudb
+py.test
+py.test --pudb
+py.test
+rm whichNbStripout.py
+gp
+gc -m "Converted docstring to numpy style"
+gst
+git add speclib/*.py
+gst
+git status
+python whichNbStripout.py
+ls -a
+ls
+grep "nbstripout" **/* 2>/dev/null
+nbstripout --help
+nbstripout --uninstall
+cd ..
+grep "nbstripout" **/* 2>/dev/null
+grep "/lscr_paper/allan/miniconda3/envs/mpl2/lib/python3.5/site-packages/nbstripout.py" **/* 2>/dev/null
+ccat /lscr_paper/allan/miniconda3/envs/mpl2/lib/python3.5/site-packages/nbstripout.py
+grep filter **/* 2>/dev/null
+grep filter **/*
+grep filter *
+find . -iname "*smudge*"
+find . -iname "*filter*"
+find . -iname filter
+fnd . -iname filter
+ls
+cd ..
+cat attributes
+ls
+ccat $(which nbstripout )
+which nbstripout
+pip install nbstripout
+source activate py36
+which nbstripout
+source activate mpl2
+source activate py35
+which nbstripout
+less attributes
+ls
+cd info
+ls
+find . -iname "*attr*"
+find . -iname attr
+tree -d
+tree -f
+tree
+cd .git
+find . -iname nbstrip
+ls -a
+cd scripts
+ls -a
+cd ..
+gst
+pwd
+gst
+pip install git+https://github.com/AllanLRH/netgraph
+ipython
+ls
+cd datadump/
+./h5cat.py datadump/pcarun.h5
+l
+cd ..
+ls
+screen -r userPca
+cat userPca_log.txt
+ls
+cd ../scripts/userPCA
+ls
+cd datadump
+ls
+cd ..
+htop
+cat userPca_log.txt
+l
+screen -r userPca
+pudb userPCA_long_time_binning.py
+screen -r userPca
+ls
+cd userPCA/
+cd ../scripts
+ls
+cd ../../datadump/
+touch userPCA_long_time_binning.py
+rm userPCA_long_time_binning.py
+rm userPca_log.txt
+cd userPCA/
+screen -r userPca
+screen -ls
+screen -r userPca
+screen -r usrePca
+screen -ls
+scren -ls
+less userPca_log.txt
+ls
+cd userPCA/
+cd user
+ls
+cd ../../datadump/
+ls
+cd userPCA/
+screen -R userPca
+screen -ls
+cd userPCA/
+cd scripts
+mkdir datadump
+ls
+cd ..
+gd speclib/plotting.py
+jupyter nbconvert --to python userPCA_long_time_binning.ipynb
+cd userPCA/
+gp
+gc -m "PCA analysis and plotting of multiple communities"
+git add userPCA/userPCA_long_time_binning.ipynb
+gst
+gc -m "Fix import"
+git add speclib/plotting.py
+git diff speclib/plotting.py
+gst
+rm pca.h4
+cd userPCA/
+echo $PYTHONPATH
+source ~/.bashrc
+source gst
+nano ~/.bashrc
+pwd
+cd speclib/
+nano ~/.bashrc
+ls speclib/
+gst
+gc -m "Changed keyword argument in function to avoid name collision"
+git add speclib/userActivityFunctions.py speclib/misc.py
+git diff speclib/userActivityFunctions.py
+git diff speclib/misc.py
+git diff misc
+gd misc
+gst
+gc -m "Added PcaPlotter class"
+gst
+git add speclib/plotting.py
+gst
+git reset speclib/graph.py
+gst
+git reset --soft HEAD~1
+gst
+git commit -m "Added PcaPlotter class"
+gst
+git add tryout/try_PcaPlotter
+git add tryout/try_PcaPlotter/*
+git add speclib/graph.py
+gst
+gs
+cd ../..
+gst
+l
+pudb try_PcaPlotter.py
+cd try_PcaPlotter/
+mv pca.h4 try_PcaPlotter/pca.h5
+mv try_PcaPlotter.py try_PcaPlotter
+mkdir try_PcaPlotter
+ls
+cd tryout/
+mv userPCA/pca.h4 tryout/
+gp
+gc -m "fix bug in drawWeightedGraph"
+gdw --cached
+gdw
+gd
+gdw
+gst
+cd speclib/
+ipython
+nano ~/.bashrc
+echo $PYTHONPATH
+gp
+gc -m "Fixed bug introduced in earlier commit"
+rm try_communityDf2Pca.py
+ls
+pwd
+gst
+pudb try_communityDf2Pca.py
+ll
+ipython
+cd tryout/
+l
+rm ccdf.h5
+del ccdf.h5
+l1
+l
+gst
+subl temp/test_upperTril2adjMat.py
+l1 temp
+gst
+mv temp/test.h5 tryout/
+mv temp/hdfPlay.ipynb tryout/
+ag test.h5
+l1 temp
+ls temp
+gst
+mv temp/try_drawWeighted.py tryout/
+mkdir tryout
+gst
+gp
+gc -m "Added comments to communityDf2Pca function"
+git diff --cached
+gc -m "Updated drawWightedGraph with options and comments"
+git diff --cached
+gc -m "Check for valid input size and provide useful error message for invalid input size in function upperTril2adjMat"
+git diff --cached
+gc -m "Updated docstring for adjMatUpper2array"
+git diff --cached
+git diff --staged
+gst
+git diff speclib/graph.py
+gdw speclib/graph.py
+gst
+gdw speclib/userActivityFunctions.py
+gst
+gqc speclib/misc.py "renamed monkey-patching varable of PCA object ro norm_std and norm_mean, and added option to omit sttandardization of input"
+gdw speclib/misc.py
+gd speclib/misc.py
+gst
+mv userPCA/dbg.h5 tryout/
+find . -iname "dbg*"
+mv find . -iname "dbg*"
+mv find . -iname dbg*
+wget https://archive.org/download/nycTaxiTripData2013/trip_data.7z https://archive.org/download/nycTaxiTripData2013/trip_fare.7z
+less trip_data_1.csv
+ll
+l
+chmod -w trip_data_1.csv
+ll
+l
+chmod a-w trip_data_2.csv
+ll
+chmod a-x trip_data_2.csv
+ll
+ls
+rm trip_data_2.csv.zip
+ls
+unzip trip_data_2.csv.zip
+man zip
+zip --help | grep -i extract
+zip --help
+rm trip_data_1.csv.gz
+ll
+du -hd1
+ls
+gzip -dk trip_data_1.csv.gz
+gzip  --help
+gzip
+extract trip_dat*
+ls
+cd ../visualizeingBillionsOfDatapoints/
+ls ../visualizeingBillionsOfDatapoints
+rmdir ../visualizeingBillionsOfDatapoints
+mkdir ../visualizeingBillionsOfDatapoints
+mkdit ../visualizeingBillionsOfDatapoints
+rmdir visualizeingBillionsOfDatapoints
+mkdir visualizeingBillionsOfDatapoints
+gst
+nano data_source_info.txt
+cd ../visualizeingBillionsOfDatapoints/
+find . -name "*.json" | grep -Po "/([^/]+\.json)" | sort | uniq -c
+find . -name "*.json" | grep -Po "/([^/]+\.json)"
+find . -name "*.json" | grep -Po "/([^/]+)"
+find . -name "*.json" | grep -Po "/(\S+)"
+find . -name "*count*" | grep -Po "(\S+)"
+find . -name "*count*" | grep -Po "/(\S+)"
+find . -name "*count*" | grep -Po ".+/(\S+)"
+cd ../telephone/
+find . -name "*count*"
+find . -name *count*
+find . -name *txt
+find . -name txt
+ls
+cd scripts
+l
+cd ..
+ls
+find . -name "*.json"
+ls
+cd ../../telephone/
+python test_upperTril2adjMat.py
+pudb test_upperTril2adjMat.py
+python test_upperTril2adjMat.py
+pudb test_upperTril2adjMat.py
+cd temp
+ipython
+l
+py.test --pudb
+py.test
+py.test --pudb
+pip install pytest-pudb
+py.test --pudb
+py.test -pudb
+py.test -v
+py.test
+rg -tpy "path.append"
+rg
+gst
+gp -f
+gc --amend
+gp
+gc -m "Check that the adjacency matrix is symmetric before using only the upper part, and mankey-patch the PCA() object with a symmetric=bool argument"
+ga speclib/userActivityFunctions.py
+gd speclib/userActivityFunctions.py
+gst
+gd speclib/userActivityFunctions.py
+gst
+gp
+gc --amend
+gc -m "Better version of randomSample"
+ga -p speclib/misc.py
+gst
+gc -m "Added getStdMean argument to standardizer-function, and added std and mean values monkey-patching to PCA() objects"
+ga -p speclib/misc.py
+gst
+gc -m "Removed unused import"
+ga -p speclib/misc.py
+gst
+l
+gc -m "Added getFirstDayInTimeseries function for getting good start dates for time binning"
+ga -p speclib/misc.py
+gst
+gc -m speclib/misc.py
+ga -p speclib/graph.py
+gc -m "isSymmetric function can now handle sparse matrices by converting them"
+gst
+gc -m "isSymmetric function can now handle sparse matrices by converting them"
+ga -p speclib/graph.py
+gd speclib/graph.py
+gst
+gd speclib/misc.py
+gst
+glg
+gc -m "Broke long line in two"
+git add -p speclib/plotting.py
+gc -m "Added rgb and drawWeightedGraph functions"
+git add -p speclib/plotting.py
+gst
+conda update bottleneck matplotlib pandas pytables pywavelets scikit-learn
+conda env export --file env.txt
+conda env export > env.txt
+conda install bottleneck
+pip install boltons
+conda install boltons
+conda env export > env.txt
+conda env export
+ls
+pip install pygraphviz
+py.test
+pip install watermark
+pip install python-igraph
+pip uninstall python-igraph
+pip uninstall igraph
+pip uninstall iraph
+pip install jgraph
+pip install igraph
+conda install igraph
+which jupyter
+time jupyter notebook list | grep -Po "(?<=token=)(\w+)"
+jupyter notebook list | grep -Po "(?<=token=)(\w+)"
+time jupyter notebook list | grep -Po "(?<=token=)(\w+)"
+jupyter notebook list | grep -Po "(?<=token=)(\w+)"
+jupyter notebook list
+conda list | grep -i matplotlib
+conda list matplotlib
+source ~/.bashrc
+nano ~/.bashrc
+htop
+ls ../miniconda3/envs/
+conda remove --all -n py35
+conda --all -n py35
+conda --all py35
+conda --help
+pip install grequests
+conda list
+pip install git+git://github.com/networkx/networkx.git
+bash ins.sh
+which pip
+nano ins.sh
+which neato
+neato
+python installer.py
+conda list
+python installer.py
+ipython
+source activate py36
+ipython
+conda install jupyter
+conda search jupyter
+conda install jupyter
+conda install jupyter console
+ipython
+subl installer.py
+conda install cartopy
+python --version
+which python
+conda install --file pip.txt
+conda install --help
+conda install -r pip.txt
+source activate py36
+conda list --export > pip.txt
+conda list --no-pip --export > nopip.txt
+cd scripts
+cd ..
+conda list --no-pip --export
+conda list --no-pip
+conda list --help
+conda list
+source ~/.bashrc
+which python
+source deactivate
+conda create -n py36 python=3.6
+source activate py35
+conda create -n py35 python=3.5
+conda create py35 python=3.5
+ls miniconda3/envs/
+l
+conda list
+cd ..
+gst
+ack while
+py.test
+ls
+conda search notebook
+ls
+py.test
+ls
+conda list
+source activate py36
+gp
+gc -m "Corrected bug in upperTril2adjMat and added test casw which isn't a special case, resulting in a false posive test"
+git diff --cached
+py.test -v
+py.test --pudb
+py.test
+math
+gc -m "Properly named tests, mixed up function names and test names"
+py.test
+py.test --pudb
+py.test -v
+py.test
+gp
+gc --amend
+ga -p speclib/graph.py
+gc -m "Updated imports in speclib/graph"
+ga -p speclib/graph.py
+py.test
+gst
+gd speclib/graph.py
+gst
+rm test/untitled.py
+ccat test/untitled.py
+subl test/untitled.py
+cat test/untitled.py
+rm test/testFiles.py
+gst
+gc -m "Added communityDf2Pca function"
+gst
+date
+dae
+gc --amend
+glg
+py.test --pudb
+py.test
+pudb test/testFiles.py
+python test/testFiles.py
+touch test/testFiles.py
+py.test
+gp
+gqc .gitignore "Updated gitignore"
+gst
+git checkout temp/userDataCount.json
+git checkout userDataCount.json
+gst
+rm **/*.json
+rm **/*.pdf
+rm **/*.html
+ls **/*.html
+gst
+gp
+gc -m "Added thf (test helper functions) file with function isArrRowSetEqual, and testing file for the function"
+git add test/thf.py
+git add test/test_thf.py
+gst
+py.test -v
+py.test
+pudb test/test_thf.py
+py.test test/test_thf.py
+py.test test/test_thf.py --pudb
+py.test test/test_thf.py
+pudb test/test_thf.py
+python test/test_thf.py
+pudb test/test_thf.py
+python test/test_thf.py
+py.test test/test_thf.py  --pudb
+py.test test/test_thf.py
+py.test test/test_thf.py --pudb
+py.test test/test_thf.py
+py.test --capture no
+py.test --capture=no
+pgrep screen
+man pkill
+pkill --help
+py.test --capture=no
+py.test --help | grep -a "\-s"
+py.test --help
+py.test --pudb
+py.test -s
+py.test -s --pudb
+py.test -s
+gp
+gc -m "Added and tested isSubCommunity"
+git diff --cached
+stree .
+git reset
+ga test/test_speclib.py
+ga -p speclib/graph.py
+gc --amend
+gc -m "Modified input and logging in test file"
+ga -p speclib/graph.py
+pa -p speclib/graph.py
+py.test -sv
+py.test -s
+py.test
+py-test
+gc --amend
+git diff --cached
+git add -p speclib/graph.py
+git add -p
+git reset
+gc -m "Added upperTril2AdjMat and testing for it and adjMatUpper2array"
+git diff --cached
+git add -p test/test_speclib.py
+git diff --cached
+py.test
+py.test -s
+py.test
+cd ..
+pytest -s
+py.test --pudb
+py.test
+ipython
+ll
+l
+ll
+ls
+cd userPCA/
+rg --help
+rg
+source ~/.bashrc
+nano ~/.bashrc
+nano /.bashrc
+cd ..
+pwd
+nano original_name.txt
+cd ripgrep/
+mv ripgrep-0.5.0-x86_64-unknown-linux-musl/ ripgrep
+cd ..
+./rg this
+ls
+cd ripgrep-0.5.0-x86_64-unknown-linux-musl/
+rm ripgrep-0.5.0-x86_64-unknown-linux-musl.tar.gz
+ls
+tar -xzvf ripgrep-0.5.0-x86_64-unknown-linux-musl.tar.gz
+tar -xfv ripgrep-0.5.0-x86_64-unknown-linux-musl.tar.gz

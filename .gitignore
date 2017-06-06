@@ -1,7 +1,6 @@
 speclib/err.txt
 speclib/textExample.txt
 ._.DS_Store
-temp
 sshRelated/__pycache__
 .DS_Store
 .cache/
@@ -21,3 +20,7 @@ userPCA/useralias.pk
 logs/
 .idea
 tryout/*.pdf
+temp/gps.hdf
+temp/jsongps.json.gz
+temp/jsongps.json_org
+._*

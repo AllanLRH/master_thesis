@@ -1,0 +1,94 @@
+How do I delete (drop) rows from a Pandas DataFrame, in which the rows are _not_ uniquely identified by the index?<br>
+I can make a mask which, when used as an argument to `df.loc`, correctly returns the targeted rows.
+
+### Example code:
+
+    import numpy as np
+    import pandas as pd
+
+
+    np.random.seed(0)
+    df = pd.DataFrame(
+        data=np.random.randint(0, 10, size=(7, 3)),
+        index=[['u01', 'u01', 'u01', 'u02', 'u02', 'u03', 'u03'], ['C', 'C', 'C', 'C', 'T', 'T', 'T']],
+        columns=['foo', 'bar', 'baz'])
+    df.index.names = ['user', 'comType']
+
+    print('df', df, sep=" =\n\n", end="\n"*5)
+
+    mask = (df.baz > 8) | (df.baz < 2)
+    print('mask', mask, sep=" =\n\n", end="\n"*5)
+
+    print('df.loc[mask]', df.loc[mask], sep=" =\n\n", end="\n"*5)
+
+    df2 = df.drop(mask.index[mask.values])  # Drops all of user user u01, one of user u02
+    print('df2', df2, sep=" =\n\n", end="\n"*5)
+
+    df3 = df.drop(mask)  # Doesn't do anything
+    print('df3', df3, sep=" =\n\n", end="\n"*5)
+
+
+### Example output:
+
+    df =
+
+                  foo  bar  baz
+    user comType
+    u01  C          5    0    3
+         C          3    7    9
+         C          3    5    2
+    u02  C          4    7    6
+         T          8    8    1
+    u03  T          6    7    7
+         T          8    1    5
+
+
+
+
+    mask =
+
+    user  comType
+    u01   C          False
+          C           True
+          C          False
+    u02   C          False
+          T           True
+    u03   T          False
+          T          False
+    Name: baz, dtype: bool
+
+
+
+
+    df.loc[mask] =
+
+                  foo  bar  baz
+    user comType
+    u01  C          3    7    9
+    u02  T          8    8    1
+
+
+
+
+    df2 =
+
+                  foo  bar  baz
+    user comType
+    u02  C          4    7    6
+    u03  T          6    7    7
+         T          8    1    5
+
+
+
+
+    df3 =
+
+                  foo  bar  baz
+    user comType
+    u01  C          5    0    3
+         C          3    7    9
+         C          3    5    2
+    u02  C          4    7    6
+         T          8    8    1
+    u03  T          6    7    7
+         T          8    1    5

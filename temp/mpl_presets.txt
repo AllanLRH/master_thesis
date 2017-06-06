@@ -1,0 +1,38 @@
+From statML exam:
+
+if savefig:
+    titleFontSize = 28
+    mpl.rcParams['axes.labelsize'] = 20
+    mpl.rcParams['legend.fontsize'] = 20
+    mpl.rcParams['legend.fontsize'] = 20
+    mpl.rcParams['xtick.labelsize'] = 20
+    mpl.rcParams['ytick.labelsize'] = 20
+    mpl.rcParams['font.size'] = 20
+    mpl.rcParams['axes.titlesize'] = 18
+    mpl.rcParams['figure.figsize'] = (10,4.5)
+else:
+    titleFontSize = 20
+    mpl.rcParams['legend.fontsize'] = 16
+    mpl.rcParams['xtick.labelsize'] = 12
+    mpl.rcParams['ytick.labelsize'] = 12
+    mpl.rcParams['font.size'] = 12
+    mpl.rcParams['axes.titlesize'] = 16
+    mpl.rcParams['figure.figsize'] = (16,8)
+
+
+-----------------------------------------------------------------
+From userPCA2 notebook:
+
+for k, v in {'font.size': 13.0,
+             'legend.fontsize': 13.0,
+             'axes.labelsize': 12.0,
+             'axes.titlesize': 15.0,
+             'figure.figsize': [16.0, 7.0],
+             'figure.dpi': 300,
+             'figure.titlesize': 'large',
+             'xtick.labelsize': 13.0,
+             'ytick.labelsize': 13.0}.items():
+    mpl.rcParams[k] = v
+
+
+
