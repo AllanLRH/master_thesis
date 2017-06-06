@@ -428,3 +428,43 @@ def genAllMatrixPermutations(m, dst=None):
         else:
             np.copyto(dst, mc0[:, p])
             yield (p, None)
+
+
+def dotproductGraphCompare(m0, m1):
+    """Given to adjacency matrices, compare them by stacking the columns in the matrices,
+    and taking the dotProduct. But do it for all row-column permutations for m0.
+    The largest dot product is returned.
+
+    Parameters
+    ----------
+    m0 : np.array
+        Adjacency matrix which is permuted before dotting.
+    m1 : np.array
+        Adjacency matrix which is just used in the dot product.
+
+    Returns
+    -------
+    float
+        The largest of all the dot-procucts.
+
+    Raises
+    ------
+    ValueError
+        If m0 and m1 isn't matrices.
+        If the dimmensions of m0 and m1 differ.
+        If the m0 and m1 isn't square matrices.
+    """
+    if m0.ndim != 2 and m1.ndim != 2:
+        raise ValueError(f"Input must be a matrix, bit has dimmension {m0.ndim} and {m1.ndim}")
+    if m0.shape != m1.shape:
+        raise ValueError(f"m0 and m1 must be same size, but m0.size = {m0.size} and m1.size = {m1.size}")
+    if m0.shape[0] != m0.shape[1] or m1.shape[0] != m1.shape[1]:
+        raise ValueError(f"Matrices must be quadratic, but m0.shape = {m0.shape} and m1.shape = {m1.shape}")
+    v = misc.stackColumns(m1)
+    dotProduct = -np.inf
+    m = np.zeros_like(m0)
+    for _ in genAllMatrixPermutations(m0, dst=m):
+        vp = misc.stackColumns(m)
+        dp = np.dot(vp, v)
+        dotProduct = dp if dp > dotProduct else dotProduct
+    return dotProduct
