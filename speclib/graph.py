@@ -172,7 +172,7 @@ def vec2squareMat(v, addDiagonal=False):
     if not addDiagonal:
         matSize = np.sqrt(v.size)
         if not np.allclose(matSize, np.round(matSize)):
-            raise ValueError("The size of the vector ({v.size})" +
+            raise ValueError(f"The size of the vector ({v.size})" +
                              " are not compatible with a square matrix.")
         matSize = int(matSize)
         return v.reshape(matSize, -1).T
@@ -184,7 +184,7 @@ def vec2squareMat(v, addDiagonal=False):
         matSizeFunc = lambda l: np.sqrt((1 + 2*l)/2 + np.sqrt(1+4*l)/2)
         matSize = matSizeFunc(l)
         if not np.allclose(matSize, np.round(matSize)):
-            raise ValueError("The size of the vector ({v.size}) are not compatible with" +
+            raise ValueError(f"The size of the vector ({v.size}) are not compatible with" +
                              " a square matrix (without the diagonal).")
         matSize = int(matSize)
         mat = np.zeros((matSize, matSize))
