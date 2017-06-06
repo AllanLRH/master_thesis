@@ -4,7 +4,6 @@ import itertools
 
 
 def gen_permutations(n):
-    seen = set()
     for p in itertools.permutations(list(range(n))):
         yield p
 
