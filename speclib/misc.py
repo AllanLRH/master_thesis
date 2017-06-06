@@ -353,3 +353,7 @@ def swapMatrixCols(m, c0, c1, inplace=False):
     mt[:, c1] = m[:, c0]  # copy from original, unmodified matrix
     return mt
 
+
+def stackColumns(m):
+    assert m.ndim == 2, f"Input should be a matrix, but it have dimmension {m.ndim}."
+    return m.T.flatten()
