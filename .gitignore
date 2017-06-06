@@ -24,3 +24,4 @@ temp/gps.hdf
 temp/jsongps.json.gz
 temp/jsongps.json_org
 ._*
+*_log.txt
