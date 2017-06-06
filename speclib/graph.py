@@ -390,28 +390,6 @@ def swapRowColIdx(m, i0, i1, inplace=False):
     return mt
 
 
-def removeSubCommunitiesDumb(df):
-    dct = collections.defaultdict(list)
-    for _, row in df.select_dtypes(exclude=['int']).iterrows():
-        comsize = row.count()
-        dct[comsize].append(frozenset(row.dropna()))
-
-    comsizeArr = np.array(sorted(dct.keys(), reverse=True))
-    clearedSet = {el for el in dct[comsizeArr[0]]}
-    itrClearedLst = list()
-
-    for comsize in comsizeArr[1:]:
-        for cmpsize in comsizeArr[comsizeArr > comsize]:
-            for small in dct[comsize]:
-                for big in clearedSet:
-                    if not small.issubset(big):
-                        itrClearedLst.append(tuple(small))
-        for com in itrClearedLst:
-            clearedSet.add(com)
-        itrClearedLst = list()
-    ret = pd.DataFrame((tuple(el) for el in clearedSet))
-    ret = ret.iloc[np.argsort(ret.count(axis=1))[::-1]].reset_index(drop=True)
-    return ret
 
 
 def genAllMatrixPermutations(m, dst=None):
