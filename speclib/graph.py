@@ -390,9 +390,28 @@ def swapRowColIdx(m, i0, i1, inplace=False):
     return mt
 
 
-
-
 def genAllMatrixPermutations(m, dst=None):
+    """Generate all row-column permutations of a graph.
+
+    Parameters
+    ----------
+    m : np.array
+        Adjacency matrix.
+    dst : np.array, optional
+        Write permuted matrix to this variable instead of including it in the yield for
+        every iteration.
+
+    Yields
+    ------
+    (tuple, np.array) or (tuple, None)
+        permutations and permuted matrix, or if the dst-option is used, the permuted
+        array is replaced with None.
+
+    Raises
+    ------
+    ValueError
+        If the input isn't a square matrix.
+    """
     if m.shape[0] != m.shape[1]:
         raise ValueError("The functions only accepts square matrices")
     s = m.shape[0]
