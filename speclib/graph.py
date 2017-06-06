@@ -414,25 +414,16 @@ def removeSubCommunitiesDumb(df):
     return ret
 
 
-def genAllMatrixPermutations(mat, dst=None):
-    if mat.shape[0] != mat.shape[1]:
+def genAllMatrixPermutations(m, dst=None):
+    if m.shape[0] != m.shape[1]:
         raise ValueError("The functions only accepts square matrices")
-    s = mat.shape[0]
-    m = mat.copy()
-    for i in range(s):
-        for j in range(i):
-            if i != j:
-                # Swap rows
-                ri = m[i, :].copy()
-                m[i, :] = m[j, :]
-                m[j, :] = ri
-                # Swap columns
-                ci = m[:, i].copy()
-                m[:, i] = m[:, j]
-                m[:, j] = ci
-                if dst is None:
-                    yield((i, j), m.copy())
-                else:
-                    np.copyto(dst, m)
-                    yield((i, j))
+    s = m.shape[0]
+    mc0 = m.copy()
+    mc1 = m.copy()
+    for p in itertools.permutations(list(range(s))):
+        # Swap rows
+        np.copyto(mc0, m[p, :])
+        # Swap columns
+        np.copyto(mc1, mc0[:, p])
+        yield mc1
 
