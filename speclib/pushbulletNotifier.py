@@ -14,7 +14,7 @@ class JobNotification(object):
     because it's completed.
     """
 
-    def __init__(self, devices="all"):
+    def __init__(self, devices="phone"):
         super(JobNotification, self).__init__()
         self.startTime = datetime.datetime.now()
         self.timeFormatString = r'%d/%m/%Y %H:%M:%S'
