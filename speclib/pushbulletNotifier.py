@@ -42,13 +42,12 @@ class JobNotification(object):
     def send(self, exception=None):
         self.endTime = datetime.datetime.now()
         callerFilename = inspect.stack()[1].filename
-        if exception is not None:
-            title = "Error! {callerFilename} have thrown an exception!".format(callerFilename=callerFilename)
-        else:
-            title = "{callerFilename} is done".format(callerFilename=callerFilename)
         msgLst = ["Runtime: {timeDelta}", "Started: {timeStarted}", "Finished: {timeEnded}"]
         if exception is not None:
+            title = "Error! {callerFilename} have thrown an exception!".format(callerFilename=callerFilename)
             msgLst = ["Error!:  " + str(exception)] + msgLst
+        else:
+            title = "{callerFilename} is done".format(callerFilename=callerFilename)
         msg = "\n".join(msgLst).format(
             callerFilename=callerFilename,
             timeDelta=self.pretty_time_delta(self.endTime - self.startTime),
@@ -58,8 +57,12 @@ class JobNotification(object):
 
 
 if __name__ == '__main__':
+    from time import sleep
     jn = JobNotification(devices="phone")
+    sleep(2)
     try:
         1/0
     except Exception as e:
         jn.send(e)
+    sleep(2)
+    jn.send()
