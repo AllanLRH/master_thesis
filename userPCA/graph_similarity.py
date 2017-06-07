@@ -22,32 +22,30 @@ import pandas as pd
 mpl.style.use('ggplot')
 
 import pickle
-from multiprocessing import Pool
 
 from speclib import graph
 from speclib.pushbulletNotifier import JobNotification
 
 jn = JobNotification()
 
+try:
 
-# Load the data:
-thresh = 0.95  # Throshold for Explanation Power
-with open('pca_result_clique.pickle', 'rb') as fid:
-    res = pickle.load(fid)
-    df = pd.DataFrame(res, columns=['clique', 'pca'])
-    del res
+    # Load the data:
+    thresh = 0.95  # Throshold for Explanation Power
+    with open('pca_result_clique.pickle', 'rb') as fid:
+        res = pickle.load(fid)
+        df = pd.DataFrame(res, columns=['clique', 'pca'])
+        del res
 
-df['cliquesize'] = df['clique'].apply(lambda lst: len(lst))
-print(f"There's {df.pca.isnull().sum()} null-rows in the dataframe, out of {df.shape[0]} rows.")
-print("Dropping rows with NaN's")
-df = df.dropna()
-df['ep'] = df.pca.apply(lambda pca: (np.cumsum(pca.explained_variance_ratio_) < thresh).sum())
-df['epcom'] = df.ep / df.cliquesize
+    df['cliquesize'] = df['clique'].apply(lambda lst: len(lst))
+    print(f"There's {df.pca.isnull().sum()} null-rows in the dataframe, out of {df.shape[0]} rows.")
+    print("Dropping rows with NaN's")
+    df = df.dropna()
+    df['ep'] = df.pca.apply(lambda pca: (np.cumsum(pca.explained_variance_ratio_) < thresh).sum())
+    df['epcom'] = df.ep / df.cliquesize
 
-
-def main(df, k, jn):
-    try:
-        eps = 1e-8  # Entries in the adjacency matrices below the value is set to 0
+    eps = 1e-8  # Entries in the adjacency matrices below the value is set to 0
+    for k in range(df.shape[0]):  # Loop over rows in df
         print(f"Processing {k+1} of {df.shape[0]}")
         ep = df.iloc[k].ep
         # chose the number of components required for a 95 % explanation power of the activity
@@ -88,27 +86,18 @@ def main(df, k, jn):
         ax.set_yticks(np.arange(arr.shape[0]) + 0.5, minor=True)
         ax.set_yticklabels(np.arange(arr.shape[0]) + 1, minor=True)
         ax.grid(True)
-        for ext in ('.pdf', '.png'):
-            fig.savefig('graph_similarity_plots/' +
-                        f'cliquesize_{df.iloc[k].cliquesize}_row_{k}__clique_' +
-                        '_'.join(df.iloc[k].clique) + '_pcolor' + ext)
+        basename = ('graph_similarity_plots/' +
+                    f'cliquesize_{df.iloc[k].cliquesize}_row_{k}_eq_{ep}_clique_' +
+                    '_'.join(df.iloc[k].clique) + '_{plottype}.pdf')
+        fig.savefig(basename.format(plottype='pcolor'))
 
         fig, ax = plt.subplots()
         ax.plot(np.nansum(arr, axis=0), label="Sum over rows")
         ax.plot(np.nansum(arr, axis=1), label="Sum over columns")
         ax.legend(loc='best')
-        for ext in ('.pdf', '.png'):
-            fig.savefig('graph_similarity_plots/' +
-                        f'cliquesize_{df.iloc[k].cliquesize}_row_{k}__clique_' +
-                        '_'.join(df.iloc[k].clique) + '_row_col_sum' + ext)
-        return (k, True)
+        fig.savefig(basename.format(plottype='row_col_sum'))
 
-    except Exception as e:
-        jn.send(f"Something went wrong with k = {k}", exception=e)
-        return (k, False)
-
-
-with Pool(16) as pool:
-    res = pool.starmap_async(main, [(df, i, jn) for i in range(df.shape[0])])
-    for ln in sorted(res, key=lambda x: x[0]):
-        print(ln)
+except Exception as e:
+    jn.send("An error occured", exception=e)
+finally:
+    jn.send("Done!")
