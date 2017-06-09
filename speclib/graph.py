@@ -48,6 +48,25 @@ def networkx2igraph(nxGraph):
     return igGraph
 
 
+def adjmat2igraph(m, directed=True, labels=None):
+    if m.ndim != 2:
+        raise ValueError(f"Input must be a matrix, but m.ndim = {m.ndim}.")
+    if m.shape[0] != m.shape[1]:
+        raise ValueError(f"Input must be a square matrix, but m.shape = {m.shape}.")
+    if directed:
+        g = ig.Graph((m > 0).tolist(), mode=ig.ADJ_DIRECTED)
+    else:
+        g = ig.Graph((m > 0).tolist(), mode=ig.ADJ_UNDIRECTED)
+    # assign weights from the adjacency matrix to the igraph graph
+    g.es['weight'] = m[m.nonzero()]
+    # Assign node names from the networkx graph to the igraph graph
+    if labels:
+        g.vs['label'] = labels
+    else:
+        g.vs['label'] = [str(i) for i in range(m.shape[0])]  # Give integer labels
+    return g
+
+
 def isSymmetric(m):
     """Check if a matrix (Numpy array) is summetric
 
