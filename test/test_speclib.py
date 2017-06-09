@@ -220,6 +220,19 @@ def test_userDf2nxGraph_Graph_random_data():
 
 
 @pytest.mark.graph
+def test_adjmat2igraph():
+    am = np.array([[0.0,         0.0,         0.0,         0.0,         0.0,         0.0        ],  # noqa
+                   [7.34369e-02, 0.0,         0.0,         8.78858e-04, 0.0,         0.0        ],  # noqa
+                   [2.62175e-04, 2.13876e-03, 0.0,         0.0,         0.0,         0.0        ],  # noqa
+                   [0.0,         1.56248e-03, 1.14052e-03, 0.0,         1.15074e-03, 6.10565e-01],  # noqa
+                   [5.90679e-02, 0.0,         0.0,         0.0,         0.0,         0.0        ],  # noqa
+                   [5.99719e-03, 1.78558e-03, 0.0,         1.55493e-03, 0.0,         0.0        ]])  # noqa
+    igGraph = graph.adjmat2igraph(am)
+    amReturned = np.array(igGraph.get_adjacency(attribute='weight').data)
+    assert np.allclose(am, amReturned)
+
+
+@pytest.mark.graph
 def test_networkx2igraph():
     n = 10
     p = 0.65
