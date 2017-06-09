@@ -38,25 +38,47 @@ def networkx2igraph(nxGraph):
     nxAdj = np.array(nx.adjacency_matrix(nxGraph).todense())
     # Use the binary adjacency matrix to construct the igraph graph
     if isinstance(nxGraph, nx.DiGraph):
-        igGraph = ig.Graph.Adjacency((nxAdj > 0).tolist(), mode=ig.ADJ_DIRECTED)
+        igGraph = adjmat2igraph(nxAdj, directed=True, labels=list(nxGraph.nodes()))
     else:
-        igGraph = ig.Graph.Adjacency((nxAdj > 0).tolist(), mode=ig.ADJ_UNDIRECTED)
-    # assign weights from the adjacency matrix to the igraph graph
-    igGraph.es['weight'] = nxAdj[nxAdj.nonzero()]
-    # Assign node names from the networkx graph to the igraph graph
-    igGraph.vs['label'] = list(nxGraph.nodes())
+        igGraph = adjmat2igraph(nxAdj, directed=False, labels=list(nxGraph.nodes()))
     return igGraph
 
 
 def adjmat2igraph(m, directed=True, labels=None):
+    """Convert an numpy adjacency matrix into an weighted igraph graph.
+
+    Parameters
+    ----------
+    m : np.array
+        Adjacency matrix, must be positive.
+    directed : bool, optional
+        Construct a directed graph, default True.
+    labels : list, optional
+        List of labels to use. Default is strings from 0 to "number of nodes".
+
+    Returns
+    -------
+    igraph.Graph
+        The weighted graph.
+
+    Raises
+    ------
+    ValueError
+        If the input isn't a 2d-matrix
+        If the adjacency matrix isn't square
+        If there's elements < 0 in the adjacency matrix
+    """
     if m.ndim != 2:
         raise ValueError(f"Input must be a matrix, but m.ndim = {m.ndim}.")
     if m.shape[0] != m.shape[1]:
         raise ValueError(f"Input must be a square matrix, but m.shape = {m.shape}.")
+    if np.any(m < 0):
+        raise ValueError(f"all entries in the adjacency matrix must be larger than 0 ({(m < 0).sum()} < 0)")
+
     if directed:
-        g = ig.Graph((m > 0).tolist(), mode=ig.ADJ_DIRECTED)
+        g = ig.Graph.Adjacency((m > 0).tolist(), mode=ig.ADJ_DIRECTED)
     else:
-        g = ig.Graph((m > 0).tolist(), mode=ig.ADJ_UNDIRECTED)
+        g = ig.Graph.Adjacency((m > 0).tolist(), mode=ig.ADJ_UNDIRECTED)
     # assign weights from the adjacency matrix to the igraph graph
     g.es['weight'] = m[m.nonzero()]
     # Assign node names from the networkx graph to the igraph graph
