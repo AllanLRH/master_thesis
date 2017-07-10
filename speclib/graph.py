@@ -433,6 +433,7 @@ def swapRowColIdx(m, i0, i1, inplace=False):
 
 def genAllMatrixPermutations(m, dst=None):
     """Generate all row-column permutations of a graph.
+    When row i and j are swapped, so are column i and j.
 
     Parameters
     ----------
@@ -453,11 +454,16 @@ def genAllMatrixPermutations(m, dst=None):
     ValueError
         If the input isn't a square matrix.
     """
+    if not isinstance(m, np.ndarray):
+        raise ValueError(f"m must be of type np.ndarray, but type(m) = {type(m)}")
+    if not (isinstance(dst, np.ndarray) or dst is None):
+        raise ValueError(f"dst must be of type np.ndarray or None, but type(dst) = {type(dst)}")
     if m.shape[0] != m.shape[1]:
         raise ValueError("The functions only accepts square matrices")
     s = m.shape[0]
-    mc0 = m.copy()
+    mc0 = m.copy()  # Don't modify the original matrix, store for column swapped matrix
     if dst is None:
+        # Don't modify the original matrix, store for row swapped matrix of which a copy is yielded
         mc1 = m.copy()
     for p in itertools.permutations(list(range(s))):
         # Swap rows
