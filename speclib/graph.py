@@ -509,9 +509,10 @@ def dotproductGraphCompare(m0, m1):
         raise ValueError(f"Matrices must be quadratic, but m0.shape = {m0.shape} and m1.shape = {m1.shape}")
     v = misc.stackColumns(m1)
     dotProduct = -np.inf
+    # The memory used by ⁄ m⁄  is used for the permuted matrix in each iteration in the loop
     m = np.zeros_like(m0)
     for _ in genAllMatrixPermutations(m0, dst=m):
         vp = misc.stackColumns(m)
         dp = np.dot(vp, v)
-        dotProduct = dp if dp > dotProduct else dotProduct
+        dotProduct = max(dp, dotProduct)
     return dotProduct
