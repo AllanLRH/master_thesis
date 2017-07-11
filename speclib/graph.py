@@ -442,6 +442,9 @@ def genAllMatrixPermutations(m, dst=None):
     dst : np.array, optional
         Write permuted matrix to this variable instead of including it in the yield for
         every iteration.
+        To obtain the permuted matrix from the original matrix and the permutations, do:
+            m = m[:, p]
+            m = m[p, :]
 
     Yields
     ------
