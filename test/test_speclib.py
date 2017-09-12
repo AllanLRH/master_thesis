@@ -19,7 +19,7 @@ d = os.path.dirname(c)
 e = os.path.split(d)
 sys.path.append(e[0])
 from speclib import misc, graph, plotting, loaders, userActivityFunctions  # noqa
-from pudb import set_trace
+from pudb import set_trace  # noqa
 
 
 @pytest.mark.userActivityFunctions
