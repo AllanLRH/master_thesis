@@ -355,5 +355,5 @@ def swapMatrixCols(m, c0, c1, inplace=False):
 
 
 def stackColumns(m):
-    assert m.ndim == 2, f"Input should be a matrix, but it have dimmension {m.ndim}."
+    assert m.ndim == 2, f"Input should be a 2D ndarray, but it have dimmension {m.ndim}."
     return m.T.flatten()
