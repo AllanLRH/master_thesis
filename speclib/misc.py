@@ -332,6 +332,24 @@ def getFirstDayInTimeseries(ts):
 
 
 def swapMatrixRows(m, r0, r1, inplace=False):
+    """Given a matrix m, swap rows with indices r0 and r1.
+
+    Parameters
+    ----------
+    m : np.ndarray
+        2D ndarray.
+    r0 : int
+        First row to swap.
+    r1 : int
+        Second row to swap.
+    inplace : bool, optional
+        If True, make the swapping inplace, otherwise return a swapped copy of the matrix.
+
+    Returns
+    -------
+    None or ndarray
+        None if inplace is True, the swapped matrix otherwise.
+    """
     if inplace:
         m[[r0, r1]] = m[[r1, r0]]
         return None
@@ -342,6 +360,24 @@ def swapMatrixRows(m, r0, r1, inplace=False):
 
 
 def swapMatrixCols(m, c0, c1, inplace=False):
+    """Given a matrix m, swap columns with indices c0 and c1.
+
+    Parameters
+    ----------
+    m : np.ndarray
+        2D ndarray.
+    c0 : int
+        First column to swap.
+    c1 : int
+        Second column to swap.
+    inplace : bool, optional
+        If True, make the swapping inplace, otherwise return a swapped copy of the matrix.
+
+    Returns
+    -------
+    None or ndarray
+        None if inplace is True, the swapped matrix otherwise.
+    """
     if inplace:
         col0 = m[:, c0].copy()
         m[:, c0] = m[:, c1]
@@ -355,6 +391,17 @@ def swapMatrixCols(m, c0, c1, inplace=False):
 
 
 def stackColumns(m):
+    """Stacks culumns of a matrix.
+
+    Parameters
+    ----------
+    m : np.ndarray
+        2D ndarray
+
+    Returns
+    -------
+    np.ndarray
+    """
     assert m.ndim == 2, f"Input should be a 2D ndarray, but it have dimmension {m.ndim}."
     return m.T.flatten()
 
