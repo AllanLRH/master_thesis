@@ -9,6 +9,7 @@ import networkx as nx
 import igraph as ig
 import palettable
 import itertools
+import seaborn as sns
 from speclib import graph
 from speclib import netgraph
 
@@ -743,6 +744,38 @@ def jitter_layout(layout, scale=1/7):
     layout = np.array(layout)
     layout *= 1.0 + ((np.random.randn(*layout.shape) - 0.5)*scale)
     return layout.tolist()
+
+
+def heatmapFromGridsearchDf(df, **kwargs):
+    """Plot a heatmap of the result from a grid search cross validation, which are
+    preprocessed using the misc.gridsearch2dataframe function.
+    Note that there must be exactly 2 culumns in df starting with 'param_'.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame with results.
+    **kwargs
+        Additional arguments to sns.heatmap.
+
+    Returns
+    -------
+    (fig, ax)
+        Figure and axis for the created plot.
+    """
+    kwargs.setdefault('cmap', 'YlGnBu_r')
+
+    # Transform data
+    dfp = df[df.param_kernel == 'rbf'].drop('param_kernel', axis=1)
+    newIndex = [el for el in dfp.columns if el.startswith('param_')]
+    assert len(newIndex) == 2, "There must be exactly 2 columns starting with 'param_' in df"
+    dfp = dfp.set_index(newIndex).unstack()
+
+    # Make the heatmap
+    ax = sns.heatmap(dfp, xticklabels=dfp.columns.levels[1], **kwargs)
+    ax.set_xlabel(ax.get_xlabel().split('_')[-1])  # get rid of the 'param_' part of the name
+    ax.set_ylabel(ax.get_ylabel().split('_')[-1])  # get rid of the 'param_' part of the name
+    return plt.gcf(), ax
 
 
 if __name__ == '__main__':

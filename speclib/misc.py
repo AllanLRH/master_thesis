@@ -357,3 +357,26 @@ def swapMatrixCols(m, c0, c1, inplace=False):
 def stackColumns(m):
     assert m.ndim == 2, f"Input should be a 2D ndarray, but it have dimmension {m.ndim}."
     return m.T.flatten()
+
+
+def gridsearch2dataframe(clf, score='mean_test_score'):
+    """Turn a grid search result into a dataframe with irrelevant data discarded.
+    The result is readdy to be passed to the plotting.heatmapFromGridsearchDf function.
+
+    Parameters
+    ----------
+    clf : sklearn.model_selection.GridSearchCV
+        The result of the grid search.
+    score : str, optional
+        Name of the score-column to keep.
+
+    Returns
+    -------
+    DataFrame
+    """
+    df = pd.DataFrame(clf.cv_results_)
+    # Remove unnecssary columns
+    keepcols = {k for k in df.columns if k.startswith('param_')}
+    toDrop = set(df.columns) - keepcols - {score}
+    df = df.drop(toDrop, axis=1)
+    return df
