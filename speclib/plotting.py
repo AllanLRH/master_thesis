@@ -10,6 +10,7 @@ import igraph as ig
 import palettable
 import itertools
 import seaborn as sns
+from sklearn import metrics
 from speclib import graph
 from speclib import netgraph
 
@@ -776,6 +777,37 @@ def heatmapFromGridsearchDf(df, **kwargs):
     ax.set_xlabel(ax.get_xlabel().split('_')[-1])  # get rid of the 'param_' part of the name
     ax.set_ylabel(ax.get_ylabel().split('_')[-1])  # get rid of the 'param_' part of the name
     return plt.gcf(), ax
+
+
+def plotROC(target, prob, ax=None):
+    """Create a ROC plot.
+
+    Parameters
+    ----------
+    target : array of ints or similar categorical
+        Correct answer.
+    prob : array of floats
+        Probabiliti to predict target.
+    ax : None, Matplotlib axis
+        Matplotlib axis
+
+    Returns
+    -------
+    tuple
+        (fig, ax, auc)
+    """
+    assert len(target) == len(prob), "target and prob must be the same size"
+    fpr, tpr, threshold = metrics.roc_curve(target, prob)
+    if ax is None:
+        fig, ax = plt.subplots()
+    else:
+        fig = ax.figure
+    ax.plot(fpr, tpr, '.-', lw=0.5, markersize=4)
+    ax.set_ylabel('TPR')
+    ax.set_xlabel('FPR')
+    auc = metrics.auc(fpr, tpr)
+    print("AUC:", auc)
+    return (fig, ax, auc)
 
 
 if __name__ == '__main__':
