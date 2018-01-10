@@ -18,7 +18,7 @@ c = os.path.abspath(b)
 d = os.path.dirname(c)
 e = os.path.split(d)
 sys.path.append(e[0])
-from speclib import misc, graph, plotting, loaders, userActivityFunctions  # noqa
+from speclib import misc, graph, plotting, loaders, userActivityFunctions, modeleval  # noqa
 from pudb import set_trace  # noqa
 
 
@@ -426,3 +426,18 @@ def test_genAllMatrixPermutations_5():
     m = np.arange(6).reshape((2, 3))
     with pytest.raises(ValueError):
         list(graph.genAllMatrixPermutations(m))
+
+
+@pytest.mark.modeleval
+def test_stratifiedCrossEval_1():
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.datasets import make_classification
+    X, y = make_classification(n_samples=100, n_features=5, n_informative=5,
+                               n_redundant=0, n_classes=2, n_clusters_per_class=1,
+                               scale=1.0, shuffle=True, random_state=42)
+    lr = LogisticRegression()
+    perf_df = modeleval.stratifiedCrossEval(X, y, lr)
+    assert 'accuracy' in perf_df.columns
+    assert 'AUC' in perf_df.columns
+    assert ~(pd.isnull(perf_df.values.flatten()).any())
+    print("\n", perf_df)

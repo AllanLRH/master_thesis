@@ -39,9 +39,9 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
         DataFrame with the performance of all metrics for each evaluation.
     """
     if metricFunctions is None:
-        metricFunctions = [('AUC', metrics.auc),
-                           ('accuracy', lambda tru, pre: metrics.accuracy(tru, pre > 0.5))]
-    metricNames, metricFunctions = tuple(zip(*metricFunctions))  # unpack metricFunctions
+        metricFunctions = [('AUC', metrics.roc_auc_score),
+                           ('accuracy', lambda tru, pre: metrics.accuracy_score(tru, pre > 0.5))]
+    metricNames, _ = tuple(zip(*metricFunctions))  # unpack metricFunctions
 
     sss = model_selection.StratifiedShuffleSplit(n_splits, test_size)
 
@@ -67,5 +67,4 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
         # Evalueate metrics
         for name, func in metricFunctions:
             df.loc[i, name] = func(y_te, model_prediction)
-
-        return df
+    return df
