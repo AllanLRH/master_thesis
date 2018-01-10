@@ -69,3 +69,32 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
         for name, func in metricFunctions:
             df.loc[i, name] = func(y_te, model_prediction)
     return df
+
+
+def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits=5, test_size=0.3):
+    sss = model_selection.StratifiedShuffleSplit(n_splits, test_size)
+    clf = model_selection.GridSearchCV(model, param_grid=tuned_parameters, scoring=score, n_jobs=75)
+
+    df = pd.DataFrame(index=np.arange(n_splits), columns=[score, 'best_params'])
+    df.index.name = 'fold'
+
+    # Do the cross validation
+    for i, (train_index, test_index) in enumerate(sss.split(X, y)):
+        X_tr, X_te = X[train_index], X[test_index]
+        y_tr, y_te = y[train_index], y[test_index]
+
+        # sanity check
+        assert X_tr.shape[0] == y_tr.shape[0], f"Dimmension mismatch X_tr.shape: {X_tr.shape} y_tr.shape: {y_tr.shape}"
+        assert X_te.shape[0] == y_te.shape[0], f"Dimmension mismatch X_te.shape: {X_te.shape} y_te.shape: {y_te.shape}"
+
+        # Do grid search
+        clf.fit(X_tr, y_tr)
+
+        # if hasattr(clf, 'predict_proba'):
+        #     model_prediction = clf.predict_proba(X_te)
+        # else:
+        #     model_prediction = clf.predict(X_te)
+        df.loc[i, score] = clf.best_score_
+        df.loc[i, 'best_params'] = tuple(clf.best_params_.items())
+
+    return df
