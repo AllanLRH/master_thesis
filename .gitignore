@@ -58,3 +58,4 @@ joachim_exercise/statMlFunctions.py
 joachim_exercise/svm_all_data_predict_train_data_training_roc_curve.pdf
 joachim_exercise/svm_test_data_roc_curve.pdf
 joachim_exercise/svm_training_data_roc_curve.pdf
+*.pdf
