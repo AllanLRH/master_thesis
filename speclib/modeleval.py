@@ -98,3 +98,24 @@ def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits
         df.loc[i, 'best_params'] = tuple(clf.best_params_.items())
 
     return df
+
+
+def construct_subsearch_tuned_parameters(best_params, tuned_parameters_old, n_gridpoints=15):
+    newTuned = list()
+    for dct in tuned_parameters_old:
+        nDct = dict()
+        for key, arr in dct.items():
+            best = best_params[key]
+            if isinstance(arr, np.ndarray):
+                if arr.size <= 3:
+                    raise ValueError("Array assiciated with key the {key} are of length {arr.size}, but need to be longer than 3.")
+                idx = np.where(np.isclose(arr, best))[0][0]
+                mid_idx = len(arr)//2
+                point_ratio = arr[mid_idx]/arr[mid_idx+1]
+                if point_ratio > 1:
+                    point_ratio = 1/point_ratio
+                nDct[key] = np.linspace(arr[idx]*point_ratio, arr[idx]/point_ratio, n_gridpoints)
+            else:
+                nDct[key] = arr
+        newTuned.append(nDct)
+    return newTuned

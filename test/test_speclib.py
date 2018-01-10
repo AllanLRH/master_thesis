@@ -455,3 +455,29 @@ def test_gridsearchCrossVal_1():
     perf_df = modeleval.gridsearchCrossVal(X, y, lr, tuned_parameters, 'accuracy')
     assert ~(pd.isnull(perf_df.values.flatten()).any())
     print("\n\n", perf_df)
+
+
+@pytest.mark.modeleval
+@pytest.mark.now
+def test_construct_subsearch_tuned_parameters_1():
+    # set_trace()
+    tuned_parameters = [{'C': np.array([0.01, 0.1, 1, 10, 100, 1000]), 'penalty': ['l1', 'l2']}]
+    best_params = {'C': 10, 'penalty': 'l2'}
+    new_sub_params = modeleval.construct_subsearch_tuned_parameters(best_params,
+                                                                    tuned_parameters,
+                                                                    n_gridpoints=3)
+    dct = new_sub_params[0]
+    assert np.allclose(dct['C'], np.array([1.0, 50.5, 100.0]))
+    assert dct['penalty'] == ['l1', 'l2']
+
+
+@pytest.mark.modeleval
+@pytest.mark.now
+def test_construct_subsearch_tuned_parameters_2():
+    # set_trace()
+    tuned_parameters = [{'C': np.array([0.01, 0.1, 1]), 'penalty': ['l1', 'l2']}]
+    best_params = {'C': 10, 'penalty': 'l2'}
+    with pytest.raises(ValueError):
+        new_sub_params = modeleval.construct_subsearch_tuned_parameters(best_params,  # noqa
+                                                                        tuned_parameters,
+                                                                        n_gridpoints=3)
