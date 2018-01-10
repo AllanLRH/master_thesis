@@ -21,7 +21,7 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
     y : np.ndarray
         Correct prediction.
     model : Scikit Learn Classifier
-        It must support the predict_proba method
+        Predict_proba will be used for model evaluation if it's avaiable.
     metricFunctions : list of (str, function), optional
         List with [(functionname, function)]. Function must take the arguments
         (true_prediction, predicted).
@@ -58,7 +58,11 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
         assert X_te.shape[0] == y_te.shape[0], f"Dimmension mismatch X_te.shape: {X_te.shape} y_te.shape: {y_te.shape}"
 
         model.fit(X_tr, y_tr)
-        model_prediction = model.predict_proba(X_te)[:, 1]
+        if hasattr(model, 'predict_proba'):
+            model_prediction = model.predict_proba(X_te)[:, 1]
+        else:
+            model_prediction = model.predict(X_te)[:, 1]
+
 
         # Evalueate metrics
         for name, func in metricFunctions:
