@@ -779,7 +779,7 @@ def heatmapFromGridsearchDf(df, **kwargs):
     return plt.gcf(), ax
 
 
-def plotROC(target, prob, ax=None):
+def plotROC(target, prob, ax=None, auc_do=print):
     """Create a ROC plot.
 
     Parameters
@@ -790,6 +790,8 @@ def plotROC(target, prob, ax=None):
         Probabiliti to predict target.
     ax : None, Matplotlib axis
         Matplotlib axis
+    auc_do : function or None
+        Pass in print or display function from IPython to print or display auc
 
     Returns
     -------
@@ -806,7 +808,8 @@ def plotROC(target, prob, ax=None):
     ax.set_ylabel('TPR')
     ax.set_xlabel('FPR')
     auc = metrics.auc(fpr, tpr)
-    print("AUC:", auc)
+    if auc_do is not None:
+        auc_do("AUC: {}".format(auc))
     return (fig, ax, auc)
 
 
