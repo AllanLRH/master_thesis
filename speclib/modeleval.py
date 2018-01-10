@@ -47,6 +47,7 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
 
     # for storing results of metric evaluation
     df = pd.DataFrame(index=np.arange(n_splits), columns=metricNames)
+    df.index.name = 'fold'
 
     # Do the cross validation
     for i, (train_index, test_index) in enumerate(sss.split(X, y)):
