@@ -178,3 +178,57 @@ def constructSubsearchTunedParameters(best_params, tuned_parameters_old, n_gridp
                 nDct[key] = arr
         newTuned.append(nDct)
     return newTuned
+
+
+def fitAndEvalueateModel(X, y, model, tuned_parameters, score, n_splits=5, test_size=0.2,
+                         n_gridpoints=20):
+    """Wraps the functions gridsearchCrossVal, constructSubsearchTunedParameters and
+    stratifiedCrossEval to easily
+      1.  Do a coarse grid search with cross validation for fitting the model.
+      2.  Construct a finer grid around the best parameters found in the previous step.
+      3.  Repeat the grid search cross validation on the finer grid.
+      4.  Evalueate the performance of the model using the new parameters.
+
+    Parameters
+    ----------
+      See functions above.
+
+    Returns
+    -------
+    tuple of (DataFrame, DataFrame, DataFrame)
+        (DataFrame from coarse grid search, DataFrame from fine grid search,
+         DataFrame from cross validation evaluation of model performance)
+    """
+    perf_df = gridsearchCrossVal(X, y, model, tuned_parameters, score)
+    best_params = dict(perf_df.loc[perf_df.accuracy.argmax(), 'best_params'])
+    subsearch_params = constructSubsearchTunedParameters(best_params, tuned_parameters,
+                                                         n_gridpoints=n_gridpoints)
+    perf_df_sub = gridsearchCrossVal(X, y, model, subsearch_params, score)
+    best_params_sub = dict(perf_df.loc[perf_df.accuracy.argmax(), 'best_params'])
+    perf_eval_df = stratifiedCrossEval(X, y, model.set_params(**best_params_sub),
+                                       n_splits=n_splits, test_size=test_size)
+    return (perf_df, perf_df_sub, perf_eval_df)
+
+
+def summarizePerformanveEval(df, print_only=False):
+    """Pretty-print the mean ± std of the dataframe output of stratifiedCrossEval.
+
+    Parameters
+    ----------
+    df : Dataframe
+        DataFrame from the stratifiedCrossEval function.
+    print_only : bool, optional
+        Don't return a list of strings, just print them. Default is False.
+
+    Returns
+    -------
+    list or None
+        List of pretty formatted strings, unless print_only is True.
+    """
+    mean = df.mean()
+    std = df.std()
+    str_lst = ["{} = {:0.3f} ± {:0.3f}".format(lbl, mean.loc[lbl], std.loc[lbl]) for lbl in mean.index]
+    if print_only:
+        print(*str_lst, sep='\n')
+        return None
+    return str_lst
