@@ -72,6 +72,40 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
 
 
 def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits=5, test_size=0.3):
+    """Fit a model for the best parameters using a grid search with stratified cross valication.
+
+    Parameters
+    ----------
+    X : np.ndarray
+        Feature space, must be of size (n,) or (n, m).
+    y : np.ndarray
+        Target variable, must be of size (n, ).
+    model : Scikit Learn model (an instance, not class definition)
+        The model to be used in the classification.
+    tuned_parameters : list with dict(s)
+        Parameters to be used in the grid search
+        List with dict(s), where the keys in a dict corresponds to the keyword arguments
+        for the model. The keys maps to in iterable containing the values used in the
+        grid search, and if the values are numeric, they should be a np.ndarray in order
+        to be useful in conjunction with the function constructSubsearchTunedParameters.
+    score : str
+        The score to be used — see Scikit Learn's documentation.
+    n_jobs : int, optional
+        Number of cores to use in the grid search. Default is 75.
+    n_splits : int, optional
+        Number of splits/runs to do in the cross validation process. Default 5.
+    test_size : float, optional
+        Fraction of data to be reserved for the test data set. Default is 0.3.
+
+    Returns
+    -------
+    pd.DataFrame
+        Pandas DataFrame with the results of the cross validation.
+        The first column are the results of the score evaluation, the second column are
+        a tuple with the arguments. NOTE that it's a tuple because a dict couldn't be
+        embedded in the DataFrame, but it can (and should) be converted to a dict if it's
+        to be used in a keywords arguments expansion.
+    """
     sss = model_selection.StratifiedShuffleSplit(n_splits, test_size)
     clf = model_selection.GridSearchCV(model, param_grid=tuned_parameters, scoring=score, n_jobs=75)
 
@@ -101,6 +135,31 @@ def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits
 
 
 def constructSubsearchTunedParameters(best_params, tuned_parameters_old, n_gridpoints=15):
+    """Construct a new set of grid points for a sub-grid cross validation, given the old
+       grid points and the best result of the previous cross valudation.
+       It assunes that the ratio between point n-1 and n, and n and n+1 are the same, and
+       will use "linspace((n-1), n+1, n_gridpoints)"" to search around the best_params
+       value with index n.
+
+    Parameters
+    ----------
+    best_params : dict
+        **kwargs-like dict with parameters for the Scikit Learn model.
+    tuned_parameters_old : list with dicts.
+        The old set of search parameters, see the docs for gridsearchCrossVal.
+    n_gridpoints : int, optional
+        Number of points in the subgrid search. Default is 20.
+
+    Returns
+    -------
+    list of dict(s)
+        A net set of set of parameters to be tuned.
+
+    Raises
+    ------
+    ValueError
+        If the length if a numerical array in the original search space are less than 4.
+    """
     newTuned = list()
     for dct in tuned_parameters_old:
         nDct = dict()
