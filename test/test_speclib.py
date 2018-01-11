@@ -458,26 +458,26 @@ def test_gridsearchCrossVal_1():
 
 
 @pytest.mark.modeleval
-@pytest.mark.now
-def test_construct_subsearch_tuned_parameters_1():
+def test_constructSubsearchTunedParameters_1():
     # set_trace()
     tuned_parameters = [{'C': np.array([0.01, 0.1, 1, 10, 100, 1000]), 'penalty': ['l1', 'l2']}]
     best_params = {'C': 10, 'penalty': 'l2'}
-    new_sub_params = modeleval.construct_subsearch_tuned_parameters(best_params,
-                                                                    tuned_parameters,
-                                                                    n_gridpoints=3)
+    new_sub_params = modeleval.constructSubsearchTunedParameters(best_params,
+                                                                 tuned_parameters,
+                                                                 n_gridpoints=3)
     dct = new_sub_params[0]
     assert np.allclose(dct['C'], np.array([1.0, 50.5, 100.0]))
     assert dct['penalty'] == ['l1', 'l2']
+    assert len(new_sub_params) == 1
 
 
 @pytest.mark.modeleval
-@pytest.mark.now
-def test_construct_subsearch_tuned_parameters_2():
+def test_constructSubsearchTunedParameters_2():
     # set_trace()
     tuned_parameters = [{'C': np.array([0.01, 0.1, 1]), 'penalty': ['l1', 'l2']}]
     best_params = {'C': 10, 'penalty': 'l2'}
     with pytest.raises(ValueError):
-        new_sub_params = modeleval.construct_subsearch_tuned_parameters(best_params,  # noqa
-                                                                        tuned_parameters,
-                                                                        n_gridpoints=3)
+        new_sub_params = modeleval.constructSubsearchTunedParameters(best_params,  # noqa
+                                                                     tuned_parameters,
+                                                                     n_gridpoints=3)
+
