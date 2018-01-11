@@ -100,7 +100,7 @@ def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits
     return df
 
 
-def construct_subsearch_tuned_parameters(best_params, tuned_parameters_old, n_gridpoints=15):
+def constructSubsearchTunedParameters(best_params, tuned_parameters_old, n_gridpoints=15):
     newTuned = list()
     for dct in tuned_parameters_old:
         nDct = dict()
