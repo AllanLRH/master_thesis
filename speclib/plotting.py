@@ -3,6 +3,8 @@
 
 from collections import Iterable
 import numpy as np
+import pandas as pd
+import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -811,6 +813,49 @@ def plotROC(target, prob, ax=None, auc_do=print):
     if auc_do is not None:
         auc_do("AUC: {}".format(auc))
     return (fig, ax, auc)
+
+
+def boxplot_dataframe_columns(df, subplot=True):
+    """Make a boxplot of the pd.value_counts() of the columns in a dataframe.
+    There's always produced 2 figures, where the second are log scaled.
+
+    Parameters
+    ----------
+    df : DataFrame
+        Dataframe whose columns are to be plottted
+    subplot : bool, optional
+        Return the figures on a [17, 7] boxplot if True, return two figures otherwise.
+
+    Returns
+    -------
+    ((fig, ax), (fig, ax)) or (fig, (ax1, ax2))
+        Returns figure and axis handles, depending on the argument subplot.
+    """
+    def _plot_on_axis(ser, ax, log=False):
+        if log:
+            ax.set_yscale('log')
+        sns.boxplot(data=ser, ax=ax)
+        fig_xticks = [lb.replace('__answer', '').replace('_', ' ').title() for lb in ser.index]
+        ax.set_xticklabels(fig_xticks, rotation=40, ha='right')
+        ax.grid(True, which='major', axis='both')
+
+    dct = dict()
+    for name, col in ((col, df[col]) for col in df.columns if col.endswith('__answer')):
+        dct[name] = col.value_counts().values
+    ser = pd.Series(dct)
+    if subplot:
+        fig, (ax0, ax1) = plt.subplots(1, 2, figsize=[17, 7])
+        _plot_on_axis(ser, ax0)
+        _plot_on_axis(ser, ax1, log=True)
+        return (fig, (ax0, ax1))
+    else:
+        (fig1, ax1), (fig2, ax2) = plt.subplots(), plt.subplots()
+        _plot_on_axis(ser, ax1)
+        _plot_on_axis(ser, ax2, log=True)
+        return ((fig1, ax1), (fig2, ax2))
+
+
+
 
 
 if __name__ == '__main__':
