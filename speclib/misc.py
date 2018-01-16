@@ -441,7 +441,7 @@ def inNotebook():
         return False
 
 
-def questionSummary(df, qstr, N=12):
+def questionSummary(df, qstr, samplesize=0):
     """Show a summary of a question.
 
     Parameters
@@ -450,7 +450,7 @@ def questionSummary(df, qstr, N=12):
         DataFrame with questions
     qstr : str
         String to be used in the df.filter(like=qstr) to filter out question columns.
-    N : int, optional
+    samplesize : int, optional
         Number of samples to display from df.
 
     Raises
@@ -458,14 +458,13 @@ def questionSummary(df, qstr, N=12):
     ValueError
         If qstr matches more than one question.
     """
-    dfs = df.filter(like=qstr)
+    dfs = df.filter(regex=qstr + '__')
     basename = dfs.columns[0].split('__')[0]
     if dfs.shape[1] != 5:
         column_names = ''.join(sorted({'\n• ' + el.split('__')[0] for el in dfs.columns}))
         raise ValueError("The query string matches more than one answer, specify to match one of these:" + column_names)
     dfs_question = dfs[basename + '__question'][0]
     dfs_answer_type = dfs[basename + '__answer_type'][0]
-    dfs_print = dfs.sample(N).drop([basename + '__' + el for el in ('answer_type', 'question', 'condition')], axis=1)
     dfs_answer_vc = pd.DataFrame(dfs[basename + '__answer'].value_counts())
     dfs_response_vc = pd.DataFrame(dfs[basename + '__response'].value_counts())
     sort_idx = np.argsort(dfs_answer_vc.index)
@@ -476,14 +475,56 @@ def questionSummary(df, qstr, N=12):
     dfs_resp_ans = dfs_response_vc.join(dfs_answer_vc)
 
     if inNotebook():
-        display(HTML('<b>Answer Question:</b>  ' + dfs_question))
-        display(HTML('<b>Answer type:</b>    <tt>' + dfs_answer_type + '</tt>'))
+        display(HTML('<h3><i>Answer Question:</i>  ' + dfs_question + '</h3>'))
+        display(HTML('<i>Question str:</i>    <tt>' + qstr + '</tt>'))
+        display(HTML('<i>Answer type:</i>    <tt>' + dfs_answer_type + '</tt>'))
         display(dfs_resp_ans)
-        if N > 0:
-            display(dfs_print.sample(N))
+        if samplesize > 0:
+            dfs_print = dfs.sample(samplesize).drop([basename + '__' + el for el in ('answer_type', 'question', 'condition')], axis=1)
+            display(dfs_print)
     else:
         print('Answer Question:  ' + dfs_question)
         print('Answer type:  ' + dfs_answer_type, end='\n\n')
         print(tabulate.tabulate(dfs_resp_ans, dfs_resp_ans.columns, tablefmt='pqsl'), end='\n\n')
         print(tabulate.tabulate(dfs_print.sample(N), dfs_print.columns, tablefmt='pqsl'), end='\n\n')
 
+
+class QuestionCompleter():
+
+    """Use to autocomplete questions (colums) from a DataFrame.
+    It autocompletes base questions as well as individual columns.
+    """
+
+    def __init__(self, _df, which='both'):
+        """Init method
+
+        Parameters
+        ----------
+        _df : DataFrame
+            DataFrame whose columns to complete from.
+        which : str, optional
+            What to complete, valid values are'both', 'questions' or 'columns'
+
+        Raises
+        ------
+        ValueError
+            If invalid value are given as the which-argument.
+        """
+        if which not in "both questions columns".split():
+            raise ValueError("which-argument must be 'both', 'columns' or 'questions', but was %s" % which)
+        self._names = dict()
+        if (which == 'questions' or which == 'both'):
+            self._names.update({el[0]: el[0] for el in _df.columns.str.split('__')})
+        if (which == 'columns' or which == 'both'):
+            self._names.update({el: el for el in _df.columns})
+        self._keys = self._names.keys()
+
+    def __getattr__(self, attr):
+        return self._names[attr]
+
+    def __dir__(self):
+        return self._keys
+
+
+def questionResponse(df, qstr):
+    return df[qstr + '__response'].value_counts().iloc[np.argsort(df[qstr + '__answer'].value_counts().index)]
