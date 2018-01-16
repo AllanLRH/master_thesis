@@ -815,43 +815,57 @@ def plotROC(target, prob, ax=None, auc_do=print):
     return (fig, ax, auc)
 
 
-def boxplot_dataframe_columns(df, subplot=True):
-    """Make a boxplot of the pd.value_counts() of the columns in a dataframe.
+def boxplot_dataframe_answer_columns(df, subplot=True, seaborn_args=None,
+                                     matplotlib_args=None, xlabelrotation=40, ha='right'):
+    """Make a boxplot of the __answer-column processed with pd.value_counts() of all the
+    columns in a dataframe.
     There's always produced 2 figures, where the second are log scaled.
 
     Parameters
     ----------
     df : DataFrame
-        Dataframe whose columns are to be plottted
+        Dataframe whose columns are to be plottted.
     subplot : bool, optional
         Return the figures on a [17, 7] boxplot if True, return two figures otherwise.
+    seaborn_args : dict or None, optional
+        kwargs passed to seaborn.
+    matplotlib_args : dict or None, optional
+        kwargs passed to matplotlib.
+    xlabelrotation : int, optional
+        Rotation of x-labels in degrees.
+    ha : str, optional
+        Alignment of labels ('left', 'center', 'right').
 
     Returns
     -------
     ((fig, ax), (fig, ax)) or (fig, (ax1, ax2))
         Returns figure and axis handles, depending on the argument subplot.
     """
-    def _plot_on_axis(ser, ax, log=False):
+    def _plot_on_axis(ser, ax, seaborn_args, matplotlib_args, log=False,
+                      xlabelrotation=xlabelrotation, ha=ha):
         if log:
             ax.set_yscale('log')
-        sns.boxplot(data=ser, ax=ax)
+        sns.boxplot(data=ser, ax=ax, boxprops=matplotlib_args, **seaborn_args)
         fig_xticks = [lb.replace('__answer', '').replace('_', ' ').title() for lb in ser.index]
-        ax.set_xticklabels(fig_xticks, rotation=40, ha='right')
+        ax.set_xticklabels(fig_xticks, rotation=xlabelrotation, ha=ha)
         ax.grid(True, which='major', axis='both')
 
+    # must be dict, not None
+    matplotlib_args = matplotlib_args if matplotlib_args else dict()
+    seaborn_args    = seaborn_args if seaborn_args else dict()
     dct = dict()
     for name, col in ((col, df[col]) for col in df.columns if col.endswith('__answer')):
         dct[name] = col.value_counts().values
     ser = pd.Series(dct)
     if subplot:
         fig, (ax0, ax1) = plt.subplots(1, 2, figsize=[17, 7])
-        _plot_on_axis(ser, ax0)
-        _plot_on_axis(ser, ax1, log=True)
+        _plot_on_axis(ser, ax0, seaborn_args, matplotlib_args)
+        _plot_on_axis(ser, ax1, seaborn_args, matplotlib_args, log=True)
         return (fig, (ax0, ax1))
     else:
         (fig1, ax1), (fig2, ax2) = plt.subplots(), plt.subplots()
-        _plot_on_axis(ser, ax1)
-        _plot_on_axis(ser, ax2, log=True)
+        _plot_on_axis(ser, ax1, seaborn_args, matplotlib_args)
+        _plot_on_axis(ser, ax2, seaborn_args, matplotlib_args, log=True)
         return ((fig1, ax1), (fig2, ax2))
 
 
