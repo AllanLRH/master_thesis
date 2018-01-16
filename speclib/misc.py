@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn import decomposition
 import multiprocessing
+import tabulate
+from IPython.display import display, HTML
 
 
 def color2igraphColor(color):
@@ -427,3 +429,61 @@ def gridsearch2dataframe(clf, score='mean_test_score'):
     toDrop = set(df.columns) - keepcols - {score}
     df = df.drop(toDrop, axis=1)
     return df
+
+
+def inNotebook():
+    """
+    Returns True if called fron a Notebook, False otherwise.
+    """
+    try:
+        return len(get_ipython().config) > 0
+    except NameError:
+        return False
+
+
+def questionSummary(df, qstr, N=12):
+    """Show a summary of a question.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame with questions
+    qstr : str
+        String to be used in the df.filter(like=qstr) to filter out question columns.
+    N : int, optional
+        Number of samples to display from df.
+
+    Raises
+    ------
+    ValueError
+        If qstr matches more than one question.
+    """
+    dfs = df.filter(like=qstr)
+    basename = dfs.columns[0].split('__')[0]
+    if dfs.shape[1] != 5:
+        column_names = ''.join(sorted({'\n• ' + el.split('__')[0] for el in dfs.columns}))
+        raise ValueError("The query string matches more than one answer, specify to match one of these:" + column_names)
+    dfs_question = dfs[basename + '__question'][0]
+    dfs_answer_type = dfs[basename + '__answer_type'][0]
+    dfs_print = dfs.sample(N).drop([basename + '__' + el for el in ('answer_type', 'question', 'condition')], axis=1)
+    dfs_answer_vc = pd.DataFrame(dfs[basename + '__answer'].value_counts())
+    dfs_response_vc = pd.DataFrame(dfs[basename + '__response'].value_counts())
+    sort_idx = np.argsort(dfs_answer_vc.index)
+    dfs_answer_vc = dfs_answer_vc.iloc[sort_idx].reset_index().rename(columns={'index': 'answer_index',
+                                                                               basename + '__answer': 'count'})
+    dfs_response_vc = dfs_response_vc.iloc[sort_idx].reset_index().rename(columns={'index': 'response_index'})
+    dfs_response_vc = dfs_response_vc.drop(basename + '__response', axis=1)
+    dfs_resp_ans = dfs_response_vc.join(dfs_answer_vc)
+
+    if inNotebook():
+        display(HTML('<b>Answer Question:</b>  ' + dfs_question))
+        display(HTML('<b>Answer type:</b>    <tt>' + dfs_answer_type + '</tt>'))
+        display(dfs_resp_ans)
+        if N > 0:
+            display(dfs_print.sample(N))
+    else:
+        print('Answer Question:  ' + dfs_question)
+        print('Answer type:  ' + dfs_answer_type, end='\n\n')
+        print(tabulate.tabulate(dfs_resp_ans, dfs_resp_ans.columns, tablefmt='pqsl'), end='\n\n')
+        print(tabulate.tabulate(dfs_print.sample(N), dfs_print.columns, tablefmt='pqsl'), end='\n\n')
+
