@@ -486,7 +486,7 @@ def questionSummary(df, qstr, samplesize=0):
         print('Answer Question:  ' + dfs_question)
         print('Answer type:  ' + dfs_answer_type, end='\n\n')
         print(tabulate.tabulate(dfs_resp_ans, dfs_resp_ans.columns, tablefmt='pqsl'), end='\n\n')
-        print(tabulate.tabulate(dfs_print.sample(N), dfs_print.columns, tablefmt='pqsl'), end='\n\n')
+        print(tabulate.tabulate(dfs_print.sample(samplesize), dfs_print.columns, tablefmt='pqsl'), end='\n\n')
 
 
 class QuestionCompleter():
