@@ -409,7 +409,7 @@ def stackColumns(m):
 
 
 def gridsearch2dataframe(clf, score='mean_test_score'):
-    """Turn a grid search result into a dataframe with irrelevant data discarded.
+    """Turn a grid search result into a DataFrame with irrelevant data discarded.
     The result is readdy to be passed to the plotting.heatmapFromGridsearchDf function.
 
     Parameters
