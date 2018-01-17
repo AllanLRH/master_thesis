@@ -526,6 +526,32 @@ class QuestionCompleter():
         return self._keys
 
 
+class QuestionFilterer():
+    """Filter out all 5 columns for given questions, with tab-completion."""
+
+    def __init__(self, _df):
+        """Init method
+
+        Parameters
+        ----------
+        _df : DataFrame
+            DataFrame to filter columns from.
+        """
+        super(QuestionFilterer, self).__init__()
+        self._df = _df
+        self._questions = {col.split('__')[0] for col in self._df.columns}
+        self._regex_char_set = set('$^\\+-*[](),.')
+
+    def __dir__(self):
+        return self._questions
+
+    def __getattr__(self, attr):
+        if self._regex_char_set.intersection(set(attr)):
+            return self._df.filter(regex=attr)
+        else:
+            return self._df.filter(like=attr)
+
+
 def questionResponse(df, qstr):
     """Get value_counts for a question response.
     It called on the __response-column, but sorted by the __answer-column.
