@@ -527,4 +527,19 @@ class QuestionCompleter():
 
 
 def questionResponse(df, qstr):
+    """Get value_counts for a question response.
+    It called on the __response-column, but sorted by the __answer-column.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame with relevant columns.
+    qstr : str
+        Question string.
+
+    Returns
+    -------
+    pd.Series
+        Pandas Series with value_counts.
+    """
     return df[qstr + '__response'].value_counts().iloc[np.argsort(df[qstr + '__answer'].value_counts().index)]
