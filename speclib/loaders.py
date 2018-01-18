@@ -201,7 +201,10 @@ def loadUserPhonenumberDict(useralias=None, filepath="/lscr_paper/allan/phonenum
 
 
 def getUserList(datapath='/lscr_paper/allan/data/Telefon/userfiles'):
-    return os.listdir(datapath)
+    folders = (pth for pth in os.listdir(datapath) if os.path.isdir(os.path.join(datapath, pth)))
+    userFolders = (fld for fld in folders if (len(fld) == 30))
+    valudUsernames = [fld for fld in userFolders if not (set(fld) - set('0123456789abcdef'))]
+    return valudUsernames
 
 
 class Useralias(object):
