@@ -226,22 +226,17 @@ class Useralias(object):
     def __init__(self, formatStr="u{:04d}"):
         super(Useralias, self).__init__()
         self.formatStr = formatStr
-        self.i = 0
-        self.userdct = dict()
-        self.reversed = dict()
+        self._json_file_path = '/lscr_paper/allan/allan_data/user_aliases.json'
+        if not os.path.isfile(self._json_file_path):
+            raise FileNotFoundError("The file user_aliases.json could not be found!")
+        with open(self._json_file_path) as fid:
+            self.userdct = json.load(fid)
+        self.i = len(self.userdct)
 
     def __setitem__(self, key, value):
         raise IndexError("The username aliases are frozen!")
 
     def __getitem__(self, key):
-        json_file_path = '/lscr_paper/allan/allan_data/user_aliases.json'
-        if not os.path.isfile(json_file_path):
-            raise FileNotFoundError("The file user_aliases.json could not be found!")
-        if not len(self.userdct):
-            with open(json_file_path) as fid:
-                tmp = json.load(fid)
-                self.userdct.update(tmp)
-                self.i = len(tmp)
         return self.userdct[key]
 
     def lookup(self, alias):
