@@ -390,11 +390,3 @@ def quickSaveHdf5(filepath, *data):
         else:
             raise ValueError("Incorrect data input.")
 
-
-if __name__ == '__main__':
-    datapath = '/lscr_paper/allan/data/Telefon/userfiles'
-    userList = [el for el in os.listdir(datapath) if os.path.isdir(os.path.join(datapath, el))]
-    print(userList[0])
-    data = loadUser(userList[0])
-
-
