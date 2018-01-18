@@ -390,3 +390,25 @@ def quickSaveHdf5(filepath, *data):
         else:
             raise ValueError("Incorrect data input.")
 
+
+def loadUserBluetooth(userhash, useralias):
+
+    def _load_bluetooth(user):
+        try:
+            with open(f'/lscr_paper/allan/telephone/{user}/bluetooth.json') as fid:
+                data = json.load(fid)
+            return data['bluetooth']
+        except Exception as err:
+            print(f"Couldn't read user {user}")
+            raise err
+
+    btdata = _load_bluetooth(userhash)
+    df = pd.DataFrame(btdata)
+    df['timestamp'] = df.timestamp.astype('datetime64[s]')
+    df = df[df.bt_mac != '-1']
+    # ua = loaders.Useralias()
+    df['scanned_user'] = df.scanned_user.map(useralias.userdct)
+    df['user'] = df.user.map(useralias.userdct)
+    df = df.set_index('timestamp')
+    df = df[df.index.year >= 2013]
+    return df
