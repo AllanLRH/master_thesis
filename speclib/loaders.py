@@ -403,6 +403,8 @@ def loadUserBluetooth(userhash, useralias):
             raise err
 
     btdata = _load_bluetooth(userhash)
+    if not btdata:
+        return None
     df = pd.DataFrame(btdata)
     df['timestamp'] = df.timestamp.astype('datetime64[s]')
     df = df[df.bt_mac != '-1']
