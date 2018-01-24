@@ -409,8 +409,12 @@ def loadUserBluetooth(userhash, useralias):
     df['timestamp'] = df.timestamp.astype('datetime64[s]')
     df = df[df.bt_mac != '-1']
     # ua = loaders.Useralias()
-    df['scanned_user'] = df.scanned_user.map(useralias.userdct)
-    df['user'] = df.user.map(useralias.userdct)
+    if isinstance(useralias, dict):
+        df['scanned_user'] = df.scanned_user.map(useralias)
+        df['user'] = df.user.map(useralias)
+    else:
+        df['scanned_user'] = df.scanned_user.map(useralias.userdct)
+        df['user'] = df.user.map(useralias.userdct)
     df = df.set_index('timestamp')
     df = df[df.index.year >= 2013]
     return df
