@@ -63,6 +63,8 @@ def main(user):
     morning_hour = 7
     evening_hour = 17
     df = loaders.loadUserBluetooth(user, ua)
+    if df is None:
+        return None  # df is None because user have no bluetooth data
     cnt, var = filterUserMac(df, user, ua.userdct, evening_hour, morning_hour)
     remove_from_index = set(cnt[cnt > 30].index)
     df = df[~df.bt_mac.isin(remove_from_index)]
