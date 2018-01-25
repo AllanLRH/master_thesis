@@ -95,7 +95,7 @@ def main(user):
         return grouped
     except Exception as err:
         print(f"An Exception was raised when processing the user {user}:", file=sys.stderr)
-        print(err, file=sys.stderr)
+        print(err.with_traceback(), file=sys.stderr)
         return None
 
 
