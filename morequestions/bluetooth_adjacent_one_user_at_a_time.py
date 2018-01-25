@@ -9,6 +9,7 @@ import pandas as pd
 import itertools
 from speclib import loaders
 from multiprocessing import Pool
+import pickle
 
 pd.set_option('display.max_rows', 55)
 pd.set_option('display.max_columns', 10)
@@ -59,37 +60,44 @@ def main(user):
     # ****************************************************************************
     # *                         Initial filtering of data                        *
     # ****************************************************************************
-    ua = loaders.Useralias()  # noqa
-    morning_hour = 7
-    evening_hour = 17
-    df = loaders.loadUserBluetooth(user, ua)
-    if df is None:
-        return None  # df is None because user have no bluetooth data
-    cnt, var = filterUserMac(df, user, ua.userdct, evening_hour, morning_hour)
-    remove_from_index = set(cnt[cnt > 30].index)
-    df = df[~df.bt_mac.isin(remove_from_index)]
+    try:
+        print(f"Processing user {user}")
+        ua = loaders.Useralias()  # noqa
+        morning_hour = 7
+        evening_hour = 17
+        df = loaders.loadUserBluetooth(user, ua)
+        if df is None:
+            return None  # df is None because user have no bluetooth data
+        cnt, var = filterUserMac(df, user, ua.userdct, evening_hour, morning_hour)
+        remove_from_index = set(cnt[cnt > 30].index)
+        df = df[~df.bt_mac.isin(remove_from_index)]
 
-    # ****************************************************************************
-    # *           Filter data to contain only free time before workdays          *
-    # ****************************************************************************
-    df['hour'] = df.index.hour  # noqa
-    print("Done computing hour")
-    df['weekday'] = df.index.weekday
-    print("Done computing weekday")
-    before_workday = df.weekday.isin({0, 1, 2, 3, 6})  # is it monday, tuesday, wendnesday, thursday or sunday?
-    print("Done computing before_workday")
-    free_time = (19 < df.hour) | (df.hour < 7)
-    print("Done computing free_time")
-    dfs = df[before_workday & free_time]
+        # ****************************************************************************
+        # *           Filter data to contain only free time before workdays          *
+        # ****************************************************************************
+        df['hour'] = df.index.hour  # noqa
+        print("Done computing hour")
+        df['weekday'] = df.index.weekday
+        print("Done computing weekday")
+        before_workday = df.weekday.isin({0, 1, 2, 3, 6})  # is it monday, tuesday, wendnesday, thursday or sunday?
+        print("Done computing before_workday")
+        free_time = (19 < df.hour) | (df.hour < 7)
+        print("Done computing free_time")
+        dfs = df[before_workday & free_time]
 
-    dfs['scanned_user'] = dfs.scanned_user.replace(np.NaN, df.bt_mac)
+        dfs['scanned_user'] = dfs.scanned_user.replace(np.NaN, df.bt_mac)
 
-    grouped = dfs.iloc[:3000].groupby('user')[['scanned_user']].resample('90T', closed='left').agg(concatenater)
-    grouped['scanned_user'] = grouped.scanned_user.replace(set(), np.NaN)
+        grouped = dfs.iloc[:3000].groupby('user')[['scanned_user']].resample('90T', closed='left').agg(concatenater)
+        grouped['scanned_user'] = grouped.scanned_user.replace(set(), np.NaN)
 
-    print("Fraction of non-nulls:", grouped.scanned_user.notnull().sum() / grouped.shape[0])
-    print("Number of of non-nulls:", grouped.scanned_user.notnull().sum())
-    return grouped
+        print("Fraction of non-nulls:", grouped.scanned_user.notnull().sum() / grouped.shape[0])
+        print("Number of of non-nulls:", grouped.scanned_user.notnull().sum())
+        return grouped
+    except Exception as err:
+        print(f"An Exception was raised when processing the user {user}:", file=sys.stderr)
+        print(err, file=sys.stderr)
+        return None
+
 
 
 if __name__ == '__main__':
@@ -98,6 +106,8 @@ if __name__ == '__main__':
         pool = Pool(16)
         res = pool.map(main, userlist)
         grouped_res = {userlist[i]: res[i] for i in range(len(userlist))}
+        with open('../../allan_data/binned_user_bluetooth.pkl', 'wb') as fid:
+            pickle.dump(grouped_res, fid)
     except Exception as err:
         raise(err)
     finally:
