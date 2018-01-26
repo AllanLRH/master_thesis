@@ -92,7 +92,7 @@ def main(user):
 
         print("Fraction of non-nulls:", grouped.scanned_user.notnull().sum() / grouped.shape[0])
         print("Number of of non-nulls:", grouped.scanned_user.notnull().sum())
-        return grouped
+        return (grouped, var)
     except Exception as err:
         print(f"An Exception was raised when processing the user {user}:", file=sys.stderr)
         print(err.with_traceback(), file=sys.stderr)
@@ -106,7 +106,7 @@ if __name__ == '__main__':
         pool = Pool(16)
         res = pool.map(main, userlist)
         grouped_res = {userlist[i]: res[i] for i in range(len(userlist))}
-        with open('../../allan_data/binned_user_bluetooth.pkl', 'wb') as fid:
+        with open('../../allan_data/binned_user_bluetooth_with_var.pkl', 'wb') as fid:
             pickle.dump(grouped_res, fid)
     except Exception as err:
         raise(err)
