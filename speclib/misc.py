@@ -546,8 +546,8 @@ class QuestionFilterer():
         return self._questions
 
     def __getattr__(self, attr):
-        if self._regex_char_set.intersection(set(attr)):
-            return self._df.filter(regex=attr)
+        if '__' in attr:
+            return self._df.filter(regex=attr + '$')
         else:
             return self._df.filter(like=attr)
 
