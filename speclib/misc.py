@@ -475,7 +475,7 @@ def questionSummary(df, qstr, samplesize=0):
     dfs_resp_ans = dfs_response_vc.join(dfs_answer_vc)
 
     if inNotebook():
-        display(HTML('<h3><i>Answer Question:</i>  ' + dfs_question + '</h3>'))
+        display(HTML('<h3><i>Question:</i>  ' + dfs_question + '</h3>'))
         display(HTML('<i>Question str:</i>    <tt>' + qstr + '</tt>'))
         display(HTML('<i>Answer type:</i>    <tt>' + dfs_answer_type + '</tt>'))
         display(dfs_resp_ans)
