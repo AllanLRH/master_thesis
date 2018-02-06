@@ -518,3 +518,21 @@ def dotproductGraphCompare(m0, m1):
         dp = np.dot(vp, v)
         dotProduct = max(dp, dotProduct)
     return dotProduct
+
+
+def getUserConnectivity(g, user):
+    """Get the connectivity of the a user in the graph g.
+
+    Parameters
+    ----------
+    g : Networkx Graph
+        nx.Graph-like with weighted edges, named 'weight'
+    user : string
+        User name.
+
+    Returns
+    -------
+    pd.Series
+        Sorted Pandas Series with user connectivity
+    """
+    return pd.Series({k: v['weight'] for (k, v) in g[user].items()}).sort_values(ascending=False)
