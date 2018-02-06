@@ -551,6 +551,9 @@ class QuestionFilterer():
         else:
             return self._df.filter(like=attr)
 
+    def __getitem__(self, attr):
+        return self._df.filter(regex=attr)
+
 
 def questionResponse(df, qstr):
     """Get value_counts for a question response.
