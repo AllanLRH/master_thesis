@@ -545,14 +545,14 @@ class QuestionFilterer():
     def __dir__(self):
         return self._questions
 
-    def __getattr__(self, attr):
-        if '__' in attr:
-            return self._df.filter(regex=attr + '$')
+    def __getattr__(self, key):
+        if '__' in key:
+            return self._df.filter(regex=key + '$')
         else:
-            return self._df.filter(like=attr)
+            return self._df.filter(like=key)
 
-    def __getitem__(self, attr):
-        return self._df.filter(regex=attr)
+    def __getitem__(self, key):
+        return self._df.filter(regex=key)
 
 
 def questionResponse(df, qstr):
