@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn import decomposition
 import multiprocessing
 import tabulate
+import itertools
 from IPython.display import display, HTML
 
 
@@ -586,3 +587,35 @@ def getColsRowsWithNull(df):
     nullrows_mask = df_nullcols.isnull().any(axis=1)
     return df_nullcols[nullrows_mask]
 
+
+def chunkifyNonOverlappingPairs(itr_a, itr_b, chunksize):
+    """Given two iterables, compute the tuple of their inner product, where overlapping elements
+    have been removed. The tuple-pairs are grouped into tuples of size chunksize.
+
+    Parameters
+    ----------
+    itr_a : iterable
+        Iterable to use for constructing one side of the pairs.
+    itr_b : iterable
+        Iterable to use for constructing the other side of the pairs.
+    chunksize : int
+        Size of returned chunks.
+
+    Yields
+    ------
+    tuepe(tuples)
+        Tuple with tuples of pairs.
+    """
+    cnt = 0
+    lst = list()
+    while True:
+        for ua, ub in itertools.product(itr_a, itr_b):  # loop over inner-product pairs
+            if ua != ub:  # sort out pair with identical keys
+                lst.append((ua, ub))
+                cnt += 1
+            if cnt % chunksize == 0 and cnt > 0 and len(lst):  # yield when appropiate
+                yield tuple(lst)
+                lst = list()
+        break
+    if len(lst):
+        yield tuple(lst)  # when the for-iterator is exhausted, yield the last bit (non-full lst)
