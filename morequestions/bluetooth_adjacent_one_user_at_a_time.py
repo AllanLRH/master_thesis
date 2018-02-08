@@ -76,13 +76,13 @@ def main(user):
         # *           Filter data to contain only free time before workdays          *
         # ****************************************************************************
         df['hour'] = df.index.hour  # noqa
-        print("Done computing hour")
+        # print("Done computing hour")
         df['weekday'] = df.index.weekday
-        print("Done computing weekday")
+        # print("Done computing weekday")
         before_workday = df.weekday.isin({0, 1, 2, 3, 6})  # is it monday, tuesday, wendnesday, thursday or sunday?
-        print("Done computing before_workday")
+        # print("Done computing before_workday")
         free_time = (19 < df.hour) | (df.hour < 7)
-        print("Done computing free_time")
+        # print("Done computing free_time")
         dfs = df[before_workday & free_time]
 
         dfs['scanned_user'] = dfs.scanned_user.replace(np.NaN, df.bt_mac)
