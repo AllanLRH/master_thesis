@@ -536,3 +536,55 @@ def getUserConnectivity(g, user):
         Sorted Pandas Series with user connectivity
     """
     return pd.Series({k: v['weight'] for (k, v) in g[user].items()}).sort_values(ascending=False)
+
+
+def cosSim(ua, ub):
+    """Cosine similarity between 2 persons.
+    See page 213 in Newman, Networks for more information.
+
+    Parameters
+    ----------
+    ua : np.ndarray or pd.Series
+        Person from adjacency matrix, must be of shape (N,)
+    ub : np.ndarray or pd.Series
+        Person from adjacency matrix, must be of shape (N,)
+
+    Returns
+    -------
+    float
+        Float describing the cosine similarity between ua and ub.
+    """
+    assert isinstance(ua, (pd.Series, np.ndarray)), f"ua must be of type np.ndarray or pd.Series, but was {type(ua)}"
+    assert isinstance(ub, (pd.Series, np.ndarray)), f"ub must be of type np.ndarray or pd.Series, but was {type(ub)}"
+    assert ua.shape == ub.shape, "ua and ub must be same shape"
+    assert len(ua.shape) == 1, f"The shape of ua must be (N,), but was {ua.shape}"
+    assert len(ub.shape) == 1, f"The shape of ub must be (N,), but was {ub.shape}"
+    return np.dot(ua, ub)/(np.sqrt(ua**2).sum() * np.sqrt(ub**2).sum())
+
+
+def normDotSim(ua, ub):
+    """Similarity between 2 persons.
+    Using a normalized fot product between two persons.
+    It's 0 for 0 overlap.
+    It's 0.5 for a half-overlap.
+    It's 1 for identical vectors.
+
+
+    Parameters
+    ----------
+    ua : np.ndarray or pd.Series
+        Person from adjacency matrix, must be of shape (N,)
+    ub : np.ndarray or pd.Series
+        Person from adjacency matrix, must be of shape (N,)
+
+    Returns
+    -------
+    float
+        Float describing the similarity between ua and ub.
+    """
+    assert isinstance(ua, (pd.Series, np.ndarray)), f"ua must be of type np.ndarray or pd.Series, but was {type(ua)}"
+    assert isinstance(ub, (pd.Series, np.ndarray)), f"ub must be of type np.ndarray or pd.Series, but was {type(ub)}"
+    assert ua.shape == ub.shape, "ua and ub must be same shape"
+    assert len(ua.shape) == 1, f"The shape of ua must be (N,), but was {ua.shape}"
+    assert len(ub.shape) == 1, f"The shape of ub must be (N,), but was {ub.shape}"
+    return 2*np.dot(ua, ub) / (np.dot(ua, ua) + np.dot(ub, ub))
