@@ -84,19 +84,21 @@ big5           = list()
 people         = list()
 
 for ui, baseuser in enumerate(dfa.index):
-    u = dfa[baseuser]
+    u = dfa[baseuser]  # Get user entry in dfa
     if PRINT_PROGRESS and (ui % 40 == 0):
         print(f"Processing user {baseuser} ({ui}/{len(dfa.index)})")
 
     # Strip out persons not present in alcohol questions dataframe
     u = u[u.index.intersection(qdf.index)].sort_values(ascending=False)
-    pers_homies = u[:n_persons]
-    pers_homies.head()
+    pers_homies = u[:n_persons]  # select the n_persons most popular persons
+    if PRINT:
+        print(pers_homies.head())
     pers_control_names = qdf.index.difference(pers_homies.index)  # Remove names which is in pers_homies
     np.random.shuffle(pers_control_names.values)  # shuffle names
     pers_control_names = pers_control_names[:n_persons]  # choose n_persons names
     pers_control = dfa.loc[baseuser][pers_control_names]  # select columns in dfa
-    pers_control.head()  # compute pers_control
+    if PRINT:
+        print(pers_control.head())  # compute pers_control
     assert pers_homies.shape == pers_control.shape
 
     # Compute the similarity in the way they answered the alcohol related questions
