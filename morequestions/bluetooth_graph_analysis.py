@@ -39,14 +39,14 @@ def compareDfUsers(baseuser, peers, df):
     return sim
 
 
-dfa = pd.read_msgpack('/lscr_paper/allan/allan_data/participants_graph_adjacency.msgpack')
+dfa  = pd.read_msgpack('/lscr_paper/allan/allan_data/participants_graph_adjacency.msgpack')
 mask = dfa.sum() != 0
-dfa = dfa.loc[mask, mask]  # drop zero-columns
+dfa  = dfa.loc[mask, mask]  # drop zero-columns
 dfa.head()
-qdf = pd.read_json('/lscr_paper/allan/allan_data/RGender_.json')
-q = misc.QuestionCompleter(qdf)
-f = misc.QuestionFilterer(qdf)
-ua = loaders.Useralias()
+qdf  = pd.read_json('/lscr_paper/allan/allan_data/RGender_.json')
+q    = misc.QuestionCompleter(qdf)
+f    = misc.QuestionFilterer(qdf)
+ua   = loaders.Useralias()
 
 qdf.index = qdf.index.map(lambda el: ua[el])
 
@@ -76,11 +76,11 @@ qdf = qdf[alcohol_questions.notnull().any(axis=1)]
 # Find the persons with whom each person spends the most time
 big5_questions = f['bfi_.+_answer$']
 big5_questions.head()
-n_persons = 35
-simfnc = graph.cosSim
-alcohol = list()
-big5 = list()
-people = list()
+n_persons      = 35
+simfnc         = graph.cosSim
+alcohol        = list()
+big5           = list()
+people         = list()
 
 for baseuser in dfa.index:
     u = dfa[baseuser]
@@ -97,18 +97,18 @@ for baseuser in dfa.index:
     assert pers_homies.shape == pers_control.shape
 
     # Compute the similarity in the way they answered the alcohol related questions
-    sim_alcohol_homies = compareDfUsers(baseuser, pers_homies.index, alcohol_questions).reset_index(drop=True)
-    sim_alcohol_homies.name = 'alcohol_homies'
-    sim_alcohol_control = compareDfUsers(baseuser, pers_control.index, alcohol_questions).reset_index(drop=True)
+    sim_alcohol_homies       = compareDfUsers(baseuser, pers_homies.index, alcohol_questions).reset_index(drop=True)
+    sim_alcohol_homies.name  = 'alcohol_homies'
+    sim_alcohol_control      = compareDfUsers(baseuser, pers_control.index, alcohol_questions).reset_index(drop=True)
     sim_alcohol_control.name = 'alcohol_control'
     if PRINT:
         print("sim_alcohol_homies.head()", sim_alcohol_homies.head(), sep=':\n', end='\n\n')
         print("sim_alcohol_control.head()", sim_alcohol_control.head(), sep=':\n', end='\n\n')
 
     # Compute the similarity wrt. Big Five personality related questions
-    sim_big5_homies = compareDfUsers(baseuser, pers_homies.index, big5_questions).reset_index(drop=True)
-    sim_big5_homies.name = 'big5_homies'
-    sim_big5_control = compareDfUsers(baseuser, pers_control.index, big5_questions).reset_index(drop=True)
+    sim_big5_homies       = compareDfUsers(baseuser, pers_homies.index, big5_questions).reset_index(drop=True)
+    sim_big5_homies.name  = 'big5_homies'
+    sim_big5_control      = compareDfUsers(baseuser, pers_control.index, big5_questions).reset_index(drop=True)
     sim_big5_control.name = 'big5_control'
     if PRINT:
         print("sim_big5_homies.head()", sim_big5_homies.head(), sep=':\n', end='\n\n')
@@ -116,16 +116,16 @@ for baseuser in dfa.index:
 
     # Compute similarity in persons that they hang out around
     # Compute the similarity wrt. Big Five personality related questions
-    sim_people_homies = compareDfUsers(baseuser, pers_homies.index, dfa).reset_index(drop=True)
-    sim_people_homies.name = 'people_homies'
-    sim_people_control = compareDfUsers(baseuser, pers_control.index, dfa).reset_index(drop=True)
+    sim_people_homies       = compareDfUsers(baseuser, pers_homies.index, dfa).reset_index(drop=True)
+    sim_people_homies.name  = 'people_homies'
+    sim_people_control      = compareDfUsers(baseuser, pers_control.index, dfa).reset_index(drop=True)
     sim_people_control.name = 'people_control'
     if PRINT:
         print("sim_people_homies.head()", sim_people_homies.head(), sep=':\n', end='\n\n')
         print("sim_people_control.head()", sim_people_control.head(), sep=':\n', end='\n\n')
     df_alcohol = pd.DataFrame([sim_alcohol_homies, sim_alcohol_control]).T
-    df_big5 = pd.DataFrame([sim_big5_homies, sim_big5_control]).T
-    df_people = pd.DataFrame([sim_people_homies, sim_people_control]).T
+    df_big5    = pd.DataFrame([sim_big5_homies, sim_big5_control]).T
+    df_people  = pd.DataFrame([sim_people_homies, sim_people_control]).T
     alcohol.append(df_alcohol)
     big5.append(df_big5)
     people.append(df_people)
