@@ -51,27 +51,26 @@ ua   = loaders.Useralias()
 
 qdf.index = qdf.index.map(lambda el: ua[el])
 
-# Remove persons with more than 10 % null answers
-qdf = qdf[(qdf.isna().mean() < 0.10).index[:5]]  # TODO: Check this [:5] indexing
-
+# Remove persons with more than 10 % null answers, and keep only the __answer-columns of the questions
+qdf = f['__answer$']
+qdf = qdf.loc[:, qdf.isna().mean() < 0.10]
 # Unify participants in qdf and dfa
 user_union = qdf.index.intersection(dfa.index)
-dfa = dfa.filter(items=user_union, axis=0).filter(items=user_union, axis=1)
+dfa = dfa.filter(items=user_union, axis=0).filter(items=user_union, axis=1)  # remove both rows and columns!
 qdf = qdf.filter(items=user_union, axis=0)
+# Reinstantiate q and f since qdf have changed
+q    = misc.QuestionCompleter(qdf)
+f    = misc.QuestionFilterer(qdf)
 
+# Sanity checks
 assert dfa.shape[0] == dfa.shape[1]
 assert (dfa.values[np.diag_indices_from(dfa.values)] == 0).all()
 assert len(qdf.index) == len(dfa.index)
 assert len(qdf.index.difference(dfa.index)) == 0
 
-
-# Get alcohol-relarted question answers
-alcohol_questions = f['alcohol.+__answer$']
-alcohol_questions.head()
-
-
-# Remove alcohol NaN-users from qdf
-qdf = qdf[alcohol_questions.notnull().any(axis=1)]
+# Get alcohol-related question answers
+alcohol_questions = f.alcohol
+if PRINT: print(alcohol_questions.head())  # noqa
 
 
 # Find the persons with whom each person spends the most time
