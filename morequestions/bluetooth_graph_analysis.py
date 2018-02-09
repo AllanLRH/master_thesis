@@ -86,7 +86,7 @@ people         = list()
 for ui, baseuser in enumerate(dfa.index):
     u = dfa[baseuser]
     if PRINT_PROGRESS and (ui % 40 == 0):
-        print(f"Pricessing user {baseuser} ({ui}/{len(dfa.index)})")
+        print(f"Processing user {baseuser} ({ui}/{len(dfa.index)})")
 
     # Strip out persons not present in alcohol questions dataframe
     u = u[u.index.intersection(qdf.index)].sort_values(ascending=False)
