@@ -31,7 +31,7 @@ PRINT_PROGRESS = True
 
 
 @jit()
-def compareDfUsers(baseuser, peers, df):
+def compareDfUsers(baseuser, peers, df, simfcn):
     # Compute the similarity in the way they answered the questions
     dct = dict()
     for i in range(len(peers)):
@@ -68,68 +68,64 @@ assert (dfa.values[np.diag_indices_from(dfa.values)] == 0).all()
 assert len(qdf.index) == len(dfa.index)
 assert len(qdf.index.difference(dfa.index)) == 0
 
-# Get alcohol-related question answers
-alcohol_questions = f.alcohol
-if PRINT: print(alcohol_questions.head())  # noqa
-
-
 # Find the persons with whom each person spends the most time
-big5_questions = f['bfi_.+_answer$']
-big5_questions.head()
-n_persons      = 35
-simfnc         = graph.cosSim
-alcohol        = list()
-big5           = list()
-people         = list()
+n_persons = 35
+simfnc    = [('cosSim', graph.cosSim), ('normDotSim', graph.normDotSim)]
+qdct      = dict()
+
+question_categories = ['bfi', 'loneliness', 'narcissism', 'symptoms', 'locus',
+                       'mdi', 'homophily', 'selfesteem', 'panas', 'stress', 'alcohol']
+if PRINT: big5_questions.head()  # noqa
 
 for ui, baseuser in enumerate(dfa.index):
     u = dfa[baseuser]  # Get user entry in dfa
     if PRINT_PROGRESS and (ui % 40 == 0):
         print(f"Processing user {baseuser} ({ui}/{len(dfa.index)})")
 
+    # ****************************************************************************
+    # *               Pick homies and random control group for user              *
+    # ****************************************************************************
     # Strip out persons not present in alcohol questions dataframe
     u = u[u.index.intersection(qdf.index)].sort_values(ascending=False)
-    pers_homies = u[:n_persons]  # select the n_persons most popular persons
+    user_homies = u[:n_persons]  # select the n_persons most popular persons
     if PRINT:
-        print(pers_homies.head())
-    pers_control_names = qdf.index.difference(pers_homies.index)  # Remove names which is in pers_homies
-    np.random.shuffle(pers_control_names.values)  # shuffle names
-    pers_control_names = pers_control_names[:n_persons]  # choose n_persons names
-    pers_control = dfa.loc[baseuser][pers_control_names]  # select columns in dfa
+        print(user_homies.head())
+    user_control_names = qdf.index.difference(user_homies.index)  # Remove names which is in user_homies
+    np.random.shuffle(user_control_names.values)  # shuffle names
+    user_control_names = user_control_names[:n_persons]  # choose n_persons names
+    user_control = dfa.loc[baseuser][user_control_names]  # select columns in dfa
     if PRINT:
-        print(pers_control.head())  # compute pers_control
-    assert pers_homies.shape == pers_control.shape
+        print(user_control.head())  # compute user_control
+    assert user_homies.shape == user_control.shape
 
-    # Compute the similarity in the way they answered the alcohol related questions
-    sim_alcohol_homies       = compareDfUsers(baseuser, pers_homies.index, alcohol_questions).reset_index(drop=True)
-    sim_alcohol_homies.name  = 'alcohol_homies'
-    sim_alcohol_control      = compareDfUsers(baseuser, pers_control.index, alcohol_questions).reset_index(drop=True)
-    sim_alcohol_control.name = 'alcohol_control'
-    if PRINT:
-        print("sim_alcohol_homies.head()", sim_alcohol_homies.head(), sep=':\n', end='\n\n')
-        print("sim_alcohol_control.head()", sim_alcohol_control.head(), sep=':\n', end='\n\n')
+    # ****************************************************************************
+    # *                 Do calculations for individual questions                 *
+    # ****************************************************************************
+    for question_cat in question_categories:
+        questions = f[question_cat]
+        # Compute the similarity wrt. personality related questions
+        for fnc_name, fnc in simfnc:
+            sim_homies       = compareDfUsers(baseuser, user_homies.index, questions).reset_index(drop=True)
+            sim_homies.name  = 'homies_' + fnc_name
+            sim_control      = compareDfUsers(baseuser, user_control.index, questions).reset_index(drop=True)
+            sim_control.name = 'control_' + fnc_name
+            qdct[(baseuser, question_cat, sim_homies.name)] = sim_homies
+            qdct[(baseuser, question_cat, sim_control.name)] = sim_control
+        if PRINT:
+            print("sim_homies.head()", sim_homies.head(), sep=':\n', end='\n\n')
+            print("sim_control.head()", sim_control.head(), sep=':\n', end='\n\n')
 
-    # Compute the similarity wrt. Big Five personality related questions
-    sim_big5_homies       = compareDfUsers(baseuser, pers_homies.index, big5_questions).reset_index(drop=True)
-    sim_big5_homies.name  = 'big5_homies'
-    sim_big5_control      = compareDfUsers(baseuser, pers_control.index, big5_questions).reset_index(drop=True)
-    sim_big5_control.name = 'big5_control'
-    if PRINT:
-        print("sim_big5_homies.head()", sim_big5_homies.head(), sep=':\n', end='\n\n')
-        print("sim_big5_control.head()", sim_big5_control.head(), sep=':\n', end='\n\n')
-
+    # ****************************************************************************
+    # *       Do the calculation for the people that the users hang around       *
+    # ****************************************************************************
     # Compute similarity in persons that they hang out around
-    # Compute the similarity wrt. Big Five personality related questions
-    sim_people_homies       = compareDfUsers(baseuser, pers_homies.index, dfa).reset_index(drop=True)
-    sim_people_homies.name  = 'people_homies'
-    sim_people_control      = compareDfUsers(baseuser, pers_control.index, dfa).reset_index(drop=True)
-    sim_people_control.name = 'people_control'
+    for fnc_name, fnc in simfnc:
+        sim_homies       = compareDfUsers(baseuser, user_homies.index, questions).reset_index(drop=True)
+        sim_homies.name  = 'homies_' + fnc_name
+        sim_control      = compareDfUsers(baseuser, user_control.index, questions).reset_index(drop=True)
+        sim_control.name = 'control_' + fnc_name
+        qdct[(baseuser, question_cat, sim_homies.name)] = sim_homies
+        qdct[(baseuser, question_cat, sim_control.name)] = sim_control
     if PRINT:
-        print("sim_people_homies.head()", sim_people_homies.head(), sep=':\n', end='\n\n')
-        print("sim_people_control.head()", sim_people_control.head(), sep=':\n', end='\n\n')
-    df_alcohol = pd.DataFrame([sim_alcohol_homies, sim_alcohol_control]).T
-    df_big5    = pd.DataFrame([sim_big5_homies, sim_big5_control]).T
-    df_people  = pd.DataFrame([sim_people_homies, sim_people_control]).T
-    alcohol.append(df_alcohol)
-    big5.append(df_big5)
-    people.append(df_people)
+        print("sim_homies.head()", sim_homies.head(), sep=':\n', end='\n\n')
+        print("sim_control.head()", sim_control.head(), sep=':\n', end='\n\n')
