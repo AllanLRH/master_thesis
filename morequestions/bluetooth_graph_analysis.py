@@ -27,6 +27,7 @@ from numba import jit
 
 from speclib import misc, plotting, loaders, graph  # noqa
 PRINT = False
+PRINT_PROGRESS = True
 
 
 @jit()
@@ -82,8 +83,10 @@ alcohol        = list()
 big5           = list()
 people         = list()
 
-for baseuser in dfa.index:
+for ui, baseuser in enumerate(dfa.index):
     u = dfa[baseuser]
+    if PRINT_PROGRESS and (ui % 40 == 0):
+        print(f"Pricessing user {baseuser} ({ui}/{len(dfa.index)})")
 
     # Strip out persons not present in alcohol questions dataframe
     u = u[u.index.intersection(qdf.index)].sort_values(ascending=False)
