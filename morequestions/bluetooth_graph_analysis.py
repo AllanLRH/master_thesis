@@ -30,7 +30,7 @@ PRINT = False
 PRINT_PROGRESS = True
 
 
-@jit()
+# @jit()
 def compareDfUsers(baseuser, peers, df, simfnc):
     # Compute the similarity in the way they answered the questions
     dct = dict()
@@ -66,8 +66,7 @@ assert (dfa.values[np.diag_indices_from(dfa.values)] == 0).all()
 assert len(qdf.index) == len(dfa.index)
 assert len(qdf.index.difference(dfa.index)) == 0
 
-# Find the persons with whom each person spends the most time
-n_persons = 35
+n_persons = 35  # Number of persons considered "close" to the user
 simfnc    = [('cosSim', graph.cosSim), ('normDotSim', graph.normDotSim)]
 qdct      = dict()
 
@@ -88,10 +87,8 @@ for ui, baseuser in enumerate(dfa.index):
     user_homies = u[:n_persons]  # select the n_persons most popular persons
     if PRINT:
         print(user_homies.head())
-    user_control_names = qdf.index.difference(user_homies.index)  # Remove names which is in user_homies
-    np.random.shuffle(user_control_names.values)  # shuffle names
-    user_control_names = user_control_names[:n_persons]  # choose n_persons names
-    user_control = dfa.loc[baseuser][user_control_names]  # select columns in dfa
+    user_control_names = u[n_persons:]
+    user_control       = user_control_names[np.random.permutation(len(user_control_names))[:n_persons]]
     if PRINT:
         print(user_control.head())  # compute user_control
     assert user_homies.shape == user_control.shape
