@@ -31,7 +31,7 @@ PRINT_PROGRESS = True
 
 
 @jit()
-def compareDfUsers(baseuser, peers, df, simfcn):
+def compareDfUsers(baseuser, peers, df, simfnc):
     # Compute the similarity in the way they answered the questions
     dct = dict()
     for i in range(len(peers)):
@@ -43,9 +43,8 @@ def compareDfUsers(baseuser, peers, df, simfcn):
 dfa  = pd.read_msgpack('/lscr_paper/allan/allan_data/participants_graph_adjacency.msgpack')
 mask = dfa.sum() != 0
 dfa  = dfa.loc[mask, mask]  # drop zero-columns
-dfa.head()
+if PRINT: print(dfa.head())  # noqa
 qdf  = pd.read_json('/lscr_paper/allan/allan_data/RGender_.json')
-q    = misc.QuestionCompleter(qdf)
 f    = misc.QuestionFilterer(qdf)
 ua   = loaders.Useralias()
 
@@ -58,9 +57,8 @@ qdf = qdf.loc[:, qdf.isna().mean() < 0.10]
 user_union = qdf.index.intersection(dfa.index)
 dfa = dfa.filter(items=user_union, axis=0).filter(items=user_union, axis=1)  # remove both rows and columns!
 qdf = qdf.filter(items=user_union, axis=0)
-# Reinstantiate q and f since qdf have changed
-q    = misc.QuestionCompleter(qdf)
-f    = misc.QuestionFilterer(qdf)
+# Reinstantiate f since qdf have changed
+f   = misc.QuestionFilterer(qdf)
 
 # Sanity checks
 assert dfa.shape[0] == dfa.shape[1]
@@ -105,12 +103,12 @@ for ui, baseuser in enumerate(dfa.index):
         questions = f[question_cat]
         # Compute the similarity wrt. personality related questions
         for fnc_name, fnc in simfnc:
-            sim_homies       = compareDfUsers(baseuser, user_homies.index, questions).reset_index(drop=True)
+            sim_homies       = compareDfUsers(baseuser, user_homies.index, questions, fnc).reset_index(drop=True)
             sim_homies.name  = 'homies_' + fnc_name
-            sim_control      = compareDfUsers(baseuser, user_control.index, questions).reset_index(drop=True)
+            sim_control      = compareDfUsers(baseuser, user_control.index, questions, fnc).reset_index(drop=True)
             sim_control.name = 'control_' + fnc_name
-            qdct[(baseuser, question_cat, sim_homies.name)] = sim_homies
-            qdct[(baseuser, question_cat, sim_control.name)] = sim_control
+            qdct[(baseuser, question_cat, 'homies', fnc_name)] = sim_homies
+            qdct[(baseuser, question_cat, 'control', fnc_name)] = sim_control
         if PRINT:
             print("sim_homies.head()", sim_homies.head(), sep=':\n', end='\n\n')
             print("sim_control.head()", sim_control.head(), sep=':\n', end='\n\n')
@@ -120,12 +118,12 @@ for ui, baseuser in enumerate(dfa.index):
     # ****************************************************************************
     # Compute similarity in persons that they hang out around
     for fnc_name, fnc in simfnc:
-        sim_homies       = compareDfUsers(baseuser, user_homies.index, questions).reset_index(drop=True)
+        sim_homies       = compareDfUsers(baseuser, user_homies.index, dfa, fnc).reset_index(drop=True)
         sim_homies.name  = 'homies_' + fnc_name
-        sim_control      = compareDfUsers(baseuser, user_control.index, questions).reset_index(drop=True)
+        sim_control      = compareDfUsers(baseuser, user_control.index, dfa, fnc).reset_index(drop=True)
         sim_control.name = 'control_' + fnc_name
-        qdct[(baseuser, question_cat, sim_homies.name)] = sim_homies
-        qdct[(baseuser, question_cat, sim_control.name)] = sim_control
+        qdct[(baseuser, question_cat, 'homies', fnc_name)] = sim_homies
+        qdct[(baseuser, question_cat, 'control', fnc_name)] = sim_control
     if PRINT:
         print("sim_homies.head()", sim_homies.head(), sep=':\n', end='\n\n')
         print("sim_control.head()", sim_control.head(), sep=':\n', end='\n\n')
