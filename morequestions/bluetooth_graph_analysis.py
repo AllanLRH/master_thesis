@@ -119,8 +119,8 @@ for ui, baseuser in enumerate(dfa.index):
         sim_homies.name  = 'homies_' + fnc_name
         sim_control      = compareDfUsers(baseuser, user_control.index, dfa, fnc).reset_index(drop=True)
         sim_control.name = 'control_' + fnc_name
-        qdct[(baseuser, question_cat, 'homies', fnc_name)] = sim_homies
-        qdct[(baseuser, question_cat, 'control', fnc_name)] = sim_control
+        qdct[(baseuser, 'people', 'homies', fnc_name)] = sim_homies
+        qdct[(baseuser, 'people', 'control', fnc_name)] = sim_control
     if PRINT:
         print("sim_homies.head()", sim_homies.head(), sep=':\n', end='\n\n')
         print("sim_control.head()", sim_control.head(), sep=':\n', end='\n\n')
