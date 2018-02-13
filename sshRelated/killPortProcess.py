@@ -4,7 +4,7 @@ import sys
 import psutil
 
 
-if len(sys.argv) == 1 or not sys.argv[1].isdigit():
+if len(sys.argv) != 2 or not sys.argv[1].isdigit():
     print("Input error! Input not provided or it isn't a integer (port number)", file=sys.stderr)
     sys.exit(1)
 
