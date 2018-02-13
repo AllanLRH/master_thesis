@@ -62,3 +62,4 @@ joachim_exercise/svm_training_data_roc_curve.pdf
 *.log
 
 /morequestions/btlog_graph.txt
+morequestions/figs/*
