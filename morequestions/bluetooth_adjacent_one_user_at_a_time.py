@@ -14,6 +14,7 @@ import pickle
 pd.set_option('display.max_rows', 55)
 pd.set_option('display.max_columns', 10)
 pd.set_option('display.width', 1000)
+pd.set_option('mode.chained_assignment', None)
 
 # # Goal
 #
@@ -36,15 +37,17 @@ def mostly_present_counter(args):
 
 
 def filterUserMac(*args):
-    df, user, ua, evening_hour, morning_hour = args
+    """
+    Count interactions with all avaiable users.
+    var is how the number of datapoints vary as users are removed (most present removed first.)
+    """
+    df, user, ua = args
     if df is None:
         return None
-    # Filter out time where they're probably at DTU
-    df = df[(df.index.hour > evening_hour) | (df.index.hour < morning_hour)]
     # Group to day of year
     day_of_year_grouped = df.groupby(df.index.dayofyear)['bt_mac'].unique()
-    # Count occurence of bluetooth mac addresses, summed for all days (in free time)
-    cnt = pd.value_counts(el for el in itertools.chain(*day_of_year_grouped))
+    # Count occurence of bluetooth mac addresses, summed for days
+    cnt = pd.value_counts([el for el in itertools.chain(*day_of_year_grouped)])
     size_lst      = list()
     threshold_lst = list()
     for thr in cnt.unique():
@@ -64,34 +67,30 @@ def main(user):
         print(f"Processing user {user}")
         ua = loaders.Useralias()  # noqa
         morning_hour = 7
-        evening_hour = 17
+        evening_hour = 18
         df = loaders.loadUserBluetooth(user, ua)
         if df is None:
             return None  # df is None because user have no bluetooth data
-        cnt, var = filterUserMac(df, user, ua.userdct, evening_hour, morning_hour)
+        cnt, var = filterUserMac(df, user, ua.userdct)
         remove_from_index = set(cnt[cnt > 30].index)
         df = df[~df.bt_mac.isin(remove_from_index)]
 
         # ****************************************************************************
         # *           Filter data to contain only free time before workdays          *
         # ****************************************************************************
-        df['hour'] = df.index.hour  # noqa
-        # print("Done computing hour")
-        df['weekday'] = df.index.weekday
-        # print("Done computing weekday")
-        before_workday = df.weekday.isin({0, 1, 2, 3, 6})  # is it monday, tuesday, wendnesday, thursday or sunday?
+        before_workday = df.index.weekday.isin({0, 1, 2, 3, 6})  # is it monday, tuesday, wendnesday, thursday or sunday?
         # print("Done computing before_workday")
-        free_time = (19 < df.hour) | (df.hour < 7)
+        free_time = (evening_hour < df.index.hour) | (df.index.hour < morning_hour)
         # print("Done computing free_time")
         dfs = df[before_workday & free_time]
 
         dfs['scanned_user'] = dfs.scanned_user.replace(np.NaN, df.bt_mac)
 
-        grouped = dfs.iloc[:3000].groupby('user')[['scanned_user']].resample('90T', closed='left').agg(concatenater)
+        grouped = dfs.groupby('user')[['scanned_user']].resample('90T', closed='left').agg(concatenater)
         grouped['scanned_user'] = grouped.scanned_user.replace(set(), np.NaN)
 
-        print("Fraction of non-nulls:", grouped.scanned_user.notnull().sum() / grouped.shape[0])
-        print("Number of of non-nulls:", grouped.scanned_user.notnull().sum())
+        print(user, "fraction of non-nulls:", grouped.scanned_user.notnull().sum() / grouped.shape[0])
+        print(user, "number of of non-nulls:", grouped.scanned_user.notnull().sum())
         return (grouped, var)
     except Exception as err:
         print(f"An Exception was raised when processing the user {user}:", file=sys.stderr)
@@ -104,11 +103,11 @@ def main(user):
 if __name__ == '__main__':
     userlist = loaders.getUserList()
     try:
-        pool = Pool(16)
+        pool = Pool(24)
         res = pool.map(main, userlist)
         grouped_res = {userlist[i]: res[i] for i in range(len(userlist))}
-        with open('../../allan_data/binned_user_bluetooth_with_var.pkl', 'wb') as fid:
-            pickle.dump(grouped_res, fid)
+        # with open('../../allan_data/binned_user_bluetooth_with_var.pkl', 'wb') as fid:
+        #     pickle.dump(grouped_res, fid)
     except Exception as err:
         raise(err)
     finally:
