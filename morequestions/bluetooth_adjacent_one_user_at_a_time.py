@@ -102,12 +102,25 @@ def main(user):
 
 if __name__ == '__main__':
     userlist = loaders.getUserList()
+    ua = loaders.Useralias()
     try:
-        pool = Pool(24)
-        res = pool.map(main, userlist)
+        pool        = Pool(24)
+        res         = pool.map(main, userlist)
         grouped_res = {userlist[i]: res[i] for i in range(len(userlist))}
-        # with open('../../allan_data/binned_user_bluetooth_with_var.pkl', 'wb') as fid:
-        #     pickle.dump(grouped_res, fid)
+        grouped_lst = list()
+        var_lst     = list()
+        for k, v in grouped_res.items():
+            grouped_lst.append(v[0])
+            var_df         = pd.DataFrame(v[1], columns=['count'])
+            var_df['user'] = ua[k]
+            var_df         = var_df.set_index(['user', var_df.index])
+            var_lst.append(v[1])
+        grouped_df                 = pd.concat(grouped_lst)
+        grouped_df['scanned_user'] = grouped_df.scanned_user.map(list, na_action='ignore')
+        var_df                     = pd.concat(var_lst)
+        grouped_df.to_msgpack('../../allan_data/binned_user_bluetooth_grouped.msgpack')
+        var_df.to_msgpack('../../allan_data/binned_user_bluetooth_var.msgpack')
+
     except Exception as err:
         raise(err)
     finally:
