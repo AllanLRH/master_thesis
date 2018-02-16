@@ -106,7 +106,7 @@ if __name__ == '__main__':
     try:
         pool        = Pool(24)
         res         = pool.map(main, userlist)
-        grouped_res = {userlist[i]: res[i] for i in range(len(userlist))}
+        grouped_res = {userlist[i]: res[i] for i in range(len(userlist)) if res[i] is not None}
         grouped_lst = list()
         var_lst     = list()
         for k, v in grouped_res.items():
