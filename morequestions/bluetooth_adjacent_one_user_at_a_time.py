@@ -9,7 +9,6 @@ import pandas as pd
 import itertools
 from speclib import loaders
 from multiprocessing import Pool
-import pickle
 
 pd.set_option('display.max_rows', 55)
 pd.set_option('display.max_columns', 10)
@@ -104,7 +103,7 @@ if __name__ == '__main__':
     userlist = loaders.getUserList()
     ua = loaders.Useralias()
     try:
-        pool        = Pool(24)
+        pool        = Pool(22)
         res         = pool.map(main, userlist)
         grouped_res = {userlist[i]: res[i] for i in range(len(userlist)) if res[i] is not None}
         grouped_lst = list()
