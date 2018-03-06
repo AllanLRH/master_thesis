@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath("/lscr_paper/allan/scripts"))
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # noqa
 import seaborn as sns
 sns.set(context='paper', style='whitegrid', color_codes=True, font_scale=1.8)
 colorcycle = [(0.498, 0.788, 0.498),
@@ -23,7 +23,7 @@ sns.set_palette(colorcycle)
 mpl.rcParams['figure.max_open_warning'] = 65
 mpl.rcParams['figure.figsize'] = [12, 7]
 
-from numba import jit
+from numba import jit  # noqa
 
 from speclib import misc, plotting, loaders, graph  # noqa
 PRINT = False
