@@ -66,7 +66,7 @@ assert (dfa.values[np.diag_indices_from(dfa.values)] == 0).all()
 assert len(qdf.index) == len(dfa.index)
 assert len(qdf.index.difference(dfa.index)) == 0
 
-n_persons = 35  # Number of persons considered "close" to the user
+n_persons = 3  # Number of persons considered "close" to the user
 simfnc    = [('cosSim', graph.cosSim), ('normDotSim', graph.normDotSim)]
 qdct      = dict()
 
