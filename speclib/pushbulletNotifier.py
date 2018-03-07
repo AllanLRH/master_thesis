@@ -5,7 +5,6 @@ from pushbullet import Pushbullet
 import datetime
 import inspect
 
-
 phoneName = "OnePlus ONE A2003"
 
 
@@ -44,10 +43,10 @@ class JobNotification(object):
         callerFilename = inspect.stack()[1].filename
         msgLst = ["Runtime: {timeDelta}", "Started: {timeStarted}", "Finished: {timeEnded}"]
         if exception is not None:
-            title = "Error! {callerFilename} have thrown an exception!".format(callerFilename=callerFilename)
+            title = f"Error! {callerFilename} have thrown an exception!"
             msgLst = ["Error!:  " + str(exception)] + msgLst
         else:
-            title = "{callerFilename} is done".format(callerFilename=callerFilename)
+            title = f"{callerFilename} is done"
         msg = "\n".join(msgLst).format(
             callerFilename=callerFilename,
             timeDelta=self.pretty_time_delta(self.endTime - self.startTime),
@@ -58,10 +57,11 @@ class JobNotification(object):
 
 if __name__ == '__main__':
     from time import sleep
+
     jn = JobNotification(devices="phone")
     sleep(2)
     try:
-        1/0
+        1 / 0
     except Exception as e:
         jn.send(e)
     sleep(2)
