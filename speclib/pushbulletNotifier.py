@@ -4,6 +4,7 @@
 from pushbullet import Pushbullet
 import datetime
 import inspect
+import traceback
 
 phoneName = "OnePlus ONE A2003"
 
@@ -44,7 +45,9 @@ class JobNotification(object):
         msgLst = ["Runtime: {timeDelta}", "Started: {timeStarted}", "Finished: {timeEnded}"]
         if exception is not None:
             title = f"Error! {callerFilename} have thrown an exception!"
-            msgLst = ["Error!:  " + str(exception)] + msgLst
+            traceback_string = "".join(traceback.format_exc())
+            visual_division_line = '* '*len(str(exception))
+            msgLst = [str(exception).title(), visual_division_line, traceback_string, visual_division_line] + msgLst
         else:
             title = f"{callerFilename} is done"
         msg = "\n".join(msgLst).format(
