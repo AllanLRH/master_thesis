@@ -39,12 +39,13 @@ class JobNotification(object):
         else:
             return '%ds' % (seconds,)
 
-    def send(self, exception=None):
+    def send(self, exception=None, message=None):
         self.endTime = datetime.datetime.now()
         callerFilename = inspect.stack()[1].filename
-        msgLst = ["Runtime: {timeDelta}",
-                  "Started: {timeStarted}",
-                  "Finished: {timeEnded}"]
+        msglst = [message] if message is not None else list()
+        msgLst = msglst + ["Runtime: {timeDelta}",
+                           "Started: {timeStarted}",
+                           "Finished: {timeEnded}"]
         if exception is not None:
             title = f"Error! {callerFilename} have thrown an exception!"
             traceback_string = "".join(traceback.format_exc())
@@ -73,4 +74,4 @@ if __name__ == '__main__':
     except Exception as e:
         jn.send(e)
     sleep(2)
-    jn.send()
+    jn.send(message="Hello, World!")
