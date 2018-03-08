@@ -5,7 +5,6 @@
 import sys
 import os
 sys.path.append(os.path.abspath(".."))
-import traceback
 
 import numpy as np
 import pandas as pd
