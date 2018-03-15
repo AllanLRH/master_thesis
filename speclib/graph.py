@@ -588,3 +588,26 @@ def normDotSim(ua, ub):
     assert len(ua.shape) == 1, f"The shape of ua must be (N,), but was {ua.shape}"
     assert len(ub.shape) == 1, f"The shape of ub must be (N,), but was {ub.shape}"
     return 2*np.dot(ua, ub) / (np.dot(ua, ua) + np.dot(ub, ub))
+
+
+def updateWeight(g, u, v, weight, attribute='weight'):
+    """Update weights for a graph edge, and create it if need be.
+
+    Parameters
+    ----------
+    g : nx.Graph
+
+    u : edge
+        Identifier for from-edge.
+    v : edge
+        Identifier for to-edge.
+    weight : number
+        Weight to update or assign to edge.
+    attribute : str, optional
+        Keyword for edge attribute, default is 'weight'.
+    """
+    if (u, v) in g.edges:
+        g.edges[u, v][attribute] += weight
+    else:
+        g.edges[u, v][attribute] = weight
+
