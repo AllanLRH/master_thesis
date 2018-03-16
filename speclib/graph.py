@@ -607,7 +607,7 @@ def updateWeight(g, u, v, weight, attribute='weight'):
         Keyword for edge attribute, default is 'weight'.
     """
     if (u, v) in g.edges:
-        g.edges[u, v][attribute] += weight
+        g.edges[u][v][attribute] += weight
     else:
-        g.edges[u, v][attribute] = weight
+        g.add_edge(u, v, **{attribute: weight})
 
