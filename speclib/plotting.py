@@ -11,10 +11,9 @@ import networkx as nx
 import igraph as ig
 import palettable
 import itertools
-import seaborn as sns
 from sklearn import metrics
 from speclib import graph
-from speclib import netgraph
+import netgraph
 
 
 def rgb(r, g, b):
