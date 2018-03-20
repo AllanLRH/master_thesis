@@ -64,3 +64,5 @@ joachim_exercise/svm_training_data_roc_curve.pdf
 /morequestions/btlog_graph.txt
 morequestions/figs/*
 tryLoadData/figs_load_morequestions_data/
+
+/.bashrc
