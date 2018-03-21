@@ -123,14 +123,14 @@ def countsOnBarPlot(ax):
                     '%d' % int(height), ha='center', va='bottom')
 
 
-def plotNeatoGraph(g, plotSettings=None, labels=None, fig_ax=None):
+def plotNeatoGraph(g, plot_settings=None, labels=None, fig_ax=None):
     """Plot a NetworkX graph, optionally add labels, and modify plot settings.
 
     Parameters
     ----------
     g : NetworkX graph
         The graph to plot.
-    plotSettings : dict, optional
+    plot_settings : dict, optional
         Update plottting preference, options and defaults is:
         * 'node_color':   'steelblue',
         * 'edge_color':   'slategray',
