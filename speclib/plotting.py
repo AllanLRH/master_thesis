@@ -123,7 +123,7 @@ def countsOnBarPlot(ax):
                     '%d' % int(height), ha='center', va='bottom')
 
 
-def plotNeatoGraph(g, plot_settings=None, labels=None, fig_ax=None):
+def plotNeatoGraph(g, plot_settings=None, labels=None, node_size=70, fig_ax=None):
     """Plot a NetworkX graph, optionally add labels, and modify plot settings.
 
     Parameters
@@ -159,11 +159,13 @@ def plotNeatoGraph(g, plot_settings=None, labels=None, fig_ax=None):
           'font_color': 'mediumaquamarine',  # for labelled nodes
           'font_size': 15,  # for labelled nodes
           'font_weight': 'bold'}  # for labelled nodes
-    if plotSettings is not None:
-        ps.update(plotSettings)
+    if plot_settings is not None:
+        ps.update(plot_settings)
+    if isinstance(node_size, (list, np.ndarray, tuple)):
+        assert len(node_size) == len(g.nodes()), "Node size must be the same length as the number of nodes in g."
     fig, ax = plt.subplots(figsize=ps['figsize'])
     pos = nx.drawing.nx_agraph.graphviz_layout(g, prog='neato')
-    nx.draw_networkx_nodes(g, pos, node_size=70, node_color=ps['node_color'], ax=ax)
+    nx.draw_networkx_nodes(g, pos, node_size=n ode_size, node_color=ps['node_color'], ax=ax)
     nx.draw_networkx_edges(g, pos, edge_color=ps['edge_color'])
     if labels:
         nx.draw_networkx_labels(g, pos, labels=labels, font_color=ps['font_color'],
@@ -719,6 +721,8 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
         layout = g.layout(layout)
     if nodeLabels is True:
         kwargs.setdefault('nodeLabels', g.vs['label'])
+    if nodeLabels is False:
+        kwargs.setdefault('nodeLabels', [])
     if weightFunc is None:
         weightFunc = lambda g: [1 + 4*wt/max(g.es['weight']) for wt in g.es['weight']]
     kwargs.setdefault("edge_width", weightFunc(g))

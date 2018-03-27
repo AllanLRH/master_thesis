@@ -42,8 +42,11 @@ class JobNotification(object):
     def send(self, exception=None, message=None):
         self.endTime = datetime.datetime.now()
         callerFilename = inspect.stack()[1].filename
-        msglst = [message] if message is not None else list()
-        msgLst = msglst + ["Runtime: {timeDelta}",
+        if message is None:
+            msgLst = list()
+        else:
+            msgLst = [message]
+        msgLst = msgLst + ["Runtime: {timeDelta}",
                            "Started: {timeStarted}",
                            "Finished: {timeEnded}"]
         if exception is not None:

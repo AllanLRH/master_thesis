@@ -19,9 +19,8 @@ import itertools
 # log.addHandler(fh)
 
 
-def networkx2igraph(nxGraph):
+def networkx2igraph(nxGraph, labels=False):
     """Convert a Networkx graph to an Igraph graph.
-    Note that labels are lost.
 
     Parameters
     ----------
@@ -36,10 +35,19 @@ def networkx2igraph(nxGraph):
     # Get adjacency matrox for networkx graph
     nxAdj = np.array(nx.adjacency_matrix(nxGraph).todense())
     # Use the binary adjacency matrix to construct the igraph graph
-    if isinstance(nxGraph, nx.DiGraph):
-        igGraph = adjmat2igraph(nxAdj, directed=True, labels=list(nxGraph.nodes()))
-    else:
-        igGraph = adjmat2igraph(nxAdj, directed=False, labels=list(nxGraph.nodes()))
+    # TODO: There's some error here, where labels are always created.
+    if labels:
+        if not isinstance(labels, list):
+            labels = list(nxGraph.nodes())
+        if isinstance(nxGraph, nx.DiGraph):
+            igGraph = adjmat2igraph(nxAdj, directed=True, labels=labels)
+        else:
+            igGraph = adjmat2igraph(nxAdj, directed=False, labels=labels)
+    elif labels is False:
+        if isinstance(nxGraph, nx.DiGraph):
+            igGraph = adjmat2igraph(nxAdj, directed=True)
+        else:
+            igGraph = adjmat2igraph(nxAdj, directed=False)
     return igGraph
 
 
