@@ -19,6 +19,50 @@ import itertools
 # log.addHandler(fh)
 
 
+def nx2ig(nxg, weights=True):
+    """Alternative conversion of graphs, preserving the names of the nodes, allowing for name-lookup in the Igraph
+    in most cases.
+
+    Parameters
+    ----------
+    nxg : nx.Graph or nx.DiGraph
+        Graph to be converted.
+    weights : bool, optional
+        Include the weights?
+
+    Returns
+    -------
+    ig.Graph
+        ig.Graph, weighted if nxg is nx.DiGraph, unweighted if nxg is nx.Graph.
+
+    Raises
+    ------
+    ValueError
+        If nxg isn't a nx.Graph or nx.DiGraph.
+    """
+    if isinstance(nxg, nx.DiGraph):
+        igg = ig.Graph(directed=True)
+    elif isinstance(nxg, nx.Graph):
+        igg = ig.Graph(directed=False)
+    else:
+        raise ValueError(f"Input must be nx.Graph or nx.DiGraph, but type(nxg) = {type(nxg)}")
+
+    # Add nodes
+    for node in nxg.nodes:
+        igg.add_vertex(name=node)
+
+    # Add edges
+    for edge in nxg.edges:
+        u, v = edge
+        if weights:
+            weight_dict = nxg.get_edge_data(u, v, 'weight')
+            igg.add_edge(u, v, weight=weight_dict['weight'])
+        else:
+            igg.add_edge(u, v)
+
+    return igg
+
+
 def networkx2igraph(nxGraph, labels=False):
     """Convert a Networkx graph to an Igraph graph.
 
