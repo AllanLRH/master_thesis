@@ -26,6 +26,9 @@ def networkx2igraph(nxGraph, labels=False):
     ----------
     nxGraph : networkx.Graph or networkx.DiGraph
         Graph to convert.
+    labels : bool or list-like, optional
+        The labels of the graph. False will omit labels alltogether, while True will make the labels
+        1, 2, 3, ... N. It can also be a list specifying the labels.
 
     Returns
     -------
@@ -33,9 +36,8 @@ def networkx2igraph(nxGraph, labels=False):
         Converted graph, unweighted if input was a nx.Graph, weighted otherwise.
     """
     # Get adjacency matrox for networkx graph
+    # Use the binary adjacency matrix to construct the igraph graph through the adjmat2igraph-function
     nxAdj = np.array(nx.adjacency_matrix(nxGraph).todense())
-    # Use the binary adjacency matrix to construct the igraph graph
-    # TODO: There's some error here, where labels are always created.
     if labels:
         if not isinstance(labels, list):
             labels = list(nxGraph.nodes())
@@ -60,8 +62,8 @@ def adjmat2igraph(m, directed=True, labels=None):
         Adjacency matrix, must be positive.
     directed : bool, optional
         Construct a directed graph, default True.
-    labels : list, optional
-        List of labels to use. Default is strings from 0 to "number of nodes".
+    labels : bool or list, optional
+        List of labels to use. Default (None) is strings from 0 to "number of nodes". False omits labels.
 
     Returns
     -------
@@ -89,7 +91,9 @@ def adjmat2igraph(m, directed=True, labels=None):
     # assign weights from the adjacency matrix to the igraph graph
     g.es['weight'] = m[m.nonzero()]
     # Assign node names from the networkx graph to the igraph graph
-    if labels:
+    if labels is False:
+        pass
+    elif labels:
         g.vs['label'] = labels
     else:
         g.vs['label'] = [str(i) for i in range(m.shape[0])]  # Give integer labels
