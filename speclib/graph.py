@@ -624,3 +624,46 @@ def updateWeight(g, u, v, weight, attribute='weight'):
     else:
         g.add_edge(u, v, **{attribute: weight})
 
+
+def nxDiGraph2Graph(g, attribute='weight'):
+    """Given a nx.DiGraph, convert it to a nx.Graph where the edge-weights are combined (added) together.
+    Can be used for other attributes as well.
+
+    Parameters
+    ----------
+    g : nx.DiGraph
+        DiGraph to be converted.
+    attribute : str, optional
+        attribute to be summed, default is 'weight'.
+
+    Returns
+    -------
+    nx.Graph
+        A nx.Graph instance is returned.
+
+    Raises
+    ------
+    ValueError
+        If g is not a nx.DiGraph.
+    """
+    if not isinstance(g, nx.DiGraph):
+        raise ValueError(f"The input g must be a nx.DiGraph, but type(g) = {type(g)}.")
+
+    gg = nx.Graph()  # graph to be populated and returned
+    seen = set()  # set of seen/processed edges
+    for edge in g.edges:
+        edge_set = frozenset(edge)  # convert edge to forzenset, to have hashable to store bidirectional edge.
+        if edge_set not in seen:  # if the edge haven't been processed yet
+            attr = 0  # accumulation variable
+            # Get edge attribute data for both directions, and accumulate attr
+            u, v = edge
+            uv = g.get_edge_data(u, v, attribute)
+            vu = g.get_edge_data(v, u, attribute)
+            # Handle cases where there's only a monodirectional edge present in g
+            if isinstance(uv, dict):
+                attr += uv[attribute]
+            if isinstance(vu, dict):
+                attr += vu[attribute]
+            gg.add_edge(u, v, **{attribute: attr})  # add edge data with summed attr to graph
+            seen.add(edge_set)  # add processed (bidirectional) edge to seen
+    return gg
