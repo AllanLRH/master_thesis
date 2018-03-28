@@ -604,6 +604,7 @@ def normDotSim(ua, ub):
 
 def updateWeight(g, u, v, weight, attribute='weight'):
     """Update weights for a graph edge, and create it if need be.
+    The attribute are updated using the += operator.
 
     Parameters
     ----------
