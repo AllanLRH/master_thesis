@@ -619,3 +619,40 @@ def chunkifyNonOverlappingPairs(itr_a, itr_b, chunksize):
         break
     if len(lst):
         yield tuple(lst)  # when the for-iterator is exhausted, yield the last bit (non-full lst)
+
+
+class DualDict():
+    """Dual lookup dict"""
+
+    def __init__(self, dct=None):
+        super(DualDict, self).__init__()
+        self.a = dict()
+        self.b = dict()
+        if dct is not None:
+            for k, v in dct.items():
+                self[k] = v
+
+    def __setitem__(self, key, value):
+        if key in self.a or value in self.b:
+            raise ValueError("There's a overlap in key-value between pairs")
+        self.a[key] = value
+        self.b[value] = key
+
+    def __getitem__(self, key):
+        key_in_a = key in self.a
+        key_in_b = key in self.b
+
+        if key_in_a and not key_in_b:
+            return self.a[key]
+        elif key_in_b and not key_in_a:
+            return self.b[key]
+        elif key_in_a and key_in_b:
+            raise IndexError("Key present in both internal directories")
+        elif not key_in_a and not key_in_b:
+            raise IndexError("Key not present in any directory")
+
+    def __len__(self):
+        return len(self.a)
+
+    def __repr__(self):
+        return repr(self.a)
