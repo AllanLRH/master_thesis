@@ -165,7 +165,7 @@ def plotNeatoGraph(g, plot_settings=None, labels=None, node_size=70, fig_ax=None
         assert len(node_size) == len(g.nodes()), "Node size must be the same length as the number of nodes in g."
     fig, ax = plt.subplots(figsize=ps['figsize'])
     pos = nx.drawing.nx_agraph.graphviz_layout(g, prog='neato')
-    nx.draw_networkx_nodes(g, pos, node_size=n ode_size, node_color=ps['node_color'], ax=ax)
+    nx.draw_networkx_nodes(g, pos, node_size=node_size, node_color=ps['node_color'], ax=ax)
     nx.draw_networkx_edges(g, pos, edge_color=ps['edge_color'])
     if labels:
         nx.draw_networkx_labels(g, pos, labels=labels, font_color=ps['font_color'],
