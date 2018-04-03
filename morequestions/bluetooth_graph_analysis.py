@@ -70,8 +70,9 @@ n_persons = 3  # Number of persons considered "close" to the user
 simfnc    = [('cosSim', graph.cosSim), ('normDotSim', graph.normDotSim)]
 qdct      = dict()
 
-question_categories = ['bfi', 'loneliness', 'narcissism', 'symptoms', 'locus',
-                       'mdi', 'homophily', 'selfesteem', 'panas', 'stress', 'alcohol']
+# question_categories = ['bfi', 'loneliness', 'narcissism', 'symptoms', 'locus',
+#                        'mdi', 'homophily', 'selfesteem', 'panas', 'stress', 'alcohol']
+question_categories = ['bfi', 'loneliness', 'narcissism']
 if PRINT: big5_questions.head()  # noqa
 
 for ui, baseuser in enumerate(dfa.index):
