@@ -479,3 +479,22 @@ def test_constructSubsearchTunedParameters_2():
     with pytest.raises(ValueError):
         new_sub_params = modeleval.constructSubsearchTunedParameters(best_params, tuned_parameters, n_gridpoints=3)  # noqa
 
+
+@pytest.mark.graph
+def test_nxDiGraph2Graph_0():
+    dg = nx.DiGraph()
+    dg.add_edge('a', 'b', weight=10.0)
+    dg.add_edge('b', 'a', weight=20.0)
+    dg.add_edge('b', 'c', weight=5.0)
+    dg.add_edge('c', 'a', weight=8.0)
+    dg.add_edge('c', 'd', weight=12.0)
+    dg.add_edge('c', 'd', other_keyword=1000)
+
+    ug = graph.nxDiGraph2Graph(dg, attribute='weight', agg=np.mean)
+    assert ug.get_edge_data('a', 'b')['weight'] == 15.0
+    assert ug.get_edge_data('c', 'b')['weight'] == 2.5
+    assert ug.get_edge_data('c', 'a')['weight'] == 4.0
+    assert ug.get_edge_data('c', 'd')['weight'] == 6.0
+    assert 'other_keyword' not in ug.get_edge_data('d', 'c')
+    with pytest.raises(KeyError):
+        ug['c']['d']['other_keyword']

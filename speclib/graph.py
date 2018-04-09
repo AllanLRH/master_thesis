@@ -669,7 +669,7 @@ def updateWeight(g, u, v, weight, attribute='weight'):
         g.add_edge(u, v, **{attribute: weight})
 
 
-def nxDiGraph2Graph(g, attribute='weight'):
+def nxDiGraph2Graph(g, attribute='weight', agg=lambda x: sum(x)/len(x)):
     """Given a nx.DiGraph, convert it to a nx.Graph where the edge-weights are combined (added) together.
     Can be used for other attributes as well.
 
@@ -678,7 +678,9 @@ def nxDiGraph2Graph(g, attribute='weight'):
     g : nx.DiGraph
         DiGraph to be converted.
     attribute : str, optional
-        attribute to be summed, default is 'weight'.
+        attribute to be aggregated, default is 'weight'.
+    agg : function, optional
+        Aggregation function, default is an average.
 
     Returns
     -------
@@ -698,16 +700,12 @@ def nxDiGraph2Graph(g, attribute='weight'):
     for edge in g.edges:
         edge_set = frozenset(edge)  # convert edge to forzenset, to have hashable to store bidirectional edge.
         if edge_set not in seen:  # if the edge haven't been processed yet
-            attr = 0  # accumulation variable
             # Get edge attribute data for both directions, and accumulate attr
             u, v = edge
-            uv = g.get_edge_data(u, v, attribute)
-            vu = g.get_edge_data(v, u, attribute)
-            # Handle cases where there's only a monodirectional edge present in g
-            if isinstance(uv, dict):
-                attr += uv[attribute]
-            if isinstance(vu, dict):
-                attr += vu[attribute]
+            uv = g.get_edge_data(u, v, default={attribute: 0})
+            vu = g.get_edge_data(v, u, default={attribute: 0})
+            to_aggregate = [uv[attribute], vu[attribute]]
+            attr = agg(to_aggregate)
             gg.add_edge(u, v, **{attribute: attr})  # add edge data with summed attr to graph
             seen.add(edge_set)  # add processed (bidirectional) edge to seen
     return gg
