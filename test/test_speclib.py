@@ -477,7 +477,5 @@ def test_constructSubsearchTunedParameters_2():
     tuned_parameters = [{'C': np.array([0.01, 0.1, 1]), 'penalty': ['l1', 'l2']}]
     best_params = {'C': 10, 'penalty': 'l2'}
     with pytest.raises(ValueError):
-        new_sub_params = modeleval.constructSubsearchTunedParameters(best_params,  # noqa
-                                                                     tuned_parameters,
-                                                                     n_gridpoints=3)
+        new_sub_params = modeleval.constructSubsearchTunedParameters(best_params, tuned_parameters, n_gridpoints=3)  # noqa
 
