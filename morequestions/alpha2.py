@@ -6,6 +6,7 @@ import os
 sys.path.append(os.path.abspath(".."))
 
 import numpy as np
+import json
 # import bottleneck as bn
 import pandas as pd
 import networkx as nx
@@ -64,8 +65,8 @@ datafiles = ['../../allan_data/weighted_graph_bluetooth.edgelist',
 # Construct the dataset $ x_i, x_j, w_{ij} $, where $x_i$ and $x_j$ are questionaire variable for persons $i$ and $j$, and $w_{ij}$ are the weight of their connection.
 
 # Load questionaire
-ua = loaders.Useralias()
-qdf = pd.read_json('../../allan_data/RGender_.json')
+ua        = loaders.Useralias()
+qdf       = pd.read_json('../../allan_data/RGender_.json')
 qdf.index = qdf.index.map(lambda x: ua[x])
 
 # Load graph
@@ -73,60 +74,72 @@ gca_org = nx.read_edgelist(datafiles[1], create_using=nx.DiGraph())
 
 # Remove persons from questionaire which ins't represneted in the graph
 qdf = qdf.reindex(list(gca_org.nodes))
+# Only keep the '__answer'-columns
+qdf = qdf.filter(regex='__answer$')
 
 # Select question from questionaire
-q = qdf.alcohol_binge10__answer
 
-if q.notna().mean() < 0.9:
-    raise Warning("{:.2f} % of data is missing".format(q.notna().mean() * 100))
+r_dct   = dict()
+n_alpha = 201
 
-# Remove persons from graph which answered Null to the question, and also drop Null values from the question
-q = q.dropna()
-gca = gca_org.subgraph(q.index.tolist())
-gcau = graph.nxDiGraph2Graph(gca)
-amca = np.array(nx.adjacency_matrix(gcau).todense())
+for col in qdf.columns:
+    q = qdf[col]
+    nan_frac = q.notna().mean()
+    if nan_frac < 0.85:
+        raise Warning("{:.2f} % of data is missing".format(nan_frac * 100))
+        continue
 
-n_alpha = 8
-w = np.zeros((*amca.shape, n_alpha))
-alpha = np.linspace(0, 2, n_alpha)
-N = amca.shape[0]
-for i in range(N):
-    for j in range(i):
-        if amca[i, j] != 0.0:
-            numerator = amca[i, j] ** alpha
-        else:
-            numerator = np.zeros(n_alpha)
-        denominator = sum(el ** alpha for el in amca[i, (amca[i, :] != 0)])
-        assert np.isnan(denominator).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
-        res = numerator / denominator
-        assert np.isnan(res).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
-        w[i, j, :] = res
-        w[j, i, :] = res
+    # Remove persons from graph which answered Null to the question, and also drop Null values from the question
+    q = q.dropna()
+    gca = gca_org.subgraph(q.index.tolist())
+    gcau = graph.nxDiGraph2Graph(gca)
+    amca = np.array(nx.adjacency_matrix(gcau).todense())
 
-alpha            = np.linspace(0, 2, n_alpha)
-x_mean_numerator = 0
-denominator      = 0
-for i in range(amca.shape[0]):
-    for j in range(i):
-        xi, xj           = q.iloc[i], q.iloc[j]
-        x_mean_numerator += w[i, j, :] * (xi + xj)
-        assert np.isnan(x_mean_numerator).any() == False, f"NaN values encountered in the 2nd loop. (i, j) = {(i, j)}."  # noqa
-        denominator      += 2*w[i, j, :]
-        assert np.isnan(denominator).any() == False, f"NaN values encountered in the 2nd loop. (i, j) = {(i, j)}."  # noqa
-x_mean = x_mean_numerator / denominator
-assert np.isnan(x_mean).any() == False, "NaN values encountered after the 2nd loop."  # noqa
+    w = np.zeros((*amca.shape, n_alpha))
+    alpha = np.linspace(0, 2, n_alpha)
+    N = amca.shape[0]
+    for i in range(N):
+        for j in range(i):
+            if amca[i, j] != 0.0:
+                numerator = amca[i, j] ** alpha
+            else:
+                numerator = np.zeros(n_alpha)
+            denominator = sum(el ** alpha for el in amca[i, (amca[i, :] != 0)])
+            assert np.isnan(denominator).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
+            res = numerator / denominator
+            assert np.isnan(res).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
+            w[i, j, :] = res
+            w[j, i, :] = res
 
-t_sq_numerator = 0
-s_sq_numerator = 0
-for i in range(amca.shape[0]):
-    for j in range(i):
-        xi, xj = q.iloc[i], q.iloc[j]
-        t_sq_numerator += w[i, j, :] * (xi - x_mean) * (xj - x_mean)
-        assert np.isnan(t_sq_numerator).any() == False, f"NaN values encountered in the 3rd loop. (i, j) = {(i, j)}."  # noqa
-        s_sq_numerator += w[i, j, :] * ((xi - x_mean)**2 + (xj - x_mean)**2)
-        assert np.isnan(s_sq_numerator).any() == False, f"NaN values encountered in the 3rd loop. (i, j) = {(i, j)}."  # noqa
-t_sq = t_sq_numerator / denominator
-assert np.isnan(t_sq).any() == False, "NaN values encountered after the 3rd loop."  # noqa
-s_sq = s_sq_numerator / denominator
-assert np.isnan(s_sq).any() == False, "NaN values encountered after the 3rd loop."  # noqa
-r = t_sq / s_sq
+    alpha            = np.linspace(0, 2, n_alpha)
+    x_mean_numerator = 0
+    denominator      = 0
+    for i in range(amca.shape[0]):
+        for j in range(i):
+            xi, xj           = q.iloc[i], q.iloc[j]
+            x_mean_numerator += w[i, j, :] * (xi + xj)
+            assert np.isnan(x_mean_numerator).any() == False, f"NaN values encountered in the 2nd loop. (i, j) = {(i, j)}."  # noqa
+            denominator      += 2*w[i, j, :]
+            assert np.isnan(denominator).any() == False, f"NaN values encountered in the 2nd loop. (i, j) = {(i, j)}."  # noqa
+    x_mean = x_mean_numerator / denominator
+    assert np.isnan(x_mean).any() == False, "NaN values encountered after the 2nd loop."  # noqa
+
+    t_sq_numerator = 0
+    s_sq_numerator = 0
+    for i in range(amca.shape[0]):
+        for j in range(i):
+            xi, xj = q.iloc[i], q.iloc[j]
+            t_sq_numerator += w[i, j, :] * (xi - x_mean) * (xj - x_mean)
+            assert np.isnan(t_sq_numerator).any() == False, f"NaN values encountered in the 3rd loop. (i, j) = {(i, j)}."  # noqa
+            s_sq_numerator += w[i, j, :] * ((xi - x_mean)**2 + (xj - x_mean)**2)
+            assert np.isnan(s_sq_numerator).any() == False, f"NaN values encountered in the 3rd loop. (i, j) = {(i, j)}."  # noqa
+    t_sq = t_sq_numerator / denominator
+    assert np.isnan(t_sq).any() == False, "NaN values encountered after the 3rd loop."  # noqa
+    s_sq = s_sq_numerator / denominator
+    assert np.isnan(s_sq).any() == False, "NaN values encountered after the 3rd loop."  # noqa
+    r = t_sq / s_sq
+    r_dct[col] = (nan_frac, r)
+
+
+with open('../../allan_data/r_values.json', 'w') as fid:
+    json.dump(r_dct, fid)
