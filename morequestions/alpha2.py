@@ -105,9 +105,7 @@ for col in qdf.columns:
             else:
                 numerator = np.zeros(n_alpha)
             denominator = sum(el ** alpha for el in amca[i, (amca[i, :] != 0)])
-            assert np.isnan(denominator).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
             res = numerator / denominator
-            assert np.isnan(res).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
             w[i, j, :] = res
             w[j, i, :] = res
 
@@ -118,11 +116,8 @@ for col in qdf.columns:
         for j in range(i):
             xi, xj           = q.iloc[i], q.iloc[j]
             x_mean_numerator += w[i, j, :] * (xi + xj)
-            assert np.isnan(x_mean_numerator).any() == False, f"NaN values encountered in the 2nd loop. (i, j) = {(i, j)}."  # noqa
             denominator      += 2*w[i, j, :]
-            assert np.isnan(denominator).any() == False, f"NaN values encountered in the 2nd loop. (i, j) = {(i, j)}."  # noqa
     x_mean = x_mean_numerator / denominator
-    assert np.isnan(x_mean).any() == False, "NaN values encountered after the 2nd loop."  # noqa
 
     t_sq_numerator = 0
     s_sq_numerator = 0
@@ -130,13 +125,9 @@ for col in qdf.columns:
         for j in range(i):
             xi, xj = q.iloc[i], q.iloc[j]
             t_sq_numerator += w[i, j, :] * (xi - x_mean) * (xj - x_mean)
-            assert np.isnan(t_sq_numerator).any() == False, f"NaN values encountered in the 3rd loop. (i, j) = {(i, j)}."  # noqa
             s_sq_numerator += w[i, j, :] * ((xi - x_mean)**2 + (xj - x_mean)**2)
-            assert np.isnan(s_sq_numerator).any() == False, f"NaN values encountered in the 3rd loop. (i, j) = {(i, j)}."  # noqa
     t_sq = t_sq_numerator / denominator
-    assert np.isnan(t_sq).any() == False, "NaN values encountered after the 3rd loop."  # noqa
     s_sq = s_sq_numerator / denominator
-    assert np.isnan(s_sq).any() == False, "NaN values encountered after the 3rd loop."  # noqa
     r = t_sq / s_sq
     r_dct[col] = (nan_frac, r)
 
