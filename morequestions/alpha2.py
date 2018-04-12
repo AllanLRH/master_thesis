@@ -68,34 +68,35 @@ ua = loaders.Useralias()
 qdf = pd.read_json('../../allan_data/RGender_.json')
 qdf.index = qdf.index.map(lambda x: ua[x])
 
-gca = nx.read_edgelist(datafiles[1], create_using=nx.DiGraph())
-gcau = graph.nxDiGraph2Graph(gca)
-dfca = nx.to_pandas_adjacency(gca)
-gamu = np.array(nx.adjacency_matrix(gcau).todense())
+# Load graph
+gca_org = nx.read_edgelist(datafiles[1], create_using=nx.DiGraph())
 
-qdf = qdf.reindex(list(gca.nodes))
-qq = misc.QuestionCompleter(qdf)
+# Remove persons from questionaire which ins't represneted in the graph
+qdf = qdf.reindex(list(gca_org.nodes))
+
+# Select question from questionaire
 q = qdf.alcohol_binge10__answer
 
+if q.notna().mean() < 0.9:
+    raise Warning("{:.2f} % of data is missing".format(q.notna().mean() * 100))
 
-
-
-print(q.notna().mean())
-gca_q = gca.subgraph(q.index[q.notna()].tolist())
-gca_qu = graph.nxDiGraph2Graph(gca_q)
-gam_qu = np.array(nx.adjacency_matrix(gca_qu).todense())
+# Remove persons from graph which answered Null to the question, and also drop Null values from the question
+q = q.dropna()
+gca = gca_org.subgraph(q.index.tolist())
+gcau = graph.nxDiGraph2Graph(gca)
+amca = np.array(nx.adjacency_matrix(gcau).todense())
 
 n_alpha = 8
-w = np.zeros((*gamu.shape, n_alpha))
+w = np.zeros((*amca.shape, n_alpha))
 alpha = np.linspace(0, 2, n_alpha)
-N = gamu.shape[0]
+N = amca.shape[0]
 for i in range(N):
     for j in range(i):
-        if gamu[i, j] != 0.0:
-            numerator = gamu[i, j] ** alpha
+        if amca[i, j] != 0.0:
+            numerator = amca[i, j] ** alpha
         else:
             numerator = np.zeros(n_alpha)
-        denominator = sum(el ** alpha for el in gamu[i, (gamu[i, :] != 0)])
+        denominator = sum(el ** alpha for el in amca[i, (amca[i, :] != 0)])
         assert np.isnan(denominator).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
         res = numerator / denominator
         assert np.isnan(res).any() == False, f"NaN values encountered in the 1st loop. (i, j) = {(i, j)}."  # noqa
@@ -105,7 +106,7 @@ for i in range(N):
 alpha            = np.linspace(0, 2, n_alpha)
 x_mean_numerator = 0
 denominator      = 0
-for i in range(gamu.shape[0]):
+for i in range(amca.shape[0]):
     for j in range(i):
         xi, xj           = q.iloc[i], q.iloc[j]
         x_mean_numerator += w[i, j, :] * (xi + xj)
@@ -117,7 +118,7 @@ assert np.isnan(x_mean).any() == False, "NaN values encountered after the 2nd lo
 
 t_sq_numerator = 0
 s_sq_numerator = 0
-for i in range(gamu.shape[0]):
+for i in range(amca.shape[0]):
     for j in range(i):
         xi, xj = q.iloc[i], q.iloc[j]
         t_sq_numerator += w[i, j, :] * (xi - x_mean) * (xj - x_mean)
