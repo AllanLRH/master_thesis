@@ -86,7 +86,7 @@ for col in qdf.columns:
     q = qdf[col]
     nan_frac = q.notna().mean()
     if nan_frac < 0.85:
-        raise Warning("{:.2f} % of data is missing".format(nan_frac * 100))
+        print("{:.2f} % of data is missing".format(nan_frac * 100), file=sys.stderr)
         continue
 
     # Remove persons from graph which answered Null to the question, and also drop Null values from the question
