@@ -93,10 +93,18 @@ def calculate_r(q, col, gca, n_alpha, permutations=0, savepath='../../allan_data
     gca = gca_org.subgraph(q.index.tolist())
     count = 0
     while count <= permutations:
+        print(f"Processing {col}, count {count} of {permutations}.")
         gcau = graph.nxDiGraph2Graph(gca)
         if count > 0:
             # Modifies gcau in-place
-            nx.algorithms.swap.double_edge_swap(gcau, nswap=gcau.number_of_edges())
+            # Keep swapping edges, one at a time, until it fails or the edges are swapped N_edges times.
+            i = 0
+            while i < gcau.number_of_edges():
+                try:
+                    nx.algorithms.swap.double_edge_swap(gcau, nswap=1)
+                    i += 1
+                except nx.NetworkXError:
+                    break
         amca = np.array(nx.adjacency_matrix(gcau).todense())
         w = np.zeros((*amca.shape, n_alpha))
         N = amca.shape[0]
