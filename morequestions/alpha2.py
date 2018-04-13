@@ -84,9 +84,6 @@ n_alpha = 201
 # for col in qdf.columns:
 def calculate_r(q, col, gca, n_alpha):
     nan_frac = q.notna().mean()
-    if nan_frac < 0.85:
-        print("{:.2f} % of data is missing".format(nan_frac * 100), file=sys.stderr)
-        continue
 
     # Remove persons from graph which answered Null to the question, and also drop Null values from the question
     q = q.dropna()
@@ -128,7 +125,9 @@ def calculate_r(q, col, gca, n_alpha):
     t_sq = t_sq_numerator / denominator
     s_sq = s_sq_numerator / denominator
     r = t_sq / s_sq
-    return (col, (nan_frac, r))
+    df = pd.DataFrame({'r': r, 'alpha': alpha})
+    df.to_msgpack(savepath + col + '.msgpack')
+    return (col, nan_frac)
 
 
 with Pool(24) as pool:
@@ -136,5 +135,5 @@ with Pool(24) as pool:
     res = pool.starmap(calculate_r, arg_generator)
     r_dct = dict(res)
 
-with open('../../allan_data/r_values.json', 'w') as fid:
+with open("../../allan_data/r_values/nanfrac.json", 'w') as fid:
     json.dump(r_dct, fid)
