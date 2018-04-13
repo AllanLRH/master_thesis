@@ -82,50 +82,58 @@ n_alpha = 201
 
 
 # for col in qdf.columns:
-def calculate_r(q, col, gca, n_alpha):
+def calculate_r(q, col, gca, n_alpha, permutations=0, savepath='../../allan_data_/r_values/'):
     nan_frac = q.notna().mean()
+    alpha = np.linspace(0, 2, n_alpha)
+    result_dct = {'alpha': alpha}
+    r_format_string = "r_perm{:0%d}" % len(str(permutations))
 
     # Remove persons from graph which answered Null to the question, and also drop Null values from the question
     q = q.dropna()
     gca = gca_org.subgraph(q.index.tolist())
-    gcau = graph.nxDiGraph2Graph(gca)
-    amca = np.array(nx.adjacency_matrix(gcau).todense())
+    count = 0
+    while count <= permutations:
+        gcau = graph.nxDiGraph2Graph(gca)
+        if count > 0:
+            # Modifies gcau in-place
+            nx.algorithms.swap.double_edge_swap(gcau, nswap=gcau.number_of_edges())
+        amca = np.array(nx.adjacency_matrix(gcau).todense())
+        w = np.zeros((*amca.shape, n_alpha))
+        N = amca.shape[0]
+        for i in range(N):
+            for j in range(i):
+                if amca[i, j] != 0.0:
+                    numerator = amca[i, j] ** alpha
+                else:
+                    numerator = np.zeros(n_alpha)
+                denominator = sum(el ** alpha for el in amca[i, (amca[i, :] != 0)])
+                res = numerator / denominator
+                w[i, j, :] = res
+                w[j, i, :] = res
 
-    w = np.zeros((*amca.shape, n_alpha))
-    alpha = np.linspace(0, 2, n_alpha)
-    N = amca.shape[0]
-    for i in range(N):
-        for j in range(i):
-            if amca[i, j] != 0.0:
-                numerator = amca[i, j] ** alpha
-            else:
-                numerator = np.zeros(n_alpha)
-            denominator = sum(el ** alpha for el in amca[i, (amca[i, :] != 0)])
-            res = numerator / denominator
-            w[i, j, :] = res
-            w[j, i, :] = res
+        alpha            = np.linspace(0, 2, n_alpha)
+        x_mean_numerator = 0
+        denominator      = 0
+        for i in range(amca.shape[0]):
+            for j in range(i):
+                xi, xj           = q.iloc[i], q.iloc[j]
+                x_mean_numerator += w[i, j, :] * (xi + xj)
+                denominator      += 2*w[i, j, :]
+        x_mean = x_mean_numerator / denominator
 
-    alpha            = np.linspace(0, 2, n_alpha)
-    x_mean_numerator = 0
-    denominator      = 0
-    for i in range(amca.shape[0]):
-        for j in range(i):
-            xi, xj           = q.iloc[i], q.iloc[j]
-            x_mean_numerator += w[i, j, :] * (xi + xj)
-            denominator      += 2*w[i, j, :]
-    x_mean = x_mean_numerator / denominator
-
-    t_sq_numerator = 0
-    s_sq_numerator = 0
-    for i in range(amca.shape[0]):
-        for j in range(i):
-            xi, xj = q.iloc[i], q.iloc[j]
-            t_sq_numerator += w[i, j, :] * (xi - x_mean) * (xj - x_mean)
-            s_sq_numerator += w[i, j, :] * ((xi - x_mean)**2 + (xj - x_mean)**2)
-    t_sq = t_sq_numerator / denominator
-    s_sq = s_sq_numerator / denominator
-    r = t_sq / s_sq
-    df = pd.DataFrame({'r': r, 'alpha': alpha})
+        t_sq_numerator = 0
+        s_sq_numerator = 0
+        for i in range(amca.shape[0]):
+            for j in range(i):
+                xi, xj = q.iloc[i], q.iloc[j]
+                t_sq_numerator += w[i, j, :] * (xi - x_mean) * (xj - x_mean)
+                s_sq_numerator += w[i, j, :] * ((xi - x_mean)**2 + (xj - x_mean)**2)
+        t_sq = t_sq_numerator / denominator
+        s_sq = s_sq_numerator / denominator
+        r = t_sq / s_sq
+        result_dct[r_format_string.format(count)] = r
+        count += 1
+    df = pd.DataFrame(result_dct)
     df.to_msgpack(savepath + col + '.msgpack')
     return (col, nan_frac)
 
