@@ -129,7 +129,9 @@ def calculate_r(q, col, G_org, data_origin, n_alpha, permutations=0, savepath='/
         t_sq = t_sq_numerator / denominator
         s_sq = s_sq_numerator / denominator
         r = t_sq / s_sq
-        result_dct[r_format_string.format(count)] = r
+        dct_key = r_format_string.format(count)
+        print(f"Saving {col} from {data_origin}-data under key {dct_key}.")
+        result_dct[dct_key] = r
         count += 1
     df = pd.DataFrame(result_dct)
     df.to_msgpack(savepath + col + '_' + data_origin + '.msgpack')
@@ -143,17 +145,18 @@ qdf.index = qdf.index.map(lambda x: ua[x])
 
 try:
     n_alpha = 201
-    N_perm = 1  # FIXME: Only using 1 permutation for teseting purposes
+    N_perm = 30  # FIXME: -use more permutations, eventually.
     with Pool(6) as pool:
         # Load graph
-        for datafile, origin in datafiles:
+        # TODO: Current weight-score doesn't make sens for the Bluetooth format?
+        for datafile, origin in datafiles[1:]:
             G_org = nx.read_edgelist(datafile, create_using=nx.DiGraph())
             # Remove persons from questionaire which ins't represneted in the graph
             qdf = qdf.reindex(list(G_org.nodes))
             # Only keep the '__answer'-columns
             qdf = qdf.filter(regex='__answer$')
 
-            arg_generator = ((qdf[col], col, G_org, origin, n_alpha, ) for col in qdf.columns[:6])
+            arg_generator = ((qdf[col], col, G_org, origin, n_alpha, N_perm) for col in qdf.columns)
             res = pool.starmap(calculate_r, arg_generator)
             r_dct = dict(res)
 
