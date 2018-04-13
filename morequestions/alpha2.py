@@ -10,6 +10,7 @@ import json
 # import bottleneck as bn
 import pandas as pd
 import networkx as nx
+from multiprocessing import Pool
 # import igraph as ig
 # import matplotlib as mpl
 # import matplotlib.pyplot as plt
@@ -77,13 +78,11 @@ qdf = qdf.reindex(list(gca_org.nodes))
 # Only keep the '__answer'-columns
 qdf = qdf.filter(regex='__answer$')
 
-# Select question from questionaire
-
-r_dct   = dict()
 n_alpha = 201
 
-for col in qdf.columns:
-    q = qdf[col]
+
+# for col in qdf.columns:
+def calculate_r(q, col, gca, n_alpha):
     nan_frac = q.notna().mean()
     if nan_frac < 0.85:
         print("{:.2f} % of data is missing".format(nan_frac * 100), file=sys.stderr)
@@ -129,8 +128,13 @@ for col in qdf.columns:
     t_sq = t_sq_numerator / denominator
     s_sq = s_sq_numerator / denominator
     r = t_sq / s_sq
-    r_dct[col] = (nan_frac, r)
+    return (col, (nan_frac, r))
 
+
+with Pool(24) as pool:
+    arg_generator = ((qdf[col], col, gca_org, n_alpha) for col in qdf.columns)
+    res = pool.starmap(calculate_r, arg_generator)
+    r_dct = dict(res)
 
 with open('../../allan_data/r_values.json', 'w') as fid:
     json.dump(r_dct, fid)
