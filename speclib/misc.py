@@ -656,3 +656,29 @@ class DualDict():
 
     def __repr__(self):
         return repr(self.a)
+
+
+def yield_upper_indices(spa):
+    """Yield all upper triangle indices from a (sparse) matrix.
+
+    Parameters
+    ----------
+    spa : scipy.sparse.csr_matrix, scipy.sparse.coo_matrix
+        Sparse matrix from scikit.sparse.
+
+    Yields
+    ------
+    (int, int)
+        Indices as integers.
+
+    Raises
+    ------
+    ValueError
+        If the input isn't square shape.
+    """
+    n, m = spa.shape
+    if n != m:
+        raise ValueError(f"spa must be square, but was {spa.shape}.")
+    for i, j in zip(*spa.nonzero()):
+        if i < j:
+            yield (i, j)

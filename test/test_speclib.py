@@ -4,6 +4,7 @@
 import pytest
 import pandas as pd
 import numpy as np
+import scipy.sparse as sp
 import sys
 import os
 import inspect
@@ -498,3 +499,16 @@ def test_nxDiGraph2Graph_0():
     assert 'other_keyword' not in ug.get_edge_data('d', 'c')
     with pytest.raises(KeyError):
         ug['c']['d']['other_keyword']
+
+
+@pytest.mark.misc
+def test_yield_upper_indices():
+    arr = sp.dok_matrix((4, 4))  # to get rid of efficiency warning
+    idx = [(0, 0), (0, 3), (1, 0), (1, 2), (2, 3), (3, 0), (3, 2)]
+    val = [1, 2, 3, 4, 5, 6, 7]
+    for (i, j), v in zip(idx, val):
+        arr[i, j] = v
+    arr = sp.csr_matrix(arr)
+    expected = [(0, 3), (1, 2), (2, 3)]
+    actual = list(misc.yield_upper_indices(arr))
+    assert expected == actual
