@@ -78,6 +78,15 @@ def shuffle_graph_weights(g):
 
 
 def set_w_ij_sms_call(g, alpha):
+    """Compute and set w_ij weights on the graphs edges.
+
+    Parameters
+    ----------
+    g : nx.Graph
+        Graph to compute weightes from, and set_weights on.
+    alpha : np.ndarray
+        Numpy array woth the alpha exponents.
+    """
     # Expand dimmensions such that broadcasting can expand the exponentiated values
     # into the second dimmension. Make it a DataFrame, and assign names to the columns
     # and axis to ease data identification later on.
@@ -107,6 +116,20 @@ def set_w_ij_sms_call(g, alpha):
 
 
 def get_q_mean(g, q):
+    """Get the weighted mean values for a question (called \\bar{x} in the article, and q_mean in this code).
+
+    Parameters
+    ----------
+    g : nx.Graph
+        Graph to compute from.
+    q : pd.Series
+        A question from the qdf DataFrame.
+
+    Returns
+    -------
+    float
+        Weighted mean of the question.
+    """
     numerator   = 0.0
     denominator = 0.0
     for i in g.nodes:
@@ -125,6 +148,22 @@ def get_q_mean(g, q):
 
 
 def get_s2_t2_r(g, q, q_mean):
+    """Get the values for s**2, t**2 and r.
+
+    Parameters
+    ----------
+    g : nx.Graph
+        The graph to compute from.
+    q : pd.Series
+        Question from the qdf DataFrame.
+    q_mean : float
+        Weighted mean value of question.
+
+    Returns
+    -------
+    (float, float, float)
+        s**2, t**2 and r.
+    """
     numerator_s   = 0.0
     numerator_t   = 0.0
     denominator = 0.0
