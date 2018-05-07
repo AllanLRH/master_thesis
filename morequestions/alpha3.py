@@ -106,6 +106,27 @@ def set_w_ij_sms_call(g, alpha):
                 seen.add(frozenset(u, v))
 
 
+def get_q_mean(g, q):
+    numerator   = 0.0
+    denominator = 0.0
+    for i in g.nodes:
+        for j in g[i]:  # w_ij should be treated as 0 when no connection exists
+            if i != j:
+                # This version of the code are probably a bit slover, but more readable
+                # w_ij = g[i][j]['w_ij']
+                # x_i  = q.loc[i]
+                # x_j  = q.loc[j]
+                # numerator   += w_ij*(x_i + x_j)
+                # denominator += 2*w_ij
+                numerator   += g[i][j]['w_ij']*(q.loc[i] + q.loc[j])
+                denominator += 2*g[i][j]['w_ij']
+    q_mean = numerator / denominator
+    return q_mean
+
+
+
+
+
 
 
 
