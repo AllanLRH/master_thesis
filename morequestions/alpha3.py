@@ -7,11 +7,9 @@ sys.path.append(os.path.abspath(".."))
 
 import numpy as np
 import random
-import itertools
 # import bottleneck as bn
 import pandas as pd
 import networkx as nx
-from multiprocessing import Pool
 
 from speclib import loaders, graph, misc
 from speclib.pushbulletNotifier import JobNotification
@@ -112,7 +110,7 @@ def set_w_ij_sms_call(g, alpha):
         for v in u_friends:
             if {u, v} not in seen:
                 g[u][v]['w_ij'] = w_ij.loc[v]
-                seen.add(frozenset(u, v))
+                seen.add(frozenset((u, v)))
 
 
 def get_q_mean(g, q):
@@ -127,8 +125,8 @@ def get_q_mean(g, q):
 
     Returns
     -------
-    float
-        Weighted mean of the question.
+    np.ndaray
+        Weighted mean of the question, in an array matching the corresponding alpha values.
     """
     numerator   = 0.0
     denominator = 0.0
@@ -161,8 +159,8 @@ def get_s2_t2_r(g, q, q_mean):
 
     Returns
     -------
-    (float, float, float)
-        s**2, t**2 and r.
+    (np.ndarray, np.ndarray, np.ndarray)
+        s**2, t**2 and r, in an array matching the corresponding alpha values.
     """
     numerator_s   = 0.0
     numerator_t   = 0.0
