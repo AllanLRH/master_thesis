@@ -67,3 +67,6 @@ tryLoadData/figs_load_morequestions_data/
 
 /.bashrc
 high_performance_python/
+temp/performance.txt
+temp/github_nbdime/
+temp/parallel_pandas_apply.py
