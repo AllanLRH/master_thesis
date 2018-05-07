@@ -81,16 +81,29 @@ def set_w_ij_sms_call(g, alpha):
     # Expand dimmensions such that broadcasting can expand the exponentiated values
     # into the second dimmension. Make it a DataFrame, and assign names to the columns
     # and axis to ease data identification later on.
+
+    seen = set()  # Keep track of seen pairs/edges
     for u in g.nodes:
+
+        # Return if all pairs/edges are processed
+        if len(seen) == g.number_of_edges():
+            return None
+
+        # Get weights and a list of friends
         u_weights = np.array([v['weight'] for v in g[u].values()])
         u_friends = list(g[u])
+
+        # Construct w_ij(alpha)
         w_ij = pd.DataFrame(u_weights[:, np.newaxis]**alpha, columns=alpha, index=u_friends)
         w_ij = w_ij / w_ij.sum(axis=0)
         w_ij.columns.name = 'alpha'
         w_ij.index.name   = f'{u} friends'
+
+        # Set the resulting edge properties
         for v in u_friends:
-            if 'w_ij' not in g[u][v]:
+            if {u, v} not in seen:
                 g[u][v]['w_ij'] = w_ij.loc[v]
+                seen.add(frozenset(u, v))
 
 
 
