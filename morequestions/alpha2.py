@@ -6,6 +6,7 @@ import os
 sys.path.append(os.path.abspath(".."))
 
 import numpy as np
+import sparse as sp
 import json
 # import bottleneck as bn
 import pandas as pd
@@ -34,7 +35,7 @@ from multiprocessing import Pool
 # warnings.simplefilter("ignore", category=UserWarning)
 
 
-from speclib import loaders, graph
+from speclib import loaders, graph, misc
 from speclib.pushbulletNotifier import JobNotification
 
 jn = JobNotification()
@@ -45,8 +46,6 @@ pd.set_option('display.width', 1000)
 np.set_printoptions(linewidth=145)
 
 # import pixiedust
-
-
 
 
 datafiles = [('../../allan_data/weighted_graph_bluetooth.edgelist', 'bluetooth'),
@@ -71,7 +70,6 @@ datafiles = [('../../allan_data/weighted_graph_bluetooth.edgelist', 'bluetooth')
 # Construct the dataset $ x_i, x_j, w_{ij} $, where $x_i$ and $x_j$ are questionaire variable for persons $i$ and $j$, and $w_{ij}$ are the weight of their connection.
 
 
-# for col in qdf.columns:
 def calculate_r(q, col, G_org, data_origin, n_alpha, permutations=0, savepath='/lscr_paper/allan/allan_data/r_values/'):
     nan_frac = q.notna().mean()
     alpha = np.linspace(0, 2, n_alpha)
@@ -81,38 +79,29 @@ def calculate_r(q, col, G_org, data_origin, n_alpha, permutations=0, savepath='/
     # Remove persons from graph which answered Null to the question, and also drop Null values from the question
     q = q.dropna()
     G = G_org.subgraph(q.index.tolist())
+
     count = 0
     while count <= permutations:
         print(f"Processing {col}, count {count} of {permutations}.")
         Gu = graph.nxDiGraph2Graph(G)
-        if count > 0:
-            # Modifies Gu in-place
-            # Keep swapping edges, one at a time, until it fails or the edges are swapped N_edges times.
-            i = 0
-            while i < Gu.number_of_edges():
-                try:
-                    nx.algorithms.swap.double_edge_swap(Gu, nswap=1)
-                    i += 1
-                except nx.NetworkXError:
-                    break
-        amca = np.array(nx.adjacency_matrix(Gu).todense())
-        w = np.zeros((*amca.shape, n_alpha))
+        amca = nx.adjacency_matrix(Gu)
+        if count > 0:  # count == 0 is doing the calculation with the original dataset
+            # Shuffle the weights between the nodes in the sparse matrix representation
+            np.random.shuffle(amca.data)
+        w = sp.csr_matrix(amca.shape)  # TODO: Use something from the sparse-package
+        # w = np.zeros((*amca.shape, n_alpha))
         N = amca.shape[0]
-        for i in range(N):
-            for j in range(i):
-                if amca[i, j] != 0.0:
-                    numerator = amca[i, j] ** alpha
-                else:
-                    numerator = np.zeros(n_alpha)
-                denominator = sum(el ** alpha for el in amca[i, (amca[i, :] != 0)])
-                res = numerator / denominator
-                w[i, j, :] = res
-                w[j, i, :] = res
+        for i, j in misc.yield_upper_indices(amca):
+            numerator   = amca[i, j] ** alpha
+            denominator = sum(amca.getrow(i).power(alpha))  # BUG: Will fail for non-scalar values of alpha
+            res         = numerator / denominator
+            w[i, j, :]  = res  # BUG: Will fail for non-scalar values of alpha
+            w[j, i, :]  = res  # BUG: Will fail for non-scalar values of alpha
 
         alpha            = np.linspace(0, 2, n_alpha)
         x_mean_numerator = 0
         denominator      = 0
-        for i in range(amca.shape[0]):
+        for i in range(N):
             for j in range(i):
                 xi, xj           = q.iloc[i], q.iloc[j]
                 x_mean_numerator += w[i, j, :] * (xi + xj)
@@ -121,7 +110,7 @@ def calculate_r(q, col, G_org, data_origin, n_alpha, permutations=0, savepath='/
 
         t_sq_numerator = 0
         s_sq_numerator = 0
-        for i in range(amca.shape[0]):
+        for i in range(N):
             for j in range(i):
                 xi, xj = q.iloc[i], q.iloc[j]
                 t_sq_numerator += w[i, j, :] * (xi - x_mean) * (xj - x_mean)
