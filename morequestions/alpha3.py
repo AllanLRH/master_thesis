@@ -80,18 +80,25 @@ def set_w_ij_sms_call(g, alpha):
 
     Parameters
     ----------
-    g : nx.Graph
+    g : nx.DiGraph
         Graph to compute weightes from, and set_weights on.
     alpha : np.ndarray
-        Numpy array woth the alpha exponents.
+        Numpy array with the alpha exponents.
+
+    Raises
+    ------
+    ValueError
+        If g is not a nx.DiGraph
     """
     # Expand dimmensions such that broadcasting can expand the exponentiated values
     # into the second dimmension. Make it a DataFrame, and assign names to the columns
     # and axis to ease data identification later on.
 
+    if not type(g) == nx.DiGraph:
+        raise ValueError(f"Input g must be a nx.DiGraph, but was {type(g)}.")
+
     seen = set()  # Keep track of seen pairs/edges
     for u in g.nodes:
-
         # Return if all pairs/edges are processed
         if len(seen) == g.number_of_edges():
             return None
@@ -108,9 +115,9 @@ def set_w_ij_sms_call(g, alpha):
 
         # Set the resulting edge properties
         for v in u_friends:
-            if {u, v} not in seen:
+            if (u, v) not in seen:
                 g[u][v]['w_ij'] = w_ij.loc[v]
-                seen.add(frozenset((u, v)))
+                seen.add((u, v))
 
 
 def get_q_mean(g, q):
@@ -175,8 +182,3 @@ def get_s2_t2_r(g, q, q_mean):
     t_squared = numerator_t / denominator
     r = numerator_t / numerator_s
     return s_squared, t_squared, r
-
-
-
-
-
