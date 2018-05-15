@@ -72,3 +72,5 @@ temp/github_nbdime/
 temp/parallel_pandas_apply.py
 
 /temp/scratchpad.ipynb
+
+/morequestions/.pytest_cache/
