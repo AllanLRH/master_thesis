@@ -174,10 +174,9 @@ def get_s2_t2_r(g, q, q_mean):
     denominator = 0.0
     for i in g.nodes:
         for j in g[i]:  # w_ij should be treated as 0 when no connection exists
-            if i != j:
-                numerator_s += g[i][j]['w_ij'] * ((q.loc[i] - q_mean)**2 + (q.loc[j] - q_mean)**2)
-                numerator_t += g[i][j]['w_ij'] * ((q.loc[i] - q_mean) * (q.loc[j] - q_mean))
-                denominator += 2*g[i][j]['w_ij']
+            numerator_s += g[i][j]['w_ij'] * ((q.loc[i] - q_mean)**2 + (q.loc[j] - q_mean)**2)
+            numerator_t += g[i][j]['w_ij'] * ((q.loc[i] - q_mean) * (q.loc[j] - q_mean))
+            denominator += 2*g[i][j]['w_ij']
     s_squared = numerator_s / denominator
     t_squared = numerator_t / denominator
     r = numerator_t / numerator_s
