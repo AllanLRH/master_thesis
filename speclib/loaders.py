@@ -232,6 +232,7 @@ class Useralias(object):
         with open(self._json_file_path) as fid:
             self.userdct = json.load(fid)
         self.i = len(self.userdct)
+        self.reversed = dict()
 
     def __setitem__(self, key, value):
         raise IndexError("The username aliases are frozen!")
