@@ -458,8 +458,12 @@ def questionSummary(df, qstr, samplesize=0):
     ------
     ValueError
         If qstr matches more than one question.
+    ValueError
+        If qstr == gender.
     """
-    dfs = df.filter(regex=qstr + '__')
+    if qstr == 'gender':
+        raise ValueError("This function does not work for the gender-column, since it's not a question")
+    dfs = df.filter(regex='^' + qstr + '__')
     basename = dfs.columns[0].split('__')[0]
     if dfs.shape[1] != 5:
         column_names = ''.join(sorted({'\n• ' + el.split('__')[0] for el in dfs.columns}))
