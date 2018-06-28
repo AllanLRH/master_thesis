@@ -442,7 +442,7 @@ def inNotebook():
         return False
 
 
-def questionSummary(df, qstr, samplesize=0):
+def questionSummary(df, qstr, samplesize=0, display_summary=True):
     """Show a summary of a question.
 
     Parameters
@@ -453,13 +453,18 @@ def questionSummary(df, qstr, samplesize=0):
         String to be used in the df.filter(like=qstr) to filter out question columns.
     samplesize : int, optional
         Number of samples to display from df.
+    display_summary : bool, optional
+        If True (default) the summary will be displayed, if false, the information will be returned.
 
     Raises
     ------
     ValueError
-        If qstr matches more than one question.
-    ValueError
         If qstr == gender.
+
+    Returns
+    -------
+    None or Tuple
+        None if display_summary is True, tuple with summary information otherwise.
     """
     if qstr == 'gender':
         raise ValueError("This function does not work for the gender-column, since it's not a question")
@@ -479,19 +484,29 @@ def questionSummary(df, qstr, samplesize=0):
     dfs_response_vc = dfs_response_vc.drop(basename + '__response', axis=1)
     dfs_resp_ans = dfs_response_vc.join(dfs_answer_vc)
 
-    if inNotebook():
-        display(HTML('<h3><i>Question:</i>  ' + dfs_question + '</h3>'))
-        display(HTML('<i>Question str:</i>    <tt>' + qstr + '</tt>'))
-        display(HTML('<i>Answer type:</i>    <tt>' + dfs_answer_type + '</tt>'))
-        display(dfs_resp_ans)
-        if samplesize > 0:
-            dfs_print = dfs.sample(samplesize).drop([basename + '__' + el for el in ('answer_type', 'question', 'condition')], axis=1)
-            display(dfs_print)
-    else:
-        print('Answer Question:  ' + dfs_question)
-        print('Answer type:  ' + dfs_answer_type, end='\n\n')
-        print(tabulate.tabulate(dfs_resp_ans, dfs_resp_ans.columns, tablefmt='pqsl'), end='\n\n')
-        print(tabulate.tabulate(dfs_print.sample(samplesize), dfs_print.columns, tablefmt='pqsl'), end='\n\n')
+    if display_summary:
+        if inNotebook():
+            display(HTML('<h3><i>Question:</i>  ' + dfs_question + '</h3>'))
+            display(HTML('<i>Question str:</i>    <tt>' + qstr + '</tt>'))
+            display(HTML('<i>Answer type:</i>    <tt>' + dfs_answer_type + '</tt>'))
+            display(dfs_resp_ans)
+            if samplesize > 0:
+                dfs_print = dfs.sample(samplesize).drop([basename + '__' + el for el in ('answer_type', 'question', 'condition')], axis=1)
+                display(dfs_print)
+        else:
+            print('Answer Question:  ' + dfs_question)
+            print('Answer type:  ' + dfs_answer_type, end='\n\n')
+            print(tabulate.tabulate(dfs_resp_ans, dfs_resp_ans.columns, tablefmt='pqsl'), end='\n\n')
+            print(tabulate.tabulate(dfs_print.sample(samplesize), dfs_print.columns, tablefmt='pqsl'), end='\n\n')
+    else:  # return summary
+        to_return = dict()
+        to_return['question'] = dfs_question
+        to_return['question_str'] = qstr
+        to_return['answer_type'] = dfs_answer_type
+        to_return['resp_ans'] = dfs_resp_ans
+        return to_return
+
+
 
 
 class QuestionCompleter():
