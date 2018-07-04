@@ -475,8 +475,8 @@ def questionSummary(df, qstr, samplesize=0, display_summary=True):
         raise ValueError("The query string matches more than one answer, specify to match one of these:" + column_names)
     dfs_question = dfs[basename + '__question'][0]
     dfs_answer_type = dfs[basename + '__answer_type'][0]
-    dfs_answer_vc = pd.DataFrame(dfs[basename + '__answer'].value_counts())
-    dfs_response_vc = pd.DataFrame(dfs[basename + '__response'].value_counts())
+    dfs_answer_vc = pd.DataFrame(dfs[basename + '__answer'].value_counts(dropna=False))
+    dfs_response_vc = pd.DataFrame(dfs[basename + '__response'].value_counts(dropna=False))
     sort_idx = np.argsort(dfs_answer_vc.index)
     dfs_answer_vc = dfs_answer_vc.iloc[sort_idx].reset_index().rename(columns={'index': 'answer_index',
                                                                                basename + '__answer': 'count'})
