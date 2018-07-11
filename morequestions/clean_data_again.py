@@ -144,20 +144,20 @@ df.loc[:, q.conflicts_zieblings__answer] = df.conflicts_zieblings__answer.map(ge
 #
 # Reverse scales, and set _har ingen_ -> NaN
 df.loc[df.contact_father__answer == 5, q.contact_father__answer] = np.NaN
-df.loc[:, q.contact_father] = df.contact_father__answer.map(get_invert_idx_dict(df.contact_father__answer))
+df.loc[:, q.contact_father__answer] = df.contact_father__answer.map(get_invert_idx_dict(df.contact_father__answer))
 
 
 # ### `contact_friends`
 #
 # Reverse scales
-df.loc[:, q.contact_friends] = df.contact_friends__answer.map(get_invert_idx_dict(df.contact_friends__answer))
+df.loc[:, q.contact_friends__answer] = df.contact_friends__answer.map(get_invert_idx_dict(df.contact_friends__answer))
 
 
 # ### `contact_mother`
 #
 # Reverse scales, and set _har ingen_ -> NaN
 df.loc[df.contact_mother__answer == 5, q.contact_mother__answer] = np.NaN
-df.loc[:, q.contact_mother] = df.contact_mother__answer.map(get_invert_idx_dict(df.contact_mother__answer))
+df.loc[:, q.contact_mother__answer] = df.contact_mother__answer.map(get_invert_idx_dict(df.contact_mother__answer))
 
 
 # ### `contact_other_familily`
@@ -165,22 +165,23 @@ df.loc[:, q.contact_mother] = df.contact_mother__answer.map(get_invert_idx_dict(
 # Reverse scales, and set _har ingen_ -> NaN
 df.loc[df.contact_other_familily__answer == 0, q.contact_other_familily__answer] = np.NaN
 # subtract 1 from index, because element 0 is eliminated
-df.loc[:, q.contact_other_familily] = df.contact_other_familily__answer.map(get_invert_idx_dict(df.contact_other_familily__answer - 1))
+recode_dict = {1:4, 2:3, 3:2, 4:1, 5:0}  # noqa
+df.loc[:, q.contact_other_familily__answer] = df.contact_other_familily__answer.map(recode_dict)
 
 
 # ### `contact_partner`
 #
 # Recode scales
-df.loc[df.contact_partner__answer == 0, q.contact_partner__answer] = np.NaN
+df.loc[df.contact_partner__answer == 1, q.contact_partner__answer] = np.NaN
 recode_dict = {0:0, 2:1, 3:2, 4:3, 5:4}  # noqa
-df.loc[:, q.contact_partner] = df.contact_partner__answer.map(recode_dict)
+df.loc[:, q.contact_partner__answer] = df.contact_partner__answer.map(recode_dict)
 
 
 # ### `contact_zieblings`
 #
 # Reverse scales and set _har ingen_ -> NaN
 df.loc[df.contact_zieblings__answer == 5, q.contact_zieblings__answer] = np.NaN
-df.loc[:, q.contact_zieblings] = df.contact_zieblings__answer.map(get_invert_idx_dict(df.contact_zieblings__answer))
+df.loc[:, q.contact_zieblings__answer] = df.contact_zieblings__answer.map(get_invert_idx_dict(df.contact_zieblings__answer))
 
 
 # ### `demands_father`
@@ -188,13 +189,13 @@ df.loc[:, q.contact_zieblings] = df.contact_zieblings__answer.map(get_invert_idx
 # Reverse scales and set _har ingen_ -> NaN
 df.loc[df.demands_father__answer == 0, q.demands_father__answer] = np.NaN
 # subtract 1 from index, because element 0 is eliminated
-df.loc[:, q.demands_father] = df.demands_father__answer.map(get_invert_idx_dict(df.demands_father__answer - 1))
+df.loc[:, q.demands_father__answer] = df.demands_father__answer.map(get_invert_idx_dict((df.demands_father__answer - 1) % 5))
 
 
 # ### `demands_friends`
 #
 # Reverse scales
-df.loc[:, q.demands_friends] = df.demands_friends__answer.map(get_invert_idx_dict(df.demands_friends__answer))
+df.loc[:, q.demands_friends__answer] = df.demands_friends__answer.map(get_invert_idx_dict(df.demands_friends__answer))
 
 
 # ### `demands_other_family`
@@ -202,7 +203,7 @@ df.loc[:, q.demands_friends] = df.demands_friends__answer.map(get_invert_idx_dic
 # Recode scales, and _har ingen_ -> NaN
 df.loc[df.demands_other_family__answer == 1, q.demands_other_family__answer] = np.NaN
 recode_dict = {0:0, 2:1, 3:2, 4:3, 5:4}  # noqa
-df.loc[:, q.demands_other_family] = df.demands_other_family__answer.map(recode_dict)
+df.loc[:, q.demands_other_family__answer] = df.demands_other_family__answer.map(recode_dict)
 
 
 # ### `demands_partner`
@@ -210,44 +211,28 @@ df.loc[:, q.demands_other_family] = df.demands_other_family__answer.map(recode_d
 # Recode scales, and _har ingen_ -> NaN
 df.loc[df.demands_partner__answer == 3, q.demands_partner__answer] = np.NaN
 recode_dict = {0:0, 1:1, 2:2, 4:3}  # noqa
-df.loc[:, q.demands_partner] = df.demands_partner__answer.map(recode_dict)
+df.loc[:, q.demands_partner__answer] = df.demands_partner__answer.map(recode_dict)
 
 
 # ### `demands_zieblings`
 #
 # Recode scales, and _har ingen_ -> NaN
 df.loc[df.demands_zieblings__answer == 1, q.demands_zieblings__answer] = np.NaN
-recode_dict = {0:3, 2:0, 2:2, }  # noqa
-df.loc[:, q.demands_zieblings] = df.demands_zieblings__answer.map(recode_dict)
+recode_dict = {0:3, 2:2, 3:1, 4:0}  # noqa
+df.loc[:, q.demands_zieblings__answer] = df.demands_zieblings__answer.map(recode_dict)
 
 
-# ### `druge_12months`
+# ### `drugs_12months`
 #
-# Scale need to be modulo-shiftet by one
-df[q.drugs_12months__answer] = (df.drugs_12months__answer + 1) % 7
+# Recode
+recode_dict = {0:1, 1:6, 2:2, 3:3, 4:4, 5:5 6:0}  # noqa
+df[q.drugs_12months__answer] = drugs_12months__answer.map(recode_dict)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# ### `electronic_contact_family`
+#
+# Revert scale
+df.loc[:, 'electronic_contact_family__answer'] = df.electronic_contact_family__answer.map(get_invert_idx_dict(df.electronic_contact_family__answer))
 
 
 
