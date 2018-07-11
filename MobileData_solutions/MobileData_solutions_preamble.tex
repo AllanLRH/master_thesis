@@ -1,0 +1,105 @@
+%%%%%%%%%%%%%%%%%% PREAMBLE BEGIN %%%%%%%%%%%%%%%%%%
+% A templet for mathematical LaTeX2e documents - partially based on the preambles avaible at http://psi.nbi.dk/groups/psi/wiki/Preamble
+
+
+%%%%%%%%%%%%%%%%%% ESSENTIAL FORMATTING %%%%%%%%%%%%%%%%%%
+\documentclass[a4paper,10pt, landscape]{scrartcl}
+% \documentclass[a4paper,11pt,notitlepage]{report}
+
+% If activated, labels will be shown in the margin. Use only when in draft mode.
+%\usepackage[notref,notcite]{showkeys}
+
+
+
+%%%%%%%%%%%%%%%%%% FOR DANISH DOCUMENTS %%%%%%%%%%%%%%%%%%
+
+% Chapters is given danish names and so on.
+% \usepackage[danish]{babel}
+\usepackage[english]{babel}
+
+% Makes commas work as decimal-points (fixes the spacing around.
+% \usepackage{icomma}
+
+% Sets the indentation for new paragraphs. Per default LaTeX creates some indentation whenever a new paragraph begins. While this might look visually pleasing, it's an english/american convention, and not "correct" danish typestting.
+% \parindent=0pt
+
+ % For use on Unix systems (Mac/Linux). Use this or the one below.
+\usepackage[utf8]{inputenc}
+
+% For use on Windows systems. Use this or the one above.
+% \usepackage[T1]{fontenc}
+
+
+
+%%%%%%%%%%%%%%%%%% ESSENTIAL PACKAGES %%%%%%%%%%%%%%%%%%
+% Make PDF-files searchable
+\usepackage{cmap}
+
+
+% Typesets the pagenumber of the last page by entering \pageref{Lastpage}
+\usepackage{lastpage}
+
+% Overfull hbox under 3pt ignoreres - makes LaTeX a but less fussy, but might also make things look a little bit less pleasing to the eye.
+\hfuzz=3pt
+
+
+% Through tutorial: https://en.wikibooks.org/wiki/LaTeX/Page_Layout
+% \usepackage[a4paper]{geometry}
+
+% It's considered obsolete, but it's very explicit and easy to use, which makes it a good alternative for geometry for a quick fix
+% Options are: \marginsize{left}{right}{top}{bottom}
+\usepackage{anysize}
+   \marginsize{1.0cm}{1.5cm}{1.2cm}{1.8cm}
+
+
+%    ***    Font options    ***
+% All fonts include mathematical characters for equations, and support the danish letters æøåÆØÅ.
+% Documentation: http://www.tug.dk/FontCatalogue/mathfonts.html
+% Remove the comment sign to use a font.
+
+% Palatino
+%\usepackage{mathpazo}
+
+% Times
+%\usepackage{mathptmx}
+
+% Anonymous Pro for typewriter text  NOTE: Documentation states that \usepackage[T1]{fontenc} and \usepackage{textcomp} must be loaded:
+% ftp://ftp.dante.de/tex-archive/fonts/anonymouspro/doc/AnonymousPro.pdf
+% \usepackage[ttdefault]{AnonymousPro}
+
+
+% The Fancyheaders-package makes those fancy header and footer seen in a lot af LaTeX-documents.
+\usepackage{fancyhdr}
+\pagestyle{fancy}                                                % Initialises layout options for the package
+\fancyhead{}                  % Vipes all header-fields
+\fancyhead[L]{Question overview}
+\fancyhead[R]{Checking for reversed scales}
+\headheight 14.5pt            % Sets the height of the header-field.
+\fancyfoot{}                  % Vipes all footer-fields
+\fancyfoot[C]{Page \thepage{} of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.2pt}  % Set thickness of the headers line/ruler
+\renewcommand{\footrulewidth}{0.0pt}  % Set to 0 (zero) to remove footer rule
+
+% Ensures that first page (front page) have a clean header
+\fancypagestyle{firstPageStyle}
+{
+   \fancyhead{}
+   \fancyfoot{}
+   \headheight 0pt
+   \renewcommand{\headrulewidth}{0.0pt}
+   % \fancyfoot[C]{Page \thepage{} of \pageref{LastPage}}
+}
+
+
+
+%%%%%%%%%%%%%%%%%% ADDITIONAL PACKAGES %%%%%%%%%%%%%%%%%%
+% Greatly improves on PDFLaTeX's typesetting
+\usepackage{microtype}
+
+
+% Typeset better tables, with proper vertical spacing, ofr instance.
+% Tutorial: http://en.wikibooks.org/wiki/LaTeX/Tables#Professional_tables
+% Documentation: http://mirrors.med.harvard.edu/ctan/macros/latex/contrib/booktabs/booktabs.pdf
+\usepackage{booktabs}
+
+\makeindex
