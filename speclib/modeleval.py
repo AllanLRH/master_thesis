@@ -89,7 +89,18 @@ def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits
         grid search, and if the values are numeric, they should be a np.ndarray in order
         to be useful in conjunction with the function constructSubsearchTunedParameters.
     score : str
-        The score to be used — see Scikit Learn's documentation.
+        The score to be used. Valid options are:
+        accuracy, adjusted_mutual_info_score, adjusted_rand_score,
+        average_precision, completeness_score, explained_variance,
+        f1, f1_macro, f1_micro, f1_samples, f1_weighted,
+        fowlkes_mallows_score, homogeneity_score, mutual_info_score,
+        neg_log_loss, neg_mean_absolute_error,
+        neg_mean_squared_error, neg_mean_squared_log_error,
+        neg_median_absolute_error, normalized_mutual_info_score,
+        precision, precision_macro, precision_micro,
+        precision_samples, precision_weighted, r2, recall,
+        recall_macro, recall_micro, recall_samples, recall_weighted,
+        roc_auc, v_measure_score
     n_jobs : int, optional
         Number of cores to use in the grid search. Default is 75.
     n_splits : int, optional
