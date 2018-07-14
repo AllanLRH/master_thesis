@@ -512,3 +512,27 @@ def test_yield_upper_indices():
     expected = [(0, 3), (1, 2), (2, 3)]
     actual = list(misc.yield_upper_indices(arr))
     assert expected == actual
+
+
+@pytest.mark.modeleval
+def test_train_test_validate_split():
+    r, c = 1000, 4
+    x    = np.random.rand(r, c)
+    y    = np.arange(r) % 2 + 1
+    x_train, x_test, x_val, y_train, y_test, y_val = \
+        modeleval.train_test_validate_split(x, y, train_size=0.6, test_size=0.3, validate_size=0.1, stratify=y)
+    print('x_train.shape[0]', x_train.shape[0])
+    print('x_test.shape[0]', x_test.shape[0])
+    print('x_val.shape[0]', x_val.shape[0])
+    print('y_train.shape[0]', y_train.shape[0])
+    print('y_test.shape[0]', y_test.shape[0])
+    print('y_val.shape[0]', y_val.shape[0])
+    assert 598 <= x_train.shape[0] <= 603  # noqa
+    assert 298 <= x_test.shape[0]  <= 303  # noqa
+    assert  98 <= x_val.shape[0]   <= 103  # noqa
+    assert 598 <= y_train.shape[0] <= 603  # noqa
+    assert 298 <= y_test.shape[0]  <= 303  # noqa
+    assert  98 <= y_val.shape[0]   <= 103  # noqa
+
+
+

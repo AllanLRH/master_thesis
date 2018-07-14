@@ -71,7 +71,7 @@ def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size
     return df
 
 
-def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits=5, test_size=0.3):
+def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=24, n_splits=5, test_size=0.3):
     """Fit a model for the best parameters using a grid search with stratified cross valication.
 
     Parameters
@@ -111,14 +111,10 @@ def gridsearchCrossVal(X, y, model, tuned_parameters, score, n_jobs=75, n_splits
     Returns
     -------
     pd.DataFrame
-        Pandas DataFrame with the results of the cross validation.
-        The first column are the results of the score evaluation, the second column are
-        a tuple with the arguments. NOTE that it's a tuple because a dict couldn't be
-        embedded in the DataFrame, but it can (and should) be converted to a dict if it's
-        to be used in a keywords arguments expansion.
+
     """
     sss = model_selection.StratifiedShuffleSplit(n_splits, test_size)
-    clf = model_selection.GridSearchCV(model, param_grid=tuned_parameters, scoring=score, n_jobs=75)
+    clf = model_selection.GridSearchCV(model, param_grid=tuned_parameters, scoring=score, n_jobs=n_jobs)
 
     df = pd.DataFrame(index=np.arange(n_splits), columns=[score, 'best_params'])
     df.index.name = 'fold'
@@ -243,3 +239,21 @@ def summarizePerformanveEval(df, print_only=False):
         print(*str_lst, sep='\n')
         return None
     return str_lst
+
+
+def train_test_validate_split(x, y, train_size=0.58, test_size=0.18, validate_size=0.24, stratify=None):
+    assert y.ndim == 1 and x.ndim in (1, 2), f"y must be 1-dimmensional and x 1 or 2 dimmensional, but x.shape = x{x.shape} and y.shape = {y.shape}."
+    assert x.shape[0] == y.shape[0], f"x and y must have the same number of rows, but x.shape = {x.shape} and y.shape = {y.shape}."
+    arg_arr = np.array([train_size, test_size, validate_size])
+    if not (arg_arr < 1).all():
+        raise ValueError("Sizes must be specified as either a fraction or an absolute number.")
+    if not np.allclose(arg_arr.sum(), 1):
+        raise ValueError(f"train_size, test_size and validate_size must sum to 1.0, but sums to {arg_arr.sum():.5f}.")
+
+    # Validation set by misusing train_test_split
+    x_rest, x_val, y_rest, y_val = model_selection.train_test_split(x, y, test_size=validate_size, stratify=stratify)
+    train_size /= (1 - validate_size)
+    test_size /= (1 - validate_size)
+    strat = None if stratify is None else y_rest
+    x_train, x_test, y_train, y_test = model_selection.train_test_split(x_rest, y_rest, train_size=train_size, test_size=test_size, stratify=strat)
+    return x_train, x_test, x_val, y_train, y_test, y_val
