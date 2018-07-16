@@ -25,23 +25,22 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 from time import sleep
 
-from speclib import misc, loaders, plotting, modeleval, pushbulletNotifier
+from speclib import pushbulletNotifier
 
 np.set_printoptions(linewidth=145)
 
-from sklearn.linear_model import LogisticRegressionCV, SGDClassifier
-from sklearn.svm import LinearSVC, SVC
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import SGDClassifier
+# from sklearn.svm import LinearSVC, SVC
+# from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, model_selection, preprocessing
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
 
 
 import logging
-logging.basicConfig(filename='userMovement_simple.log', level=logging.INFO,
+logging.basicConfig(filename='userMovement_sgd.log', level=logging.INFO,
                     format="%(asctime)s :: %(filename)s:%(lineno)s :: %(funcName)s() ::    %(message)s")
-logger = logging.getLogger('userMovement_simple')
-
+logger = logging.getLogger('userMovement_sgd')
 
 data_path = '../../allan_data/DataPredictMovement_half.p'
 x, y = np.load(data_path)
@@ -49,26 +48,27 @@ x = x.astype(float)
 logger.info(f"Loaded data")
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
-jn.send("Starting computation.")
-sleep(0.3)
+
 try:
     x_re, x_va, y_re, y_va = model_selection.train_test_split(x, y, test_size=0.2, stratify=y)
     logger.info(f"Split data in to training set and validation set.")
     pipe = Pipeline([('scaler', preprocessing.StandardScaler()), ('pca', PCA()), ('sgd', SGDClassifier())])
     param_grid = {
-        'pca__n_components': np.arange(2, 18),
-        # 'sgd__loss': ['log', 'hinge', 'modified_huber', 'squared_hinge']  # Logistic regression, Linear SVM
-        'sgd__loss': ['perceptron']
+        'pca__n_components': np.hstack([np.arange(2, 15), np.arange(15, x.shape[1]+1, 3)]),
+        # Logistic regression, Linear SVM, ???, like hinge, but squared, perceptron
+        'sgd__loss': ['log', 'hinge', 'modified_huber', 'squared_hinge', 'perceptron']
         }  # noqa
     logger.info(f"Starting cross validation")
-    est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', n_jobs=42, cv=4,
-                                       verbose=2, refit=True)
-    # logger.info(f"Cross validation done, best score was {est.best_score_}")
-    # logger.info(f"Best params were {est.best_params_}")
-    # logger.info(f"Best estimator were {est.best_estimator_}")
-    logger.info(f"Checking using the validation set.")
-    est.fit(x_re)
+    est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', n_jobs=1, cv=4, verbose=2, refit=True)
+    est.fit(x_re)  # I think this is redundant
     _, yhat = est.predict_proba(x_va)
+    try:
+        logger.info(f"Cross validation done, best score was {est.best_score_}")
+        logger.info(f"Best params were {est.best_params_}")
+        logger.info(f"Best estimator were {est.best_estimator_}")
+        logger.info(f"Checking using the validation set.")
+    except Exception as e:
+        print(f"Logging exception: {e}")
     validation_auc_score = metrics.roc_auc_score(y_va, yhat)
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
 except Exception as err:
