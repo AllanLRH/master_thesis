@@ -55,6 +55,8 @@ try:
     pipe = Pipeline([('scaler', preprocessing.StandardScaler()), ('pca', PCA()), ('sgd', SGDClassifier())])
     param_grid = {
         'pca__n_components': np.hstack([np.arange(2, 15), np.arange(15, x.shape[1]+1, 3)]),
+        'sgd__penalty': ['l2', 'elasticnet'],
+        'sdg__alpha': 2.0**np.arange(-8, 8),
         # Logistic regression, Linear SVM, ???, like hinge, but squared, perceptron
         'sgd__loss': ['log', 'hinge', 'modified_huber', 'squared_hinge', 'perceptron']
         }  # noqa
@@ -62,7 +64,7 @@ try:
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
                                        n_jobs=16, pre_dispatch=16)
     est.fit(x_re, y_re)  # I think this is redundant
-    _, yhat = est.predict_proba(x_va)
+    _, yhat = est.predict_proba(x_va).T
     try:
         logger.info(f"Cross validation done, best score was {est.best_score_}")
         logger.info(f"Best params were {est.best_params_}")
@@ -72,6 +74,11 @@ try:
         print(f"Logging exception: {e}")
     validation_auc_score = metrics.roc_auc_score(y_va, yhat)
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
+    fpr, tpr, thr = metrics.roc_curve(y_va, yhat)
+    fig, ax = plt.subplots()
+    ax.plot(tpr, fpr, '.-')
+    fig.savefig('roc.pdf')
+    fig.savefig('roc.png', dpi=400)
 except Exception as err:
     jn.send(err)
     sleep(8)
