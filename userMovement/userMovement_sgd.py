@@ -49,6 +49,8 @@ logger.info(f"Loaded data")
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
 
+
+processes = 24
 try:
     x_re, x_va, y_re, y_va = model_selection.train_test_split(x, y, test_size=0.2, stratify=y)
     logger.info(f"Split data in to training set and validation set.")
@@ -56,13 +58,13 @@ try:
     param_grid = {
         'pca__n_components': np.hstack([np.arange(2, 15), np.arange(15, x.shape[1]+1, 3)]),
         'sgd__penalty': ['l2', 'elasticnet'],
-        'sdg__alpha': 2.0**np.arange(-8, 8),
+        'sgd__alpha': 2.0**np.arange(-8, 8),
         # Logistic regression, Linear SVM, ???, like hinge, but squared, perceptron
         'sgd__loss': ['log', 'hinge', 'modified_huber', 'squared_hinge', 'perceptron']
         }  # noqa
     logger.info(f"Starting cross validation")
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
-                                       n_jobs=16, pre_dispatch=16)
+                                       n_jobs=processes, pre_dispatch=processes)
     est.fit(x_re, y_re)  # I think this is redundant
     _, yhat = est.predict_proba(x_va).T
     try:
@@ -76,7 +78,7 @@ try:
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fpr, tpr, thr = metrics.roc_curve(y_va, yhat)
     fig, ax = plt.subplots()
-    ax.plot(tpr, fpr, '.-')
+    ax.plot(fpr, tpr, '.-')
     fig.savefig('roc.pdf')
     fig.savefig('roc.png', dpi=400)
 except Exception as err:
