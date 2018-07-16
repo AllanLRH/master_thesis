@@ -6,7 +6,7 @@ import datetime
 import inspect
 import traceback
 
-phoneName = "OnePlus ONE A2003"
+phoneName = "OnePlus ONEPLUS A6003"
 
 
 class JobNotification(object):
