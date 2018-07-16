@@ -59,8 +59,9 @@ try:
         'sgd__loss': ['log', 'hinge', 'modified_huber', 'squared_hinge', 'perceptron']
         }  # noqa
     logger.info(f"Starting cross validation")
-    est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', n_jobs=1, cv=4, verbose=2, refit=True)
-    est.fit(x_re)  # I think this is redundant
+    est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
+                                       n_jobs=16, pre_dispatch=16)
+    est.fit(x_re, y_re)  # I think this is redundant
     _, yhat = est.predict_proba(x_va)
     try:
         logger.info(f"Cross validation done, best score was {est.best_score_}")
@@ -76,4 +77,4 @@ except Exception as err:
     sleep(8)
     raise err
 
-jn.send(message=f"Cross validation is done: {validation_auc_score}")
+jn.send(message=f"Cross validation is done.")
