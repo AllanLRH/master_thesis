@@ -25,7 +25,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 from time import sleep
 
-from speclib import pushbulletNotifier
+from speclib import pushbulletNotifier, plotting
 
 np.set_printoptions(linewidth=145)
 
@@ -78,9 +78,8 @@ try:
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fpr, tpr, thr = metrics.roc_curve(y_va, yhat)
     fig, ax = plt.subplots()
-    ax.plot(fpr, tpr, '.-')
-    fig.savefig('roc.pdf')
-    fig.savefig('roc.png', dpi=400)
+    fig, ax, aucscore = plotting.plotROC(y_va, yhat)
+    fig.savefig('figs/userMovement_cv_roc_curve.pdf')
 except Exception as err:
     jn.send(err)
     sleep(8)
