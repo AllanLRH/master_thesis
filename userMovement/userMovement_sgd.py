@@ -76,8 +76,6 @@ try:
         print(f"Logging exception: {e}")
     validation_auc_score = metrics.roc_auc_score(y_va, yhat)
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
-    fpr, tpr, thr = metrics.roc_curve(y_va, yhat)
-    fig, ax = plt.subplots()
     fig, ax, aucscore = plotting.plotROC(y_va, yhat)
     fig.savefig('figs/userMovement_cv_roc_curve.pdf')
 except Exception as err:
