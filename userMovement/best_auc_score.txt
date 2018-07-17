@@ -1,0 +1,2 @@
+In [5]: validation_auc_score
+Out[5]: 0.8523791468759407
