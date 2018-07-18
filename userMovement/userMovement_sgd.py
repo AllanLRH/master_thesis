@@ -64,7 +64,7 @@ try:
         }  # noqa
     logger.info(f"Starting cross validation")
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
-                                       n_jobs=processes, pre_dispatch=processes)
+                                       n_jobs=processes, pre_dispatch=processes, return_train_score=True)
     est.fit(x_re, y_re)  # I think this is redundant
     _, yhat = est.predict_proba(x_va).T
     try:
