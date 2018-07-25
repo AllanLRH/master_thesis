@@ -77,3 +77,5 @@ temp/parallel_pandas_apply.py
 morequestions/question_summary_tex/
 examples/
 .pytest_cache/
+
+userMovement/my_cubehelix\.pkl
