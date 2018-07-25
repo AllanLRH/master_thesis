@@ -244,20 +244,3 @@ df.loc[:, 'electronic_contact_family__answer'] = df.electronic_contact_family__a
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
