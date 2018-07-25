@@ -1,0 +1,8 @@
+fig, ax, aucscore = plotROC(gender.values, svc.predict_proba(td1)[:, 1])
+fig.savefig('svm_all_data_predict_train_data_training_roc_curve.pdf')
+
+fig, ax, aucscore = plotROC(y_train, svc.predict_proba(X_train)[:, 1])
+fig.savefig('svm_training_data_roc_curve.pdf')
+
+fig, ax, aucscore = plotROC(y_test, svc.predict_proba(X_test)[:, 1])
+fig.savefig('svm_test_data_roc_curve.pdf')
