@@ -38,7 +38,7 @@ from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
 
 import logging
-logging.basicConfig(filename='userMovement_sgd_std_balanced.logging', level=logging.INFO,
+logging.basicConfig(filename='userMovement_sgd_final_coarse.log', level=logging.INFO,
                     format="%(asctime)s :: %(filename)s:%(lineno)s :: %(funcName)s() ::    %(message)s")
 logger = logging.getLogger('userMovement_sgd')
 
@@ -50,18 +50,18 @@ logger.info(f"Loaded data")
 jn = pushbulletNotifier.JobNotification(devices="phone")
 
 
-processes = 24
+processes = 28
 try:
     x_re, x_va, y_re, y_va = model_selection.train_test_split(x, y, test_size=0.2, stratify=y)
     logger.info(f"Split data in to training set and validation set.")
     pipe = Pipeline([('pca', PCA()), ('scaler', preprocessing.StandardScaler()), ('sgd', SGDClassifier())])
     param_grid = {
-        'pca__n_components': np.arange(2, x.shape[1]+1, 3),
-        'sgd__penalty': ['l2', 'elasticnet'],
-        'sgd__alpha': 10**(-np.linspace(1, 7, 14)),
-        'sgd__loss': ['modified_huber', 'log'],
-        'sgd__class_weight': ['balanced', None]
-        }  # noqa
+        'pca__n_components': np.array([2, 3, 4, 5, 6, 9, 12, 16, 23, 27, 30, 31, 32]),
+        'sgd__alpha': 10**np.linspace(-5, 0, 16),
+        'sgd__class_weight': ['balanced', None],
+        'sgd__loss': ['modified_huber', 'log', 'hinge'],
+        'sgd__penalty': ['l2', 'elasticnet']
+            }   # noqa
     logger.info(f"Starting cross validation")
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
                                        n_jobs=processes, pre_dispatch=processes, return_train_score=True)
@@ -77,8 +77,13 @@ try:
     validation_auc_score = metrics.roc_auc_score(y_va, yhat)
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fig, ax, aucscore = plotting.plotROC(y_va, yhat)
-    fig.savefig('figs/userMovement_cv_roc_curve_balanced_classes.pdf')
-    with open("userMovement_sgd_std_after_pca_balanced_classes.pkl", 'bw') as fid:
+    fig.savefig('figs/userMovement_cv_roc_curve_final_coarse.pdf')
+    est.y_va = y_va  # save for plotting ROC curve later
+    est.yhat = yhat  # save for plotting ROC curve later
+    est.validation_auc_score = validation_auc_score
+    est.x_va = x_va
+    est.y_va = y_va
+    with open("userMovement_sgd_std_final_coarse.pkl", 'bw') as fid:
         pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
