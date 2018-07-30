@@ -53,7 +53,7 @@ class JobNotification(object):
         return formatted_timedelta
 
     def send(self, exception=None, message=None):
-        logger.info(f"Entered send, type(exception) = {type(exception)}, type(message) = {type(message)}")
+        logger.info(f"type(exception) = {type(exception)}, type(message) = {type(message)}")
         logger.debug(f"message = {message}")
         logger.debug(f"exception = {repr(exception)}")
         self.endTime   = datetime.datetime.now()

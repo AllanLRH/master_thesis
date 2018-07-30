@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath(".."))
 import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
+import pickle
 import seaborn as sns
 sns.set(context='paper', style='whitegrid', color_codes=True, font_scale=1.8)
 colorcycle = [(0.498, 0.788, 0.498),
@@ -38,7 +39,7 @@ from sklearn.pipeline import Pipeline
 
 
 import logging
-logging.basicConfig(filename='userMovement_sgd.log', level=logging.INFO,
+logging.basicConfig(filename='userMovement_sgd_std_balanced.log', level=logging.INFO,
                     format="%(asctime)s :: %(filename)s:%(lineno)s :: %(funcName)s() ::    %(message)s")
 logger = logging.getLogger('userMovement_sgd')
 
@@ -54,13 +55,12 @@ processes = 24
 try:
     x_re, x_va, y_re, y_va = model_selection.train_test_split(x, y, test_size=0.2, stratify=y)
     logger.info(f"Split data in to training set and validation set.")
-    pipe = Pipeline([('scaler', preprocessing.StandardScaler()), ('pca', PCA()), ('sgd', SGDClassifier())])
+    pipe = Pipeline([('pca', PCA()), ('scaler', preprocessing.StandardScaler()), ('sgd', SGDClassifier())])
     param_grid = {
-        'pca__n_components': np.hstack([np.arange(2, 15), np.arange(15, x.shape[1]+1, 3)]),
+        'pca__n_components': np.arange(2, x.shape[1]+1, 3),
         'sgd__penalty': ['l2', 'elasticnet'],
         'sgd__alpha': 2.0**np.arange(-8, 8),
-        # Logistic regression, Linear SVM, ???, like hinge, but squared, perceptron
-        'sgd__loss': ['log', 'hinge', 'modified_huber', 'squared_hinge', 'perceptron']
+        'sgd__loss': ['hinge', 'modified_huber', 'log']
         }  # noqa
     logger.info(f"Starting cross validation")
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
@@ -78,6 +78,8 @@ try:
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fig, ax, aucscore = plotting.plotROC(y_va, yhat)
     fig.savefig('figs/userMovement_cv_roc_curve.pdf')
+    with open("userMovement_sgd_std_after_pca.pkl", 'bw') as fid:
+        pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
     sleep(8)
