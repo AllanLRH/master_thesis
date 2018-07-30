@@ -26,7 +26,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 from time import sleep
 
-from speclib import pushbulletNotifier, plotting
+from speclib import pushbulletNotifier, plotting, misc
 
 np.set_printoptions(linewidth=145)
 
@@ -37,9 +37,8 @@ from sklearn import metrics, model_selection, preprocessing
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
 
-
 import logging
-logging.basicConfig(filename='userMovement_sgd_std_balanced.log', level=logging.INFO,
+logging.basicConfig(filename='userMovement_sgd_std_balanced.logging', level=logging.INFO,
                     format="%(asctime)s :: %(filename)s:%(lineno)s :: %(funcName)s() ::    %(message)s")
 logger = logging.getLogger('userMovement_sgd')
 
@@ -59,8 +58,9 @@ try:
     param_grid = {
         'pca__n_components': np.arange(2, x.shape[1]+1, 3),
         'sgd__penalty': ['l2', 'elasticnet'],
-        'sgd__alpha': 2.0**np.arange(-8, 8),
-        'sgd__loss': ['hinge', 'modified_huber', 'log']
+        'sgd__alpha': 10**(-np.linspace(1, 7, 14)),
+        'sgd__loss': ['modified_huber', 'log'],
+        'sgd__class_weight': ['balanced', None]
         }  # noqa
     logger.info(f"Starting cross validation")
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
@@ -77,8 +77,8 @@ try:
     validation_auc_score = metrics.roc_auc_score(y_va, yhat)
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fig, ax, aucscore = plotting.plotROC(y_va, yhat)
-    fig.savefig('figs/userMovement_cv_roc_curve.pdf')
-    with open("userMovement_sgd_std_after_pca.pkl", 'bw') as fid:
+    fig.savefig('figs/userMovement_cv_roc_curve_balanced_classes.pdf')
+    with open("userMovement_sgd_std_after_pca_balanced_classes.pkl", 'bw') as fid:
         pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
