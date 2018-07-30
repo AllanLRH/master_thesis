@@ -5,6 +5,8 @@ import multiprocessing
 import tabulate
 import itertools
 from IPython.display import display, HTML
+import time
+from psutil import cpu_percent
 
 
 def color2igraphColor(color):
@@ -701,3 +703,21 @@ def yield_upper_indices(spa):
     for i, j in zip(*spa.nonzero()):
         if i < j:
             yield (i, j)
+
+
+def wait_for_cpu_resources(check_interval=30, cpu_pct_threshold=35):
+    """Block until free CPU resources are below certain threshold.
+
+    Parameters
+    ----------
+    check_interval : int, optional
+        Seconds between checking cpu workload.
+    cpu_pct_threshold : int, optional
+        Percentage for which this function exits.
+    """
+    while True:
+        if cpu_percent() < cpu_pct_threshold:
+            time.sleep(20)
+            if cpu_percent() < cpu_pct_threshold:
+                return None
+        time.sleep(check_interval)
