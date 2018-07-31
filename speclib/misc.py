@@ -705,7 +705,7 @@ def yield_upper_indices(spa):
             yield (i, j)
 
 
-def wait_for_cpu_resources(check_interval=30, cpu_pct_threshold=35):
+def wait_for_cpu_resources(check_interval=30, cpu_pct_threshold=35, verbose=True, notify=None):
     """Block until free CPU resources are below certain threshold.
 
     Parameters
@@ -714,10 +714,30 @@ def wait_for_cpu_resources(check_interval=30, cpu_pct_threshold=35):
         Seconds between checking cpu workload.
     cpu_pct_threshold : int, optional
         Percentage for which this function exits.
+    verbose : bool, optional
+        If True, will print waiting and exiting message.
+    notify : JobNotification, optional
+        Same as verbose, but through a Pushbullet message.
     """
+    enter_message = f"Waiting for CPU usage to drop below {cpu_pct_threshold} %."
+    returning_message = "Resuming execution due to low CPU usage."
+    if verbose:
+        print(enter_message)
+    if notify is not None:
+        try:
+            notify.send(message=enter_message)
+        except:  # noqa
+            pass
     while True:
         if cpu_percent() < cpu_pct_threshold:
             time.sleep(20)
             if cpu_percent() < cpu_pct_threshold:
+                if verbose:
+                    print(returning_message)
+                if notify is not None:
+                    try:
+                        notify.send(message=returning_message)
+                    except:  # noqa
+                        pass
                 return None
         time.sleep(check_interval)
