@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath(".."))
 import matplotlib as mpl
 mpl.use('agg')
 import matplotlib.pyplot as plt
+import pickle
 import seaborn as sns
 sns.set(context='paper', style='whitegrid', color_codes=True, font_scale=1.8)
 colorcycle = [(0.498, 0.788, 0.498),
@@ -102,6 +103,13 @@ try:
         logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
         fig, ax, aucscore = plotting.plotROC(y_va, yhat)
         fig.savefig('figs/userMovement_cv_random_forrest_roc_curve_coarse.pdf')
+        est.y_va = y_va  # save for plotting ROC curve later
+        est.yhat = yhat  # save for plotting ROC curve later
+        est.validation_auc_score = validation_auc_score
+        est.x_va = x_va
+        est.y_va = y_va
+        with open("userMovement_rf_coarse.pkl", 'bw') as fid:
+            pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
     sleep(8)
