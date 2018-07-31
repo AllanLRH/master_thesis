@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.abspath(".."))
 import matplotlib as mpl
 mpl.use('agg')
+import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(context='paper', style='whitegrid', color_codes=True, font_scale=1.8)
@@ -25,7 +26,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 from time import sleep
 
-from speclib import pushbulletNotifier, plotting
+from speclib import pushbulletNotifier, plotting, misc
 
 np.set_printoptions(linewidth=145)
 
@@ -34,6 +35,11 @@ from sklearn.ensemble import RandomForestClassifier
 # from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, model_selection, preprocessing
 from sklearn.pipeline import Pipeline
+
+# ****************************************************************************
+# *  Will wait for CPU resources to be idle before executing past this point *
+# ****************************************************************************
+misc.wait_for_cpu_resources()
 
 import logging
 logging.basicConfig(filename='userMovement_rf_finer.log', level=logging.INFO,
@@ -47,14 +53,16 @@ logger.info(f"Loaded data")
 
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
+jn.send(message="Started CV for fine RF grid")
 
-processes = 28
+processes = 23
 try:
     x_re, x_va, y_re, y_va = model_selection.train_test_split(x, y, test_size=0.2, stratify=y)
     logger.info(f"Split data in to training set and validation set.")
-    pipe = Pipeline([('scaler', preprocessing.StandardScaler()), ('rf', RandomForestClassifier(criterion='gini'))])
+    pipe = Pipeline([('scaler', preprocessing.StandardScaler()),
+                     ('rf', RandomForestClassifier(criterion='entropy', class_weight=None))])
     param_grid = {
-        'rf__n_estimators': np.arange(40, 55),
+        'rf__n_estimators': np.arange(43, 100),
         'rf__max_depth': np.arange(13, 20)
         }  # noqa
     logger.info(f"Starting cross validation")
@@ -73,6 +81,13 @@ try:
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fig, ax, aucscore = plotting.plotROC(y_va, yhat)
     fig.savefig('figs/userMovement_cv_random_forrest_roc_curve_finer.pdf')
+    est.y_va = y_va  # save for plotting ROC curve later
+    est.yhat = yhat  # save for plotting ROC curve later
+    est.validation_auc_score = validation_auc_score
+    est.x_va = x_va
+    est.y_va = y_va
+    with open("userMovement_rf_finer.pkl", 'bw') as fid:
+        pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
     sleep(8)
