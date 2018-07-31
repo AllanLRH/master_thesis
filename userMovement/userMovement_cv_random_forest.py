@@ -25,18 +25,18 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import numpy as np
 from time import sleep
 
-from speclib import pushbulletNotifier, plotting
+from speclib import pushbulletNotifier, plotting, misc
 
 np.set_printoptions(linewidth=145)
 
 from sklearn.ensemble import RandomForestClassifier
-# from sklearn.svm import LinearSVC, SVC
-# from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, model_selection, preprocessing
 from sklearn.pipeline import Pipeline
 
+misc.wait_for_cpu_resources()
+
 import logging
-logging.basicConfig(filename='userMovement_rf.log', level=logging.INFO,
+logging.basicConfig(filename='userMovement_rf_coarse.log', level=logging.INFO,
                     format="%(asctime)s :: %(filename)s:%(lineno)s :: %(funcName)s() ::    %(message)s")
 logger = logging.getLogger('userMovement_sgd')
 
@@ -73,6 +73,7 @@ class redirect_output(object):
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
 
+np.random.seed(476471)
 processes = 28
 try:
     with redirect_output("randomforrest_output_rough_cv_search.txt"):
@@ -82,7 +83,8 @@ try:
         param_grid = {
             'rf__n_estimators': np.hstack((np.arange(2, 7), np.arange(8, 21, 4), np.array([30, 45]))),
             'rf__criterion': ['gini', 'entropy'],
-            'rf__max_depth': [4, 6, 9, 12, 16, 20, None]
+            'rf__max_depth': [9, 12, 16, 20, 25, 30],
+            'rf__class_weight': [None, 'balanced']
             }  # noqa
         logger.info(f"Starting cross validation")
         est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
@@ -99,7 +101,7 @@ try:
         validation_auc_score = metrics.roc_auc_score(y_va, yhat)
         logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
         fig, ax, aucscore = plotting.plotROC(y_va, yhat)
-        fig.savefig('figs/userMovement_cv_random_forrest_roc_curve.pdf')
+        fig.savefig('figs/userMovement_cv_random_forrest_roc_curve_coarse.pdf')
 except Exception as err:
     jn.send(err)
     sleep(8)
