@@ -67,9 +67,10 @@ sgd_std_final_coarse_prob = sgd_std_final_coarse.best_estimator_.predict_proba(s
 print('Predicted sgd_std_final_coarse_prob')
 
 fig, ax = plt.subplots()
-plotting.plotROC(y_va, statechange_prob, ax=ax, label='statechange, Log', alpha=0.55)  # noqa
+plotting.plotROC(y_va, statechange_prob, ax=ax, label='Log, statechange', alpha=0.55)  # noqa
 plotting.plotROC(rf_coarse.y_va, rf_coarse_prob, ax=ax, label='RF, coarse', alpha=0.55)  # noqa
 plotting.plotROC(sgd_std_final_coarse.y_va, sgd_std_final_coarse_prob, ax=ax, label='SGD Log, coarse', alpha=0.55)  # noqa
 plotting.plotROC(cv_subgrid_search.y_va, cv_subgrid_search_prob, ax=ax, label='SGD Log, fine', alpha=0.55)  # noqa
 ax.legend(loc='lower right')
+fig.savefig('figs/combined_auc.pdf')
 fig.savefig('figs/combined_auc.png', dpi=400)
