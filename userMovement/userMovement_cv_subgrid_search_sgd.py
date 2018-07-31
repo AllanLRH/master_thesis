@@ -37,6 +37,9 @@ from sklearn import metrics, model_selection, preprocessing
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
 
+# *****************************************************************************
+# * Execution will halt until at least 65 % of the CPU resources are avaiable *
+# *****************************************************************************
 misc.wait_for_cpu_resources(check_interval=15)
 
 import logging
