@@ -79,3 +79,5 @@ examples/
 .pytest_cache/
 
 userMovement/my_cubehelix\.pkl
+
+/converted_notebooks/
