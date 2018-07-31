@@ -81,3 +81,4 @@ examples/
 userMovement/my_cubehelix\.pkl
 
 /converted_notebooks/
+*.pkl
