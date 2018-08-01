@@ -83,3 +83,5 @@ userMovement/my_cubehelix\.pkl
 /converted_notebooks/
 *.pkl
 userMovement/randomforrest_output_rough_cv_search.txt
+
+/userMovement/figs/
