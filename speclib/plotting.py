@@ -784,7 +784,7 @@ def heatmapFromGridsearchDf(df, **kwargs):
     return plt.gcf(), ax
 
 
-def plotROC(target, prob, ax=None, label=None, auc_do=print):
+def plotROC(target, prob, ax=None, label=None, alpha=1.0, auc_do=print):
     """Create a ROC plot.
 
     Parameters
@@ -797,6 +797,8 @@ def plotROC(target, prob, ax=None, label=None, auc_do=print):
         Matplotlib axis
     label : String or None, optional
         Label to be used for series.
+    alpha : float, optional
+        Alpha value for plot
     auc_do : function or None
         Pass in print or display function from IPython to print or display auc
 
@@ -811,7 +813,7 @@ def plotROC(target, prob, ax=None, label=None, auc_do=print):
         fig, ax = plt.subplots()
     else:
         fig = ax.figure
-    ax.plot(fpr, tpr, '.-', lw=0.5, markersize=4, label=label)
+    ax.plot(fpr, tpr, '.-', lw=0.5, markersize=4, label=label, alpha=alpha)
     ax.set_ylabel('TPR')
     ax.set_xlabel('FPR')
     auc = metrics.auc(fpr, tpr)
