@@ -876,6 +876,15 @@ def boxplot_dataframe_answer_columns(df, subplot=True, seaborn_args=None,
         return ((fig1, ax1), (fig2, ax2))
 
 
+def rgba_hex2rgb_tuple(rgba):
+    r = int(rgba[1:3], base=16) / 255
+    g = int(rgba[3:5], base=16) / 255
+    b = int(rgba[5:7], base=16) / 255
+    alpha = int(rgba[7:9], base=16) / 255
+    R = int( 255*((1 - alpha) + (alpha * r)) )  # noqa
+    G = int( 255*((1 - alpha) + (alpha * g)) )  # noqa
+    B = int( 255*((1 - alpha) + (alpha * b)) )  # noqa
+    return (R, G, B)
 
 
 
