@@ -85,3 +85,4 @@ userMovement/my_cubehelix\.pkl
 userMovement/randomforrest_output_rough_cv_search.txt
 
 /userMovement/figs/
+*.dot
