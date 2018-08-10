@@ -1,4 +1,5 @@
 import numpy as np
+import re
 import pandas as pd
 from sklearn import decomposition
 import multiprocessing
@@ -741,3 +742,52 @@ def wait_for_cpu_resources(check_interval=30, cpu_pct_threshold=35, verbose=True
                         pass
                 return None
         time.sleep(check_interval)
+
+
+def snake2camel(snake):
+    def _inner(snake):
+        rx = re.compile(r'[^_]+')
+        words = rx.findall(snake)
+        camel = words[0] + ''.join([wd.title() for wd in words[1:]])
+        return camel
+    if isinstance(snake, str):
+        return _inner(snake)
+    if isinstance(snake, pd.core.indexes.base.Index):
+        return {sn: _inner(sn) for sn in snake}
+    else:
+        raise ValueError(f"Only accepts str or Pandas index (pd.core.indexes.base.Index), but recieved {type(snake)}")
+
+
+def snake2word(snake):
+    def _inner(snake):
+        if not isinstance(snake, str):
+            return snake
+        for _ in range(5):
+            snake = snake.replace('__', '_')
+        word = snake.replace('_', ' ')
+        return word
+    if isinstance(snake, str):
+        return _inner(snake)
+    if isinstance(snake, pd.core.indexes.base.Index):
+        return {sn: _inner(sn) for sn in snake}
+    else:
+        raise ValueError(f"Only accepts str or Pandas index (pd.core.indexes.base.Index), but recieved {type(snake)}")
+
+
+def camel2snake(camel):
+    def _inner(camel):
+        build_list = list()
+        for ch in 'paramPcaNComponents':
+            if ch.isupper():
+                build_list.append('_')
+                build_list.append(ch.lower())
+            else:
+                build_list.append(ch)
+        ''.join(build_list)
+    if isinstance(camel, str):
+        return _inner(camel)
+    if isinstance(camel, pd.core.indexes.base.Index):
+        return {wd: _inner(wd) for wd in camel}
+    else:
+        raise ValueError(f"Only accepts str or Pandas index (pd.core.indexes.base.Index), but recieved {type(camel)}")
+
