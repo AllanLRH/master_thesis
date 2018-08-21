@@ -30,12 +30,10 @@ from speclib import pushbulletNotifier, plotting, misc
 
 np.set_printoptions(linewidth=145)
 
-from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier  # , RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics, model_selection, preprocessing
 from sklearn.pipeline import Pipeline
-
-misc.wait_for_cpu_resources()
 
 import logging
 logging.basicConfig(filename='userMovement_adaboost_play.log', level=logging.INFO,
@@ -48,71 +46,41 @@ x = x.astype(float)
 logger.info(f"Loaded data")
 
 
-class redirect_output(object):
-    """context manager for reditrecting stdout/err to files"""
-
-
-    def __init__(self, stdout='', stderr=''):
-        self.stdout = stdout
-        self.stderr = stderr
-
-    def __enter__(self):
-        self.sys_stdout = sys.stdout
-        self.sys_stderr = sys.stderr
-
-        if self.stdout:
-            sys.stdout = open(self.stdout, 'w')
-        if self.stderr:
-            if self.stderr == self.stdout:
-                sys.stderr = sys.stdout
-            else:
-                sys.stderr = open(self.stderr, 'w')
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        sys.stdout = self.sys_stdout
-        sys.stderr = self.sys_stderr
-
-
 jn = pushbulletNotifier.JobNotification(devices="phone")
 
-processes = 28
+processes = 20
 try:
-    with redirect_output("adaboost_progress.txt"):
-        x_re, x_va, y_re, y_va = model_selection.train_test_split(x, y, test_size=0.2, stratify=y)
-        logger.info(f"Split data in to training set and validation set.")
-        pipe = Pipeline([('ada', AdaBoostClassifier(algorithm='SAMME.R', random_state=123456))])
-        param_grid = {
-            # fix number of jobs = 1 to avoid interprocess communication durin cross validation
-            'ada__base_estimator': [RandomForestClassifier(n_jobs=1, warm_start=True),
-                                    DecisionTreeClassifier(n_jobs=1, warm_start=True),
-                                    RandomForestClassifier(class_weight='balanced', n_jobs=1, warm_start=True),
-                                    DecisionTreeClassifier(class_weight='balanced', n_jobs=1, warm_start=True)],
-            'ada__n_estimators': np.arange(35, 101, 5),
-            'ada__learning_rate': 2.0**(np.arange(-5, 6, 2))
-            }  # noqa
-        logger.info(f"Starting cross validation")
-        est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=5, verbose=49, refit=True,
-                                           n_jobs=processes, pre_dispatch=processes, return_train_score=True)
-        est.fit(x_re, y_re)  # I think this is redundant
-        _, yhat = est.predict_proba(x_va).T
-        try:
-            logger.info(f"Cross validation done, best score was {est.best_score_}")
-            logger.info(f"Best params were {est.best_params_}")
-            logger.info(f"Best estimator were {est.best_estimator_}")
-            logger.info(f"Checking using the validation set.")
-        except Exception as e:
-            print(f"Logging exception: {e}")
-        validation_auc_score = metrics.roc_auc_score(y_va, yhat)
-        logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
-        fig, ax, aucscore = plotting.plotROC(y_va, yhat)
-        fig.savefig('figs/userMovement_cv_adaboost_roc_curve_coarse.pdf')
-        est.y_va = y_va  # save for plotting ROC curve later
-        est.yhat = yhat  # save for plotting ROC curve later
-        est.validation_auc_score = validation_auc_score
-        est.x_va = x_va
-        est.y_va = y_va
-        with open("userMovement_adaboost_coarse.pkl", 'bw') as fid:
-            pickle.dump(est, fid)
+    x_re, x_va, y_re, y_va = model_selection.train_test_split(x, y, test_size=0.2, stratify=y)
+    logger.info(f"Split data in to training set and validation set.")
+    pipe = Pipeline([('ada', AdaBoostClassifier(algorithm='SAMME.R', random_state=123456))])
+    param_grid = {
+        'ada__base_estimator': [DecisionTreeClassifier()],
+        'ada__n_estimators': np.arange(35, 106, 10),
+        'ada__learning_rate': [0.001, 0.01, 0.1, 1.0, 10]
+        }  # noqa
+    logger.info(f"Starting cross validation")
+    est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=4, verbose=49, refit=True,
+                                       n_jobs=processes, pre_dispatch=processes, return_train_score=True)
+    est.fit(x_re, y_re)  # I think this is redundant
+    _, yhat = est.predict_proba(x_va).T
+    try:
+        logger.info(f"Cross validation done, best score was {est.best_score_}")
+        logger.info(f"Best params were {est.best_params_}")
+        logger.info(f"Best estimator were {est.best_estimator_}")
+        logger.info(f"Checking using the validation set.")
+    except Exception as e:
+        print(f"Logging exception: {e}")
+    validation_auc_score = metrics.roc_auc_score(y_va, yhat)
+    logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
+    fig, ax, aucscore = plotting.plotROC(y_va, yhat)
+    fig.savefig('figs/userMovement_cv_adaboost_roc_curve_coarse.pdf')
+    est.y_va = y_va  # save for plotting ROC curve later
+    est.yhat = yhat  # save for plotting ROC curve later
+    est.validation_auc_score = validation_auc_score
+    est.x_va = x_va
+    est.y_va = y_va
+    with open("userMovement_adaboost_coarse.pkl", 'bw') as fid:
+        pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
     sleep(8)
