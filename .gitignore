@@ -88,3 +88,4 @@ userMovement/randomforrest_output_rough_cv_search.txt
 *.dot
 
 /joblib_cache/
+userMovement/rankplotting.ipynb
