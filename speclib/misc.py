@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import re
 import pandas as pd
@@ -45,16 +46,28 @@ def objDir2Df(obj):
     lst = list()
     gen = (el for el in dir(obj) if not (el.startswith('__') and el.endswith('__')))
     for el in gen:
+        # Get attribute
         try:
-            tup = [el, eval('type(pp.%s])' % el)]
+            attr = obj.__getattribute__(el)
         except Exception as e:
+            # Attribute couldn't be retrived, continue to next attribute
+            print(f"Couldn't get the attribute {el}", file=sys.stderr)
+            continue
+        # Get attribute type
+        try:
+            tup = [el, type(attr).__name__]
+        except Exception as e:
+            # Couldn't get type, put error instead
             tup = [el, e]
+        # Append attribute shape, if the attribute have the shape property
         try:
-            tup.append(eval('pp.%s.shape' % el))
+            tup.append(str(attr.shape))
         except Exception as e:
+            # The attribute doesn't have the shape property, so try len(attr) instead.
             try:
-                tup.append(eval('len(pp.%s)') % el)
+                tup.append(str(len(attr)))
             except Exception as e:
+                # # If no length is defined for the object, just append None
                 tup.append(None)
         lst.append(tup)
     df = pd.DataFrame(lst, columns=['parameter', 'partype', 'shape'])
