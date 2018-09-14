@@ -33,7 +33,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 np.set_printoptions(linewidth=145)
 
 import logging
-logging.basicConfig(filename='joachimExercise_expanded_feature_space_pca_reduction_coarse.log', level=logging.INFO,
+logging.basicConfig(filename='joachimExercise_expanded_feature_space_pca_reduction.log', level=logging.INFO,
                     format="%(asctime)s :: %(filename)s:%(lineno)s :: %(funcName)s() ::    %(message)s")
 logger = logging.getLogger('joachimExercise')
 
@@ -70,9 +70,9 @@ try:
     pipe = Pipeline([('pca', decomposition.PCA()),
                      ('lr', linear_model.LogisticRegression())])
     param_grid = {
-        'pca__n_components': np.arange(20, 76, 6),
-        'lr__class_weight': [True, False],
-        'lr__C': 2.0**np.arange(-8, 4, 2)
+        'pca__n_components': np.arange(20, 76),
+        'lr__class_weight': ['balanced', None],
+        'lr__C': 2.0**np.linspace(-9, 5, 20)
         }  # noqa
     logger.info(f"Starting cross validation")
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=5, verbose=49, refit=True,
@@ -91,13 +91,13 @@ try:
     validation_auc_score = metrics.roc_auc_score(y_va, yhat)
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fig, ax, aucscore = plotting.plotROC(y_va, yhat)
-    fig.savefig('figs/joachimExercise_expanded_feature_space_pca_reduction_coarse.pdf')
+    fig.savefig('figs/joachimExercise_expanded_feature_space_pca_reduction.pdf')
     est.y_va = y_va  # save for plotting ROC curve later
     est.yhat = yhat  # save for plotting ROC curve later
     est.validation_auc_score = validation_auc_score
     est.x_va = x_va
     est.y_va = y_va
-    with open("joachimExercise_expanded_feature_space_pca_reduction_coarse.pkl", 'bw') as fid:
+    with open("joachimExercise_expanded_feature_space_pca_reduction.pkl", 'bw') as fid:
         pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
