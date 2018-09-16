@@ -5,12 +5,12 @@ import sys
 import os
 sys.path.append(os.path.abspath(".."))
 
-from speclib import plotting, pushbulletNotifier
 
 import numpy as np
 import pandas as pd
-import matplotlib as mpl  # noqa
-import matplotlib.pyplot as plt
+import matplotlib as mpl
+mpl.use('agg')
+import matplotlib.pyplot as plt  # noqa
 from sklearn import decomposition, preprocessing, linear_model, metrics, model_selection
 from sklearn.pipeline import Pipeline
 import pickle
@@ -27,6 +27,8 @@ colorcycle = [(0.498, 0.788, 0.498),
               (0.941, 0.008, 0.498),
               (0.400, 0.400, 0.400)]
 sns.set_palette(colorcycle)
+
+from speclib import plotting, pushbulletNotifier
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -60,9 +62,8 @@ for i, (v0, v1) in enumerate(idxCombinations, df1.values.shape[1]):
 logger.info(f"Expanded feature space, move on to pipeline operations")
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
-jn.send(message="Started CV for joachim Exercise expanded feature space pca reduction coarse.")
 
-processes = 23
+processes = 28
 try:
     x_re, x_va, y_re, y_va = model_selection.train_test_split(featureMatrix, gender.values,
                                                               test_size=0.2, stratify=gender.values)
@@ -79,8 +80,7 @@ try:
                                        n_jobs=processes, pre_dispatch=processes, return_train_score=True)
     est.fit(x_re, y_re)  # I think this is redundant
     # PCA transform the validation dataset with the number of components deemed optimal from the cross valiation
-    x_va = pipe.named_steps['pca'].transform(x_va)
-    _, yhat = est.predict_proba(x_va).T
+    _, yhat = est.best_estimator_.predict_proba(x_va).T
     try:
         logger.info(f"Cross validation done, best score was {est.best_score_}")
         logger.info(f"Best params were {est.best_params_}")
@@ -89,6 +89,7 @@ try:
     except Exception as e:
         print(f"Logging exception: {e}")
     validation_auc_score = metrics.roc_auc_score(y_va, yhat)
+    logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     logger.info(f"AUC score for validation set of size {len(y_va)} is {validation_auc_score:.5f}")
     fig, ax, aucscore = plotting.plotROC(y_va, yhat)
     fig.savefig('figs/joachimExercise_expanded_feature_space_pca_reduction.pdf')
@@ -105,5 +106,3 @@ except Exception as err:
     raise err
 
 jn.send(message=f"Cross validation is done.")
-
-
