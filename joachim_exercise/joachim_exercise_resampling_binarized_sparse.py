@@ -57,29 +57,29 @@ logger.info(f"Data loaded")
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
 
-processes = 28
+processes = 25
 try:
     X_train, X_test, y_train, y_test = model_selection.train_test_split(dfd.values, gender.values,
                                                                         test_size=0.2, stratify=gender.values)
 
     logger.info(f"Split data in to training set and validation set.")
-    classifier = ['lr', linear_model.LogisticRegression(solver='liblinear', max_iter=1200)]
-    sampler_lst = [['SMOTE', over_sampling.SMOTE()],
-                   ['ADASYN', over_sampling.ADASYN()],
-                   ['RandomOverSampler', over_sampling.RandomOverSampler()]]
+    classifier = ['logisticregression', linear_model.LogisticRegression(max_iter=1200)]
+    sampler_lst = [['smote', over_sampling.SMOTE()],
+                   ['adasyn', over_sampling.ADASYN()],
+                   ['random¬oversampler', over_sampling.RandomOverSampler()]]
     pipeline_lst = [ [f'{sampler[0]}-{classifier[0]}', make_pipeline(sampler[1], classifier[1])]
                       for sampler in sampler_lst ]  # noqa
     param_grid = {
-        'lr__penalty': ['l1', 'l2'],
-        'lr__C': 2.0**np.linspace(-6, 5, 15)
+        'logisticregression__penalty': ['l1', 'l2'],
+        'logisticregression__C': 2.0**np.linspace(-6, 5, 15)
         }  # noqa
     for name, pipe in pipeline_lst:
         jn.send(message=f"Starding cross validation with resampling method {name}")
         logger.info(f"Starting cross validation")
         est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=5, verbose=49, refit=True,
                                            n_jobs=processes, pre_dispatch=processes, return_train_score=True)
-        # PCA transform the validation dataset with the number of components deemed optimal from the cross valiation
-        _, yhat = est.best_estimator_.predict_proba(X_test).T
+        est.fit(X_train, y_train)
+        _, yhat = est.predict_proba(X_test).T
         try:
             logger.info(f"Cross validation done, best score was {est.best_score_}")
             logger.info(f"Best params were {est.best_params_}")
