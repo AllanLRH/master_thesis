@@ -47,31 +47,24 @@ df1.rename(columns=lambda s: s.replace('bfi_', '').replace('.answer', ''), inpla
 gender = df0.gender
 nd1 = preprocessing.scale(df1.values)
 
-df_dummy_lst = [pd.get_dummies(df1[col], prefix=col) for col in df1.columns]
-dfd = df_dummy_lst[0].copy()
-df_dummy_lst = df_dummy_lst[1:]
-dfd = dfd.join(df_dummy_lst)
-del df_dummy_lst
-
 logger.info(f"Data loaded")
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
 
 processes = 25
 try:
-    X_train, X_test, y_train, y_test = model_selection.train_test_split(dfd.values, gender.values,
+    X_train, X_test, y_train, y_test = model_selection.train_test_split(nd1, gender.values,
                                                                         test_size=0.2, stratify=gender.values)
 
     logger.info(f"Split data in to training set and validation set.")
-    classifier = ['logisticregression', linear_model.LogisticRegression(max_iter=1200)]
+    classifier = ['logisticregression', linear_model.LogisticRegression(max_iter=250)]
     sampler_lst = [['smote', over_sampling.SMOTE()],
                    ['adasyn', over_sampling.ADASYN()],
                    ['random¬oversampler', over_sampling.RandomOverSampler()]]
     pipeline_lst = [ [f'{sampler[0]}-{classifier[0]}', make_pipeline(sampler[1], classifier[1])]
                       for sampler in sampler_lst ]  # noqa
     param_grid = {
-        'logisticregression__penalty': ['l1', 'l2'],
-        'logisticregression__C': 2.0**np.linspace(-6, 5, 15)
+        'logisticregression__C': 2.0**np.linspace(-8, 5, 15)
         }  # noqa
     for name, pipe in pipeline_lst:
         jn.send(message=f"Starding cross validation with resampling method {name}")
@@ -91,13 +84,13 @@ try:
         logger.info(f"AUC score for validation set of size {len(y_test)} is {validation_auc_score:.5f}")
         logger.info(f"AUC score for validation set of size {len(y_test)} is {validation_auc_score:.5f}")
         fig, ax, aucscore = plotting.plotROC(y_test, yhat)
-        fig.savefig(f'figs/joachim_exercise_resampling_binarized_sparse_{name}_resampled.pdf')
+        fig.savefig(f'figs/joachim_exercise_resampling_{name}_resampled.pdf')
         est.y_test = y_test  # save for plotting ROC curve later
         est.yhat = yhat  # save for plotting ROC curve later
         est.validation_auc_score = validation_auc_score
         est.X_test = X_test
         est.y_test = y_test
-        with open(f"joachim_exercise_resampling_binarized_sparse_{name}_resampled.pkl", 'bw') as fid:
+        with open(f"joachim_exercise_resampling_{name}_resampled.pkl", 'bw') as fid:
             pickle.dump(est, fid)
 except Exception as err:
     jn.send(err)
