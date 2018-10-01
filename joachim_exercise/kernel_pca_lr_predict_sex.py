@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(".."))
 import matplotlib as mpl
 mpl.use('agg')
 import numpy as np
-import panas as pd
+import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -56,14 +56,16 @@ logger.info(f"Loaded data")
 
 
 jn = pushbulletNotifier.JobNotification(devices="phone")
-jn.send(message="Started CV for fine RF grid")
+jn.send(message="Started CV for KernelPCA —> LR.")
 
 processes = 12
 try:
-    x_re, x_va, y_re, y_va = model_selection.train_test_split(nd1.values, gender, test_size=0.2, stratify=gender)
+    x_re, x_va, y_re, y_va = model_selection.train_test_split(nd1, gender, test_size=0.2, stratify=gender)
     logger.info(f"Split data in to training set and validation set.")
-    pipe = Pipeline([('kpca', decomposition.KernelPCA(remove_zero_eig=True)),
-                     ('lr', linear_model.LogisticRegression)])
+    pipe = Pipeline([
+                     ('kpca', decomposition.KernelPCA(remove_zero_eig=True)),
+                     ('lr', linear_model.LogisticRegression())
+                    ])
     param_grid = {
         'kpca__kernel': ['poly', 'rbf', 'sigmoid', 'linear'],
         'kpca__gamma': 1/np.arange(20, 80, 8),
@@ -75,7 +77,7 @@ try:
     logger.info(f"Starting cross validation")
     est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=5, verbose=49, refit=True,
                                        n_jobs=processes, pre_dispatch=processes, return_train_score=True)
-    est.fit(x_re, y_re)  # I think this is redundant
+    est.fit(x_re, y_re)
     _, yhat = est.predict_proba(x_va).T
     try:
         logger.info(f"Cross validation done, best score was {est.best_score_}")
