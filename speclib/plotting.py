@@ -877,6 +877,18 @@ def boxplot_dataframe_answer_columns(df, subplot=True, seaborn_args=None,
 
 
 def rgba_hex2rgb_tuple(rgba):
+    """Attempts to convert an RGBA value into an RBG value, assuming a white background.
+
+    Parameters
+    ----------
+    rgba : str
+        Hex string specifying the rgba value.
+
+    Returns
+    -------
+    tuple
+        RGB tuple (integer format).
+    """
     r = int(rgba[1:3], base=16) / 255
     g = int(rgba[3:5], base=16) / 255
     b = int(rgba[5:7], base=16) / 255

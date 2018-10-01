@@ -242,6 +242,10 @@ def summarizePerformanveEval(df, print_only=False):
 
 
 def train_test_validate_split(x, y, train_size=0.58, test_size=0.18, validate_size=0.24, stratify=None):
+    """
+    Perform consecutive train_test splits to obtainn train, test and validation datasets.
+    Not used that much.
+    """
     assert y.ndim == 1 and x.ndim in (1, 2), f"y must be 1-dimmensional and x 1 or 2 dimmensional, but x.shape = x{x.shape} and y.shape = {y.shape}."
     assert x.shape[0] == y.shape[0], f"x and y must have the same number of rows, but x.shape = {x.shape} and y.shape = {y.shape}."
     arg_arr = np.array([train_size, test_size, validate_size])

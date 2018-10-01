@@ -611,12 +611,36 @@ def questionResponse(df, qstr):
 
 
 def sortWeekdays(itr):
+    """Sort weekdays in a natural order.
+
+    Parameters
+    ----------
+    itr : iterable
+        Iterable containing weekdays (strings).
+
+    Returns
+    -------
+    list
+        itr sorted and converted to a list.
+    """
     itr2 = [el.lower().strip() for el in itr]
     days = {'monday': 0, 'tuesday': 1, 'wednesday': 2, 'thursday': 3, 'friday': 4, 'saturday': 5, 'sunday': 6}
     return sorted(itr2, key=lambda day: days[day])
 
 
 def getColsRowsWithNull(df):
+    """get columns with na-values... kind'a a reverse of dropna().
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to filter.
+
+    Returns
+    -------
+    pd.DataFrame
+        Columns from DataFrame which contains null-values.
+    """
     null_columns = df.columns[df.isnull().any()]
     df_nullcols = df[null_columns]
     nullrows_mask = df_nullcols.isnull().any(axis=1)

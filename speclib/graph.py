@@ -436,6 +436,9 @@ def _isSubCommunity(bigSetLst, smallDfRows):
 
 
 def removeSubCommunities(comDf, comSize=None, n=None):
+    """
+    Remove sub communities — further testing needed.
+    """
     df = comDf.select_dtypes(exclude=['int'])
     if isinstance(comSize, str):
         comSize = comDf[comSize]

@@ -201,6 +201,18 @@ def loadUserPhonenumberDict(useralias=None, filepath="/lscr_paper/allan/phonenum
 
 
 def getUserList(datapath='/lscr_paper/allan/data/Telefon/userfiles'):
+    """Get list of users conforming to the standard naming convention at a given path.
+
+    Parameters
+    ----------
+    datapath : str, optional
+        Path to search for users.
+
+    Returns
+    -------
+    list
+        List of valid usernames.
+    """
     folders = (pth for pth in os.listdir(datapath) if os.path.isdir(os.path.join(datapath, pth)))
     userFolders = (fld for fld in folders if (len(fld) == 30))
     validUsernames = [fld for fld in userFolders if not (set(fld) - set('0123456789abcdef'))]
@@ -393,7 +405,20 @@ def quickSaveHdf5(filepath, *data):
 
 
 def loadUserBluetooth(userhash, useralias):
+    """Function for loading an users bluetooth data.
 
+    Parameters
+    ----------
+    userhash : str
+        Hash value for user (username)
+    useralias : Useralias
+        Useralias instance.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with users Bluetooth data.
+    """
     def _load_bluetooth(user):
         try:
             with open(f'/lscr_paper/allan/telephone/{user}/bluetooth.json') as fid:
