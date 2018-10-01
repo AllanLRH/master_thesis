@@ -41,6 +41,8 @@ from sklearn.pipeline import Pipeline
 # misc.wait_for_cpu_resources()
 
 import logging
+from imp import reload
+reload(logging)
 logging.basicConfig(filename='kernel_pca_lr_predict_sex.log', level=logging.INFO,
                     format="%(asctime)s :: %(filename)s:%(lineno)s :: %(funcName)s() ::    %(message)s")
 logger = logging.getLogger('kernel_pca_lr_predict_sex')
