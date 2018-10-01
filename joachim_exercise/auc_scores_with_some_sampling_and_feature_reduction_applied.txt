@@ -1,0 +1,21 @@
+AUC scores for onehot encoded variables:
+AUC: 0.7056502525252525
+AUC: 0.7002840909090909
+AUC: 0.6904987373737373
+
+AUC scores for resample:
+AUC: 0.7056502525252525
+AUC: 0.7002840909090909
+AUC: 0.8500631313131313
+est.best_estimator_:
+Pipeline(memory=None,
+     steps=[('randomoversampler', RandomOverSampler(random_state=None, ratio=None, return_indices=False,
+         sampling_strategy='auto')), ('logisticregression', LogisticRegression(C=0.00390625, class_weight=None, dual=False,
+          fit_intercept=True, intercept_scaling=1, max_iter=250,
+          multi_class='ovr', n_jobs=1, penalty='l2', random_state=None,
+          solver='liblinear', tol=0.0001, verbose=0, warm_start=False))])
+
+
+AUC score for cv (regular PCA —> LR)
+AUC: 0.8011363636363635
+
