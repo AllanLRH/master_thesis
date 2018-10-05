@@ -784,7 +784,7 @@ def heatmapFromGridsearchDf(df, **kwargs):
     return plt.gcf(), ax
 
 
-def plotROC(target, prob, ax=None, label=None, alpha=1.0, auc_do=print):
+def plotROC(target, prob, ax=None, label=None, alpha=1.0, auc_do=print, xy_guide=False):
     """Create a ROC plot.
 
     Parameters
@@ -801,6 +801,9 @@ def plotROC(target, prob, ax=None, label=None, alpha=1.0, auc_do=print):
         Alpha value for plot
     auc_do : function or None
         Pass in print or display function from IPython to print or display auc
+    xy_guide : bool, optional
+        If True, plot a dashed line in the interval [0, 1] as a guide to the eye,
+        color = 'k', alpha = 0.6.
 
     Returns
     -------
@@ -819,6 +822,9 @@ def plotROC(target, prob, ax=None, label=None, alpha=1.0, auc_do=print):
     auc = metrics.auc(fpr, tpr)
     if auc_do is not None:
         auc_do("AUC: {}".format(auc))
+    if xy_guide and not hasattr(ax, 'xy_guide_plotted') and ax.xy_guide_plotted:
+        ax.plot([0, 1], [0, 1], 'k--', alpha=0.6)
+        ax.xy_guide_plotted = True
     return (fig, ax, auc)
 
 
