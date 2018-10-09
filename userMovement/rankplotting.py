@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
-sns.set(context='paper', style='whitegrid', color_codes=True, font_scale=1.8)
+sns.set(context='paper', style='whitegrid', color_codes=True, font_scale=3.2)
 colorcycle = [(0.498, 0.788, 0.498),
               (0.745, 0.682, 0.831),
               (0.992, 0.753, 0.525),
@@ -31,10 +31,6 @@ pd.set_option('display.width', 1000)
 np.set_printoptions(linewidth=145)
 
 # import pixiedust
-
-
-# In[2]:
-
 
 rf = pd.DataFrame([['B7', 60.635047],
 ['B3', 14.030777],
@@ -102,30 +98,13 @@ gb = pd.DataFrame([['B7', 11.686819],
 ['S4',  1.669391],
 ['C2',  1.511847]], columns=['ch', 'gb'])
 
-
-# In[3]:
-
-
 rf = rf.set_index('ch')
 gb = gb.set_index('ch')
-
-
-# In[7]:
-
 
 df = rf.join(gb)
 
 
-# In[8]:
-
-
-df.head()
-
-
-# In[242]:
-
-
-minspace = 2.1
+minspace = 4.8
 plt.rc('text', usetex=True)
 dfd = df.diff(periods=-1).abs().fillna(0)
 dfd.head()
@@ -140,25 +119,28 @@ titleofs = 0.5
 
 fig, ax = plt.subplots(figsize=(16, 24))
 ax.grid(False)
+fs = 22  # fontsize
+bottom_ofs = 9
+top_ofs = 5
 ax.set_ybound(0, 1.1*df.max().max())
 ax.set_xticks([1, 8])
 # ax.set_xticklabels(['Random Forest', 'Gradient Boost'])
 ax.set_xticklabels([])
 ax.set_yticklabels([])
-xl, xr = 1, 8
+xl, xr = 1.2, 8
 # plt.box()
 for i, (cha, row) in enumerate(df.iterrows()):
     yl, yr = row.values
     sl, sr = f"{cha}: {yl:.2f} \\%", f"{cha}: {yr:.2f} \\%"
     yl, yr = row.values + dfdm.loc[cha, 'tofs']
-    ax.text(xl, yl, sl, fontsize=14, horizontalalignment='right')
-    ax.text(xr, yr, sr, fontsize=14)
-    ax.plot([xl+0.1, xr-0.2], [yl-minspace/10, yr-minspace/10], 'o-', color=colordict[cha[0]])
+    ax.text(xl, yl, sl, fontsize=fs, horizontalalignment='right')
+    ax.text(xr, yr, sr, fontsize=fs)
+    ax.plot([xl+0.1, xr-0.2], [yl-minspace/10, yr-minspace/10], 'o-', color=colordict[cha[0]], lw=4)
 ymin, ymax = ax.get_ylim()
 ax.plot([-0.2, 9.3], [ymin - titleofs*0.2, ymin - titleofs], 'k-')
 ax.plot([-0.2, 9.3], [ymax + titleofs, ymax + titleofs], 'k-')
-ax.text(1.4, ymax + 3*titleofs, "Random Forest", fontsize=14, horizontalalignment='right')
-ax.text(1.4, ymin - 4*titleofs, "Random Forest", fontsize=14, horizontalalignment='right')
-ax.text(7.5, ymax + 3*titleofs, "Gradient Boostring", fontsize=14, horizontalalignment='left')
-ax.text(7.5, ymin - 4*titleofs, "Gradient Boostring", fontsize=14, horizontalalignment='left')
+ax.text(1.4, ymax + top_ofs*titleofs, "Random Forest", fontsize=fs, horizontalalignment='right')
+ax.text(1.4, ymin - bottom_ofs*titleofs, "Random Forest", fontsize=fs, horizontalalignment='right')
+ax.text(7.3, ymax + top_ofs*titleofs, "Gradient Boostring", fontsize=fs, horizontalalignment='left')
+ax.text(7.3, ymin - bottom_ofs*titleofs, "Gradient Boostring", fontsize=fs, horizontalalignment='left')
 fig.savefig('figs/rf_gb_feature_importance_rankplot.pdf')
