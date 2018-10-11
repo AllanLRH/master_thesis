@@ -1,0 +1,193 @@
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8552342559589307, total=259.0min
+[Parallel(n_jobs=12)]: Done   1 tasks      | elapsed: 259.6min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8548176729975187, total=260.7min
+[Parallel(n_jobs=12)]: Done   2 tasks      | elapsed: 261.4min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8537449455091166, total=264.7min
+[Parallel(n_jobs=12)]: Done   3 tasks      | elapsed: 265.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8544119316396627, total=269.3min
+[Parallel(n_jobs=12)]: Done   4 tasks      | elapsed: 269.9min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8538352141804356, total=269.7min
+[Parallel(n_jobs=12)]: Done   5 tasks      | elapsed: 270.2min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8538809184128899, total=269.4min
+[Parallel(n_jobs=12)]: Done   6 tasks      | elapsed: 270.3min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8550249169549032, total=275.7min
+[Parallel(n_jobs=12)]: Done   7 tasks      | elapsed: 276.7min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8549144851414153, total=277.5min
+[Parallel(n_jobs=12)]: Done   8 tasks      | elapsed: 278.4min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.853565071827528, total=277.7min
+[Parallel(n_jobs=12)]: Done   9 tasks      | elapsed: 278.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8557032266388236, total=279.8min
+[Parallel(n_jobs=12)]: Done  10 tasks      | elapsed: 280.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8540061780844939, total=293.4min
+[Parallel(n_jobs=12)]: Done  11 tasks      | elapsed: 294.7min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8549299982350627, total=301.3min
+[Parallel(n_jobs=12)]: Done  12 tasks      | elapsed: 302.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8541839770875417, total=278.2min
+[Parallel(n_jobs=12)]: Done  13 tasks      | elapsed: 548.9min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8549304720113657, total=278.4min
+[Parallel(n_jobs=12)]: Done  14 tasks      | elapsed: 549.4min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8558082260621707, total=292.3min
+[Parallel(n_jobs=12)]: Done  15 tasks      | elapsed: 552.7min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.85523958969176, total=278.6min
+[Parallel(n_jobs=12)]: Done  16 tasks      | elapsed: 556.1min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8537833626885843, total=277.3min
+[Parallel(n_jobs=12)]: Done  17 tasks      | elapsed: 556.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8551201445650369, total=294.7min
+[Parallel(n_jobs=12)]: Done  18 tasks      | elapsed: 556.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8537431508419149, total=291.4min
+[Parallel(n_jobs=12)]: Done  19 tasks      | elapsed: 557.9min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8549674544292665, total=285.9min
+[Parallel(n_jobs=12)]: Done  20 tasks      | elapsed: 567.6min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8559287996427322, total=301.8min
+[Parallel(n_jobs=12)]: Done  21 tasks      | elapsed: 572.9min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8558013278920287, total=286.5min
+[Parallel(n_jobs=12)]: Done  22 tasks      | elapsed: 582.2min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8540789694803954, total=314.2min
+[Parallel(n_jobs=12)]: Done  23 tasks      | elapsed: 593.6min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8553485720059157, total=307.0min
+[Parallel(n_jobs=12)]: Done  24 tasks      | elapsed: 610.5min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40, score=0.8550466209110202, total=257.3min
+[Parallel(n_jobs=12)]: Done  25 tasks      | elapsed: 825.4min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8538330715402936, total=284.4min
+[Parallel(n_jobs=12)]: Done  26 tasks      | elapsed: 834.2min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40, score=0.8552704060000015, total=258.1min
+[Parallel(n_jobs=12)]: Done  27 tasks      | elapsed: 840.8min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90, score=0.8541088093805721, total=291.1min
+[Parallel(n_jobs=12)]: Done  28 tasks      | elapsed: 841.5min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40, score=0.8537830273571427, total=287.4min
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8537833626885843, total=277.3min
+[Parallel(n_jobs=12)]: Done  17 tasks      | elapsed: 556.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8551201445650369, total=294.7min
+[Parallel(n_jobs=12)]: Done  18 tasks      | elapsed: 556.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8537431508419149, total=291.4min
+[Parallel(n_jobs=12)]: Done  19 tasks      | elapsed: 557.9min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8549674544292665, total=285.9min
+[Parallel(n_jobs=12)]: Done  20 tasks      | elapsed: 567.6min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8559287996427322, total=301.8min
+[Parallel(n_jobs=12)]: Done  21 tasks      | elapsed: 572.9min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8558013278920287, total=286.5min
+[Parallel(n_jobs=12)]: Done  22 tasks      | elapsed: 582.2min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8540789694803954, total=314.2min
+[Parallel(n_jobs=12)]: Done  23 tasks      | elapsed: 593.6min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8553485720059157, total=307.0min
+[Parallel(n_jobs=12)]: Done  24 tasks      | elapsed: 610.5min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=balanced, score=0.8556034482758621, total=   1.1s
+[Parallel(n_jobs=12)]: Done 40930 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=1.0, lr__class_weight=None, score=0.7845962732919254, total=   1.2s
+[Parallel(n_jobs=12)]: Done 40931 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=balanced, score=0.8521739130434782, total=   1.4s
+[Parallel(n_jobs=12)]: Done 40932 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=balanced, score=0.7157763975155279, total=   1.3s
+[Parallel(n_jobs=12)]: Done 40933 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=balanced, score=0.7801242236024845, total=   1.3s
+[Parallel(n_jobs=12)]: Done 40934 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=balanced, score=0.7224844720496895, total=   1.4s
+[Parallel(n_jobs=12)]: Done 40935 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced, score=0.8556034482758621, total=   1.1s
+[Parallel(n_jobs=12)]: Done 40936 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=None, score=0.8539272030651341, total=   1.4s
+[Parallel(n_jobs=12)]: Done 40937 tasks      | elapsed: 104.6min
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=None, score=0.7281987577639751, total=   1.4s
+[Parallel(n_jobs=12)]: Done 40938 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=None, score=0.7821118012422361, total=   1.3s
+[Parallel(n_jobs=12)]: Done 40939 tasks      | elapsed: 104.6min
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=None, score=0.7254658385093168, total=   1.4s
+[Parallel(n_jobs=12)]: Done 40940 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=2.0, lr__class_weight=None, score=0.8494409937888199, total=   1.4s
+[Parallel(n_jobs=12)]: Done 40941 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced, score=0.7152795031055901, total=   1.5s
+[Parallel(n_jobs=12)]: Done 40942 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced, score=0.8514285714285714, total=   1.6s
+[Parallel(n_jobs=12)]: Done 40943 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced, score=0.7219875776397515, total=   1.2s
+[Parallel(n_jobs=12)]: Done 40944 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=balanced, score=0.7786335403726709, total=   1.2s
+[Parallel(n_jobs=12)]: Done 40945 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None, score=0.8539272030651341, total=   1.1s
+[Parallel(n_jobs=12)]: Done 40946 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced, score=0.7155279503105589, total=   0.9s
+[Parallel(n_jobs=12)]: Done 40947 tasks      | elapsed: 104.6min
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None, score=0.7274534161490683, total=   1.0s
+[Parallel(n_jobs=12)]: Done 40948 tasks      | elapsed: 104.6min
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None
+[CV] kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced, score=0.8514285714285714, total=   1.1s
+[Parallel(n_jobs=12)]: Done 40949 tasks      | elapsed: 104.6min
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced, score=0.8553639846743295, total=   1.1s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None, score=0.8499378881987577, total=   1.3s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None, score=0.7811180124223602, total=   1.3s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=4.0, lr__class_weight=None, score=0.7244720496894409, total=   1.3s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced, score=0.7214906832298137, total=   1.1s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None, score=0.7269565217391304, total=   0.9s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=balanced, score=0.7776397515527951, total=   1.3s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None, score=0.7811180124223602, total=   0.9s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None, score=0.8536877394636015, total=   1.4s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None, score=0.8499378881987577, total=   1.2s
+[CV]  kpca__degree=5, kpca__gamma=0.013157894736842105, kpca__kernel=linear, kpca__n_components=150, lr__C=8.0, lr__class_weight=None, score=0.7244720496894409, total=   1.1s
+[Parallel(n_jobs=12)]: Done 40960 out of 40960 | elapsed: 104.6min finished
+AUC: 0.8011363636363636
