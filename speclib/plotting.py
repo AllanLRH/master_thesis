@@ -187,8 +187,8 @@ def nxQuickDraw(G, **kwargs):
         Additional keyword arguments to nx.draw.
     """
     kwDct = dict(with_labels=True,  # Use some sane defaults
-                 node_color='lightblue',
-                 edge_color='lightgray',
+                 node_color=(0.498, 0.788, 0.498),
+                 edge_color=[(0.80, 0.80, 0.80) for _ in range(len(G.edges))],
                  node_size=150)
     # Make a copy so that the defaults of the function is not changed whenever it's
     # called with arguments other that the graph
