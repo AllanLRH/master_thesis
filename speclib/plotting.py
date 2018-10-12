@@ -9,7 +9,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx
 import igraph as ig
-import palettable
 import itertools
 from sklearn import metrics
 from speclib import graph
@@ -225,10 +224,15 @@ def barFractionPlot(df, ax=None, userOrder=None):
         _, ax = plt.subplots(figsize=(20, 1))
     # Colorcycler, using colorbrewer Set3, with an an appropriate number of colors,
     # limited to numbers 3 through 13. It will cycle infinitely.
-    mplColors = itertools.cycle(
-        palettable.colorbrewer.qualitative.__dict__[
-            'Set3_%d' % max(3, min(13, df.shape[0]))].mpl_colors
-    )
+    colorcycle = [(0.498, 0.788, 0.498),
+                  (0.745, 0.682, 0.831),
+                  (0.992, 0.753, 0.525),
+                  (0.220, 0.424, 0.690),
+                  (0.749, 0.357, 0.090),
+                  (1.000, 1.000, 0.600),
+                  (0.941, 0.008, 0.498),
+                  (0.400, 0.400, 0.400)]
+    mplColors = itertools.cycle(colorcycle)
     oldLeft = 0.0  # position where previous bar ended
     if userOrder is None:  # No ordering of users probided, sort descending
         useDf = df.sort_values(ascending=False)
