@@ -9,6 +9,8 @@ from sklearn.exceptions import UndefinedMetricWarning
 warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
 from sklearn import metrics
 from sklearn import model_selection
+from sklearn import linear_model
+from sklearn.utils import validation as skl_validation
 
 
 def stratifiedCrossEval(X, y, model, metricFunctions=None, n_splits=5, test_size=0.3):
@@ -261,3 +263,44 @@ def train_test_validate_split(x, y, train_size=0.58, test_size=0.18, validate_si
     strat = None if stratify is None else y_rest
     x_train, x_test, y_train, y_test = model_selection.train_test_split(x_rest, y_rest, train_size=train_size, test_size=test_size, stratify=strat)
     return x_train, x_test, x_val, y_train, y_test, y_val
+
+
+def lr_uncertainty(X, lr, as_dataframe=True):
+    """Calculate the standard error of a logistic regression model based on data from
+    the feature space which the model was trained on.
+
+    This function is primarily based on this post:
+    https://stats.stackexchange.com/a/228832/20054
+
+    Parameters
+    ----------
+    X : np.ndarray
+        Feature space which the model was trained on.
+    lr : Logistic regression model
+        Trained Scikit-Learn LogisticRegression or LogisticRegressionCV.
+    as_dataframe : bool, optional
+        Return results as a dataframe with a column for coeffieicents and  unvertainties.
+
+    Returns
+    -------
+    DataFrame or (np.ndarray, np.ndarray, np.ndarray)
+        if as_datafframe == True:
+            A DataFrame with a coeffieicents-column and a standard-error-column
+        else:
+            Covariance matrix and the standard deviations, which is the square of the
+            diagonal of the covariance matrix.
+    """
+    assert isinstance(X, np.ndarray), f"X must be of type np.ndarray, but was {type(X)}."
+    assert (isinstance(lr, linear_model.LogisticRegression) or isinstance(lr, linear_model.LogisticRegressionCV)), \
+        f"lr must be a Scikit-Learn LogisticRegression or LogisticRegressionCV, but was {type(lr)}."
+    X = np.hstack((np.ones((X.shape[0], 1)), X))  # prepend a column of ones (design matrix)
+    V = np.diagflat((np.product(lr.predict_proba(X), axis=1)))
+    XVX = np.linalg.inv(X.T @ V @ X)  # covariance matrix
+    coeff = np.concatenate([np.array(lr.intercept_), lr.coef_.flatten()])
+    stderr = np.sqrt(np.diag(XVX))
+    if as_dataframe:
+        df = pd.DataFrame([coeff, stderr], index=['coeff', 'stderr'],
+                          columns=[f"X{i}" for i in range(coeff.shape[0])]).T
+        return df
+    else:
+        return coeff, stderr, XVX
