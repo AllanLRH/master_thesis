@@ -211,7 +211,7 @@ def userDf2timebinAdjMat(df, bins, chosenUserLst):
     """
     aggLst = list()
     for itrDf in userDf2weeklyTimebinDf(df, bins):
-        itrG = graph.userDF2nxGraph(itrDf)
+        itrG = graph.userDf2nxGraph(itrDf)
         itrAdj = nx.adj_matrix(itrG, nodelist=chosenUserLst)
         aggLst.append(itrAdj)
     toPcaRaw = np.zeros((len(chosenUserLst)**2, len(aggLst)))
