@@ -370,8 +370,8 @@ def drawWeightedGraph(g, normailzeWeights=True, weightFunc=None, ax=None, layout
     # Dicts with default arguments to the functions nx.draw_networkx_nodes and
     # nx.draw_networkx_edges
     # The dicts are updated with the user supplied arguments kwNode and kwEdge
-    kwargsNode = {'node_color': rgb(39, 139, 176), 'node_size': 50}
-    kwargsEdge = {'edge_color': rgb(186, 199, 207)}
+    kwargsNode = {'node_color': 'rgb(39, 139, 176)', 'node_size': 50}
+    kwargsEdge = {'edge_color': 'rgb(186, 199, 207)'}
     kwargsNodeLabel = {'font_size': 10}
     kwargsEdgeLabel = {'font_size': 10}
     if kwNode is not None:
