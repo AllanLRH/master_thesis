@@ -108,7 +108,7 @@ def barSBS(ax, *args, offset=0.04, extraGroupSpace=None):
     ax.legend()
 
 
-def countsOnBarPlot(ax):
+def countsOnBarPlot(ax, fontsize=None):
     """Attach some text labels
     From: http://matplotlib.org/examples/api/barchart_demo.html
     Don't include the last Rectangle, which is the canvas (or something like that)
@@ -119,7 +119,7 @@ def countsOnBarPlot(ax):
         height = rect.get_height()
         if int(height) != 0:
             ax.text(rect.get_x() + rect.get_width()/2., height + offset,
-                    '%d' % int(height), ha='center', va='bottom')
+                    '%d' % int(height), ha='center', va='bottom', fontsize=fontsize)
 
 
 def plotNeatoGraph(g, plot_settings=None, labels=None, node_size=70, fig_ax=None):
