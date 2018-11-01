@@ -673,7 +673,7 @@ def updateWeight(g, u, v, weight, attribute='weight'):
 
 
 def nxDiGraph2Graph(g, attribute='weight', agg=lambda x: sum(x)/len(x)):
-    """Given a nx.DiGraph, convert it to a nx.Graph where the edge-weights are combined (added) together.
+    """Given a nx.DiGraph, convert it to a nx.Graph where the edge-weights are combined (averaged) together.
     Can be used for other attributes as well.
 
     Parameters
