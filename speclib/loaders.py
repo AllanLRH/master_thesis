@@ -196,7 +196,10 @@ def loadUserPhonenumberDict(useralias=None, filepath="/lscr_paper/allan/phonenum
     with open(filepath, "rb") as fid:
         data = pickle.load(fid)
         if useralias is not None:
-            return {k: useralias[v] for (k, v) in data.items()}
+            try:
+                return {k: useralias[v] for (k, v) in data.items()}
+            except KeyError:
+                return {useralias[v]: k for (k, v) in data.items()}
         return data
 
 
