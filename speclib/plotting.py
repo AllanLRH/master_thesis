@@ -715,9 +715,12 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
 
     """
     if isinstance(g, (nx.Graph, nx.DiGraph)):
-        g = graph.networkx2igraph(g)
+        if nodeLabels is True:
+            g = graph.networkx2igraph(g, labels=list(g.nodes))
+        else:
+            g = graph.networkx2igraph(g)
     kwargs.setdefault("vertex_size", 25)
-    kwargs.setdefault("vertex_color", 'rgb(126, 172, 194)')
+    kwargs.setdefault("vertex_color", 'rgb(127, 201, 127)')
     kwargs.setdefault('vertex_label_color', 'rgb(0, 11, 79)')
     kwargs.setdefault('edge_color', 'rgb(0.2, 0.2, 0.2, 0.35)')
 
