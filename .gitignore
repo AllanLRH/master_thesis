@@ -90,3 +90,5 @@ userMovement/randomforrest_output_rough_cv_search.txt
 /joblib_cache/
 userMovement/rankplotting.ipynb
 userMovement/graphviz_files/
+joachim_exercise/figs
+userPCA/figs/
