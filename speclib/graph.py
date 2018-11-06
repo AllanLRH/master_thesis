@@ -375,11 +375,11 @@ def userDf2nxGraph(df, userIndexColumn='user', associatedUserColumn='contactedUs
         activity = df.loc[usr][associatedUserColumn].value_counts().to_dict()
         # Loop over events in activity-dict:
         for rec, weight in activity.items():
-            # Add node if it's not allreaddy there, using the number of events as weight
+            # Add edge if it's not allreaddy there, using the number of events as weight
             if not g.has_edge(usr, rec):
                 g.add_edge(usr, rec, weight=weight)
             else:
-                # If the node exists (possible for undirected graphs), just add to the weight
+                # If the edge exists (possible for undirected graphs), just add to the weight
                 g[usr][rec]['weight'] += weight
 
     # Remove degree zero nodes?
