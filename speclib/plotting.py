@@ -547,7 +547,7 @@ class PcaPlotter(object):
         firstN *= self.n
         self.graphLst = list()
         for i in range(self.n):
-            if self.pca.symmetric:
+            if self.pca.symmetric_:
                 adjmat = graph.upperTril2adjMat(firstN[:, i])
             else:
                 adjmat = graph.vec2squareMat(firstN[:, i])
@@ -612,8 +612,8 @@ class PcaPlotter(object):
         """
         fig, axi = plt.subplots(2, 1)
         for ax, n, lbl in zip(axi, [1, smooth], ['', ' (smoothed)']):
-            ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_mean, 'same'), label='norm_mean' + lbl, color='#20a365')
-            ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_std, 'same'), label='norm_std' + lbl, color='#ea8a3f')
+            ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_mean_, 'same'), label='norm_mean_' + lbl, color='#20a365')
+            ax.plot(np.convolve(np.ones(n)/n, self.pca.norm_std_, 'same'), label='norm_std_' + lbl, color='#ea8a3f')
             ax.legend(loc='best')
         return (fig, axi)
 

@@ -216,8 +216,8 @@ def pcaFit(toPca, performStandardization=True, **kwargs):
         mean, std = np.NaN, np.NaN
     pca = decomposition.PCA(**kwargs)
     pca.fit(toPca)
-    pca.norm_std = std
-    pca.norm_mean = mean
+    pca.norm_std_ = std
+    pca.norm_mean_ = mean
     return pca
 
 
