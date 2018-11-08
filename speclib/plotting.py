@@ -698,7 +698,7 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
     -----------------------
     autocurve:
         Whether to determine the curvature of the edges automatically in graphs with
-        multiple edges. The default is True for graphs with less than 10.000 edges and
+        multiple edges. The default is True for graphs with less than 10.000 edges around
         False otherwise.
     bbox:
         The bounding box of the plot. This must be a tuple containing the desired width
@@ -726,10 +726,12 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
 
     if isinstance(layout, str):
         layout = g.layout(layout)
+    if isinstance(nodeLabels, list):
+        kwargs.setdefault('vertex_label', nodeLabels)
     if nodeLabels is True:
-        kwargs.setdefault('nodeLabels', g.vs['label'])
+        kwargs.setdefault('vertex_label', g.vs['label'])
     if nodeLabels is False:
-        kwargs.setdefault('nodeLabels', [])
+        kwargs.setdefault('vertex_label', [])
     if weightFunc is None:
         weightFunc = lambda g: [1 + 4*wt/max(g.es['weight']) for wt in g.es['weight']]
     kwargs.setdefault("edge_width", weightFunc(g))
