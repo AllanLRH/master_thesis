@@ -186,7 +186,7 @@ def standardizeData(data, getStdMean=False):
     mean = data.mean(axis=0)
     std = data.std(axis=0)
     # set values of where there's no data to 1.0, since we're dividing with the std
-    std[mean == 0] = 1.0
+    std[std == 0] = 1.0
     normData = (data - mean)/std
     if getStdMean:
         return (normData, std, mean)
