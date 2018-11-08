@@ -32,7 +32,7 @@ jn = pushbulletNotifier.JobNotification(devices='phone')
 
 try:
 
-    df = pd.io.pytables.read_hdf('phone_df.h5', 'df')
+    df = pd.io.pytables.read_hdf('../../allan_data/phone_df.h5', 'df')
     with open('useralias.pk', 'br') as fid:
         ua = pickle.load(fid)
     phonebook = loaders.loadUserPhonenumberDict(ua)
@@ -136,7 +136,7 @@ try:
     #     with open(savename, 'bw') as fid:
     #         pickle.dump(res, fid, protocol=3)
 
-    savename = 'pca_result_community.pickle'
+    savename = 'pca_result_community_2.pickle'
     communityLst = [row.dropna().tolist() for (i, row) in communityDf.iterrows()]
     with Pool(16) as pool:
         call = pool.map_async(handle_community2pca, communityLst)

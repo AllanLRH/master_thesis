@@ -377,13 +377,12 @@ def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph,
         and the values are the corresponding pca objects.
     """
     communityPcaDct = dict()  # Dict containing community: pca-object (return value)
-    uniqueBins = userDf[binColumn].unique()
     # Exclude column with clique size (optionally included in input)
     for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
         # list of usernames in community
         community = community.dropna().tolist()
         # Make the raw data for the PCA algorithm
-        toPcaRaw = prepareCommunityRawData(userDf, community, uniqueBins, binColumn,
+        toPcaRaw = prepareCommunityRawData(userDf, community, binColumn,
                                            graphtype, excludeDiagonal)
         # Tha PCA input data is now build, so we do the PCA analysis
         pca = misc.pcaFit(toPcaRaw, performStandardization=True)
@@ -423,8 +422,7 @@ def community2Pca(userDf, community, binColumn, graphtype=nx.DiGraph,
         monkey-patched variables mean and std, if performStandardization is True.
 
     """
-    uniqueBins = userDf[binColumn].unique()
-    toPcaRaw = prepareCommunityRawData(userDf, community, uniqueBins, binColumn,
+    toPcaRaw = prepareCommunityRawData(userDf, community, binColumn,
                                        graphtype, excludeDiagonal)
     # Tha PCA input data is now build, so we do the PCA analysis
     if fitFunctionKwargs is None:
