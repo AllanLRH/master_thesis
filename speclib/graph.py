@@ -63,7 +63,7 @@ def nx2ig(nxg, weights=True):
     return igg
 
 
-def networkx2igraph(nxGraph, labels=False):
+def networkx2igraph(nxGraph, labels=False, allowNegativeWeights=False):
     """Convert a Networkx graph to an Igraph graph.
 
     Parameters
@@ -73,6 +73,8 @@ def networkx2igraph(nxGraph, labels=False):
     labels : bool or list-like, optional
         The labels of the graph. False will omit labels alltogether, while True will make the labels
         1, 2, 3, ... N. It can also be a list specifying the labels.
+    allowNegativeWeights : bool, optional
+        Allow negative weights for the adjacency matrix, default False.
 
     Returns
     -------
@@ -86,18 +88,18 @@ def networkx2igraph(nxGraph, labels=False):
         if not isinstance(labels, list):
             labels = list(nxGraph.nodes())
         if isinstance(nxGraph, nx.DiGraph):
-            igGraph = adjmat2igraph(nxAdj, directed=True, labels=labels)
+            igGraph = adjmat2igraph(nxAdj, directed=True, labels=labels, allowNegativeWeights=allowNegativeWeights)
         else:
-            igGraph = adjmat2igraph(nxAdj, directed=False, labels=labels)
+            igGraph = adjmat2igraph(nxAdj, directed=False, labels=labels, allowNegativeWeights=allowNegativeWeights)
     elif labels is False:
         if isinstance(nxGraph, nx.DiGraph):
-            igGraph = adjmat2igraph(nxAdj, directed=True)
+            igGraph = adjmat2igraph(nxAdj, directed=True, allowNegativeWeights=allowNegativeWeights)
         else:
-            igGraph = adjmat2igraph(nxAdj, directed=False)
+            igGraph = adjmat2igraph(nxAdj, directed=False, allowNegativeWeights=allowNegativeWeights)
     return igGraph
 
 
-def adjmat2igraph(m, directed=True, labels=None):
+def adjmat2igraph(m, directed=True, labels=None, allowNegativeWeights=False):
     """Convert an numpy adjacency matrix into an weighted igraph graph.
 
     Parameters
@@ -108,6 +110,8 @@ def adjmat2igraph(m, directed=True, labels=None):
         Construct a directed graph, default True.
     labels : bool or list, optional
         List of labels to use. Default (None) is strings from 0 to "number of nodes". False omits labels.
+    allowNegativeWeights : bool, optional
+        Allow negative weights for the adjacency matrix, default False.
 
     Returns
     -------
@@ -119,13 +123,13 @@ def adjmat2igraph(m, directed=True, labels=None):
     ValueError
         If the input isn't a 2d-matrix
         If the adjacency matrix isn't square
-        If there's elements < 0 in the adjacency matrix
+        If there's elements < 0 in the adjacency matrix, and negative weights aren't allowed
     """
     if m.ndim != 2:
         raise ValueError(f"Input must be a matrix, but m.ndim = {m.ndim}.")
     if m.shape[0] != m.shape[1]:
         raise ValueError(f"Input must be a square matrix, but m.shape = {m.shape}.")
-    if np.any(m < 0):
+    if np.any(m < 0) and not allowNegativeWeights:
         raise ValueError(f"all entries in the adjacency matrix must be larger than 0 ({(m < 0).sum()} < 0)")
 
     if directed:

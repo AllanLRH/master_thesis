@@ -618,8 +618,8 @@ class PcaPlotter(object):
         return (fig, axi)
 
 
-def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
-           layout='kamada_kawai', weightFunc=None, **kwargs):
+def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False, layout='kamada_kawai', weightFunc=None,
+           allowNegativeWeights=False, signedLinkColors=['rgb(170, 200, 209)', 'rgb(239, 169, 174)'], **kwargs,):
     """Plot a graph using the igraph engine (Cairo). If a networkx-graph is given, it's
     converted to an igraph-graph.
 
@@ -643,6 +643,10 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
         Function to compute the weights, with max weight == 5.
         Default is:
         weightFunc = lambda g: [1 + 4*wt/max(g.es['weight']) for wt in g.es['weight']]
+    allowNegativeWeights : bool, optional
+        Allow negative weights in the adjacency matrix, dafault False.
+    signedLinkColors : list, optional
+        Colormap to use for coloring signed weights in the adjacency matrix.
     **kwargs
         Additional arguments passed to the function, described below:
 
@@ -716,13 +720,18 @@ def igdraw(g, filename=None, bbox=(700, 550), margin=75, nodeLabels=False,
     """
     if isinstance(g, (nx.Graph, nx.DiGraph)):
         if nodeLabels is True:
-            g = graph.networkx2igraph(g, labels=list(g.nodes))
+            g = graph.networkx2igraph(g, labels=list(g.nodes), allowNegativeWeights=allowNegativeWeights)
         else:
-            g = graph.networkx2igraph(g)
+            g = graph.networkx2igraph(g, allowNegativeWeights=allowNegativeWeights)
     kwargs.setdefault("vertex_size", 25)
     kwargs.setdefault("vertex_color", 'rgb(127, 201, 127)')
     kwargs.setdefault('vertex_label_color', 'rgb(0, 11, 79)')
-    kwargs.setdefault('edge_color', 'rgb(0.2, 0.2, 0.2, 0.35)')
+    if allowNegativeWeights:
+        kwargs.setdefault('edge_color', [signedLinkColors[0] if es['weight'] < 0 else signedLinkColors[1] for es in g.es])
+        for es in g.es:  # Now that the sign of the weight is stored, we can discard the sign of the weight
+            es['weight'] = np.abs(es['weight'])
+    else:
+        kwargs.setdefault('edge_color', 'rgb(0.2, 0.2, 0.2, 0.35)')
 
     if isinstance(layout, str):
         layout = g.layout(layout)

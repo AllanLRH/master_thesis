@@ -21,10 +21,19 @@ def color2igraphColor(color):
 
     Returns
     -------
-    TYPE
+    str
         igraph compatible color string.
     """
-    colorStr = 'rgb(' + ', '.join(map(str, [128, 64, 255])) + ')'
+    color = np.array(color)
+    if (color <= 1).all() & (color >= 0).all():
+        color *= 255
+        color = color.astype(int)
+    elif (color >= 0).all() & (color <= 255).all() and np.allclose(color, color.round()):
+        pass  # everything is in order
+    else:
+        raise ValueError("The color code input is not suported, must consists of 3 floats in the range [0, 1]" +
+                          "or 3 integers in the range [0, 255, but consisted of " + str(color) + ".")  # noqa
+    colorStr = 'rgb(' + ', '.join(map(str, color)) + ')'
     return colorStr
 
 
