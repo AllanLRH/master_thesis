@@ -1,0 +1,328 @@
+[CV]  randomforestclassifier__max_depth=18, randomforestclassifier__n_estimators=90, score=0.8524310576426085, total=348.9min
+[Parallel(n_jobs=12)]: Done 185 tasks      | elapsed: 7213.6min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=50, score=0.8515470564734985, total=274.2min
+[Parallel(n_jobs=12)]: Done 186 tasks      | elapsed: 7368.4min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=50, score=0.853394253725869, total=276.8min
+[Parallel(n_jobs=12)]: Done 187 tasks      | elapsed: 7397.2min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=50, score=0.85293140546217, total=275.2min
+[Parallel(n_jobs=12)]: Done 188 tasks      | elapsed: 7400.0min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=50, score=0.8522403356383697, total=302.1min
+[Parallel(n_jobs=12)]: Done 189 tasks      | elapsed: 7403.7min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=60, score=0.8517057323627995, total=292.4min
+[Parallel(n_jobs=12)]: Done 190 tasks      | elapsed: 7435.0min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=50, score=0.8516620199846866, total=301.9min
+[Parallel(n_jobs=12)]: Done 191 tasks      | elapsed: 7442.8min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=60, score=0.8539714802780356, total=283.9min
+[Parallel(n_jobs=12)]: Done 192 tasks      | elapsed: 7449.3min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=60, score=0.8523013896053849, total=310.4min
+[Parallel(n_jobs=12)]: Done 193 tasks      | elapsed: 7474.6min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=60, score=0.853159909666622, total=308.8min
+[Parallel(n_jobs=12)]: Done 194 tasks      | elapsed: 7480.4min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=60, score=0.8509271813641869, total=287.0min
+[Parallel(n_jobs=12)]: Done 195 tasks      | elapsed: 7494.4min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8518457500339162, total=318.3min
+[Parallel(n_jobs=12)]: Done 196 tasks      | elapsed: 7529.8min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8524644065791708, total=318.9min
+[Parallel(n_jobs=12)]: Done 197 tasks      | elapsed: 7533.5min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8537139056679595, total=290.4min
+[Parallel(n_jobs=12)]: Done 198 tasks      | elapsed: 7659.8min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8511871574281753, total=290.8min
+[Parallel(n_jobs=12)]: Done 199 tasks      | elapsed: 7691.8min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8521294254419899, total=297.4min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8519052982432942, total=296.2min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8517666701633457, total=327.7min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8531581129588066, total=294.0min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8538186829077395, total=326.8min
+[Parallel(n_jobs=12)]: Done 204 out of 210 | elapsed: 7770.8min remaining: 228.6min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8524197711963286, total=299.2min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8517257235696771, total=319.8min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8513299631859652, total=330.4min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8538368414220026, total=322.5min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8531327320103796, total=319.1min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8508347216280803, total=251.4min
+[Parallel(n_jobs=12)]: Done 210 out of 210 | elapsed: 7912.4min finished
+AUC: 0.8571870396962187
+Fitting 5 folds for each of 42 candidates, totalling 210 fits
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8528235547374298, total=7337.8min
+[Parallel(n_jobs=12)]: Done   1 tasks      | elapsed: 7338.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8536254290825773, total=7339.4min
+[Parallel(n_jobs=12)]: Done   2 tasks      | elapsed: 7340.2min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8553048886274248, total=7366.2min
+[Parallel(n_jobs=12)]: Done   3 tasks      | elapsed: 7366.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8556744100656339, total=7453.9min
+[Parallel(n_jobs=12)]: Done   4 tasks      | elapsed: 7454.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8555060320623546, total=7487.2min
+[Parallel(n_jobs=12)]: Done   5 tasks      | elapsed: 7487.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8536888902776271, total=7672.0min
+[Parallel(n_jobs=12)]: Done   6 tasks      | elapsed: 7673.1min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8535222344618232, total=8877.7min
+[Parallel(n_jobs=12)]: Done   7 tasks      | elapsed: 8878.6min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8557034687086961, total=8890.8min
+[Parallel(n_jobs=12)]: Done   8 tasks      | elapsed: 8891.7min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8530964441825448, total=8921.0min
+[Parallel(n_jobs=12)]: Done   9 tasks      | elapsed: 8921.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8534387937860604, total=8928.8min
+[Parallel(n_jobs=12)]: Done  10 tasks      | elapsed: 8929.4min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8536622075994832, total=8932.9min
+[Parallel(n_jobs=12)]: Done  11 tasks      | elapsed: 8934.1min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.852663805145615, total=9219.7min
+[Parallel(n_jobs=12)]: Done  12 tasks      | elapsed: 9220.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8552466890641992, total=7328.6min
+[Parallel(n_jobs=12)]: Done  13 tasks      | elapsed: 14667.7min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8544323330206327, total=7345.2min
+[Parallel(n_jobs=12)]: Done  14 tasks      | elapsed: 14686.0min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8528716419040406, total=7330.7min
+[Parallel(n_jobs=12)]: Done  15 tasks      | elapsed: 14698.0min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8538948005301503, total=7347.9min
+[Parallel(n_jobs=12)]: Done  16 tasks      | elapsed: 14836.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8534529765807768, total=7383.8min
+[Parallel(n_jobs=12)]: Done  17 tasks      | elapsed: 14839.3min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8551701646296892, total=7453.0min
+[Parallel(n_jobs=12)]: Done  18 tasks      | elapsed: 16388.0min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8550389346824168, total=9106.9min
+[Parallel(n_jobs=12)]: Done  19 tasks      | elapsed: 16780.7min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8540514570990974, total=9095.9min
+[Parallel(n_jobs=12)]: Done  20 tasks      | elapsed: 17975.2min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8538907865600759, total=9074.6min
+[Parallel(n_jobs=12)]: Done  21 tasks      | elapsed: 18004.9min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8535002003244365, total=9109.3min
+[Parallel(n_jobs=12)]: Done  22 tasks      | elapsed: 18031.7min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.852932454426087, total=9385.5min
+[Parallel(n_jobs=12)]: Done  23 tasks      | elapsed: 18278.0min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.854016993677775, total=9061.4min
+[Parallel(n_jobs=12)]: Done  24 tasks      | elapsed: 18283.0min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8537472872598708, total=7251.3min
+[Parallel(n_jobs=12)]: Done  25 tasks      | elapsed: 21919.7min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90, score=0.8545104361656912, total=7260.5min
+[Parallel(n_jobs=12)]: Done  26 tasks      | elapsed: 21959.3min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90, score=0.8537385959122622, total=7319.2min
+[Parallel(n_jobs=12)]: Done  27 tasks      | elapsed: 22006.0min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+^C^C---------------------------------------------------------------------------
+KeyboardInterrupt                         Traceback (most recent call last)
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/site-packages/sklearn/externals/joblib/parallel.py in retrieve(self)
+    698                 if getattr(self._backend, 'supports_timeout', False):
+--> 699                     self._output.extend(job.get(timeout=self.timeout))
+    700                 else:
+
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/multiprocessing/pool.py in get(self, timeout)
+    637     def get(self, timeout=None):
+--> 638         self.wait(timeout)
+    639         if not self.ready():
+
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/multiprocessing/pool.py in wait(self, timeout)
+    634     def wait(self, timeout=None):
+--> 635         self._event.wait(timeout)
+    636
+
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/threading.py in wait(self, timeout)
+    550             if not signaled:
+--> 551                 signaled = self._cond.wait(timeout)
+    552             return signaled
+
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/threading.py in wait(self, timeout)
+    294             if timeout is None:
+--> 295                 waiter.acquire()
+    296                 gotit = True
+
+KeyboardInterrupt:
+
+During handling of the above exception, another exception occurred:
+
+KeyboardInterrupt                         Traceback (most recent call last)
+/lscr_paper/allan/scripts/userMovement/userMovement_cv_oversampled_rf.py in <module>()
+     85         jn.send(message=f"Starding cross validation with resampling method {name}")
+     86         logger.info(f"Starding cross validation with resampling method {name}")
+---> 87         est = model_selection.GridSearchCV(pipe, param_grid, scoring='roc_auc', cv=5, verbose=49, refit=True,
+     88                                            n_jobs=processes, pre_dispatch=processes, return_train_score=True)
+     89         est.fit(x_re, y_re)  # I think this is redundant
+
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/site-packages/sklearn/model_selection/_search.py in fit(self, X, y, groups, **fit_params)
+    637                                   error_score=self.error_score)
+    638           for parameters, (train, test) in product(candidate_params,
+--> 639                                                    cv.split(X, y, groups)))
+    640
+    641         # if one choose to see train score, "out" will contain train score info
+
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/site-packages/sklearn/externals/joblib/parallel.py in __call__(self, iterable)
+    787                 # consumption.
+    788                 self._iterating = False
+--> 789             self.retrieve()
+    790             # Make sure that we get a last message telling us we are done
+    791             elapsed_time = time.time() - self._start_time
+
+/lscr_paper/allan/miniconda3/envs/py36up/lib/python3.6/site-packages/sklearn/externals/joblib/parallel.py in retrieve(self)
+    719                     # scheduling.
+    720                     ensure_ready = self._managed_backend
+--> 721                     backend.abort_everything(ensure_ready=ensure_ready)
+    722
+    723                 if not isinstance(exception, TransportableException):
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8537139056679595, total=290.4min
+[Parallel(n_jobs=12)]: Done 198 tasks      | elapsed: 7659.8min
+[CV] randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8511871574281753, total=290.8min
+[Parallel(n_jobs=12)]: Done 199 tasks      | elapsed: 7691.8min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=70, score=0.8521294254419899, total=297.4min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8519052982432942, total=296.2min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8517666701633457, total=327.7min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8531581129588066, total=294.0min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8538186829077395, total=326.8min
+[Parallel(n_jobs=12)]: Done 204 out of 210 | elapsed: 7770.8min remaining: 228.6min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8524197711963286, total=299.2min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=80, score=0.8517257235696771, total=319.8min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8513299631859652, total=330.4min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8538368414220026, total=322.5min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8531327320103796, total=319.1min
+[CV]  randomforestclassifier__max_depth=19, randomforestclassifier__n_estimators=90, score=0.8508347216280803, total=251.4min
+[Parallel(n_jobs=12)]: Done 210 out of 210 | elapsed: 7912.4min finished
+AUC: 0.8571870396962187
+Fitting 5 folds for each of 42 candidates, totalling 210 fits
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[
+[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A
+^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A^[[A[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8528235547374
+298, total=7337.8min
+[Parallel(n_jobs=12)]: Done   1 tasks      | elapsed: 7338.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8536254290825773, total=7339.4min
+[Parallel(n_jobs=12)]: Done   2 tasks      | elapsed: 7340.2min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8553048886274248, total=7366.2min
+[Parallel(n_jobs=12)]: Done   3 tasks      | elapsed: 7366.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8556744100656339, total=7453.9min
+[Parallel(n_jobs=12)]: Done   4 tasks      | elapsed: 7454.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8555060320623546, total=7487.2min
+[Parallel(n_jobs=12)]: Done   5 tasks      | elapsed: 7487.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8536888902776271, total=7672.0min
+[Parallel(n_jobs=12)]: Done   6 tasks      | elapsed: 7673.1min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8535222344618232, total=8877.7min
+[Parallel(n_jobs=12)]: Done   7 tasks      | elapsed: 8878.6min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.8557034687086961, total=8890.8min
+[Parallel(n_jobs=12)]: Done   8 tasks      | elapsed: 8891.7min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8530964441825448, total=8921.0min
+[Parallel(n_jobs=12)]: Done   9 tasks      | elapsed: 8921.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=40, score=0.8534387937860604, total=8928.8min
+[Parallel(n_jobs=12)]: Done  10 tasks      | elapsed: 8929.4min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8536622075994832, total=8932.9min
+[Parallel(n_jobs=12)]: Done  11 tasks      | elapsed: 8934.1min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=50, score=0.852663805145615, total=9219.7min
+[Parallel(n_jobs=12)]: Done  12 tasks      | elapsed: 9220.8min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8552466890641992, total=7328.6min
+[Parallel(n_jobs=12)]: Done  13 tasks      | elapsed: 14667.7min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8544323330206327, total=7345.2min
+[Parallel(n_jobs=12)]: Done  14 tasks      | elapsed: 14686.0min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=60, score=0.8528716419040406, total=7330.7min
+[Parallel(n_jobs=12)]: Done  15 tasks      | elapsed: 14698.0min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8538948005301503, total=7347.9min
+[Parallel(n_jobs=12)]: Done  16 tasks      | elapsed: 14836.5min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8534529765807768, total=7383.8min
+[Parallel(n_jobs=12)]: Done  17 tasks      | elapsed: 14839.3min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8551701646296892, total=7453.0min
+[Parallel(n_jobs=12)]: Done  18 tasks      | elapsed: 16388.0min
+[CV] randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8550389346824168, total=9106.9min
+[Parallel(n_jobs=12)]: Done  19 tasks      | elapsed: 16780.7min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.8540514570990974, total=9095.9min
+[Parallel(n_jobs=12)]: Done  20 tasks      | elapsed: 17975.2min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8538907865600759, total=9074.6min
+[Parallel(n_jobs=12)]: Done  21 tasks      | elapsed: 18004.9min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8535002003244365, total=9109.3min
+[Parallel(n_jobs=12)]: Done  22 tasks      | elapsed: 18031.7min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=70, score=0.852932454426087, total=9385.5min
+[Parallel(n_jobs=12)]: Done  23 tasks      | elapsed: 18278.0min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=40
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.854016993677775, total=9061.4min
+[Parallel(n_jobs=12)]: Done  24 tasks      | elapsed: 18283.0min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=80, score=0.8537472872598708, total=7251.3min
+[Parallel(n_jobs=12)]: Done  25 tasks      | elapsed: 21919.7min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90, score=0.8545104361656912, total=7260.5min
+[Parallel(n_jobs=12)]: Done  26 tasks      | elapsed: 21959.3min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
+[CV]  randomforestclassifier__max_depth=13, randomforestclassifier__n_estimators=90, score=0.8537385959122622, total=7319.2min
+[Parallel(n_jobs=12)]: Done  27 tasks      | elapsed: 22006.0min
+[CV] randomforestclassifier__max_depth=14, randomforestclassifier__n_estimators=50
