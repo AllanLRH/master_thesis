@@ -357,7 +357,7 @@ def prepareCommunityRawData(userDf, communityLst, binColumn,
 
 
 def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph,
-                    excludeDiagonal=False):
+                    excludeDiagonal=False, fitFunctionKwargs=None):
     """Given a Dataframe with communities, return the fitted PCA class instance for all
     in a dict, where the keys is a tuple with the community members.
 
@@ -380,6 +380,8 @@ def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph,
         Dictionary where the keys is the tuple with the usernames in the community,
         and the values are the corresponding pca objects.
     """
+    if fitFunctionKwargs is None:
+        fitFunctionKwargs = dict()
     communityPcaDct = dict()  # Dict containing community: pca-object (return value)
     # Exclude column with clique size (optionally included in input)
     for _, community in communityDf.select_dtypes(exclude=['int']).iterrows():
@@ -389,7 +391,7 @@ def communityDf2Pca(userDf, communityDf, binColumn, graphtype=nx.Graph,
         toPcaRaw = prepareCommunityRawData(userDf, community, binColumn,
                                            graphtype, excludeDiagonal)
         # Tha PCA input data is now build, so we do the PCA analysis
-        pca = misc.pcaFit(toPcaRaw, performStandardization=True)
+        pca = misc.pcaFit(toPcaRaw, **fitFunctionKwargs)
         pca.symmetric = True if graphtype is nx.Graph else False
         pca.community = tuple(community)
         communityPcaDct[tuple(community)] = pca
