@@ -293,8 +293,9 @@ def lr_uncertainty(X, lr, as_dataframe=True):
     assert isinstance(X, np.ndarray), f"X must be of type np.ndarray, but was {type(X)}."
     assert (isinstance(lr, linear_model.LogisticRegression) or isinstance(lr, linear_model.LogisticRegressionCV)), \
         f"lr must be a Scikit-Learn LogisticRegression or LogisticRegressionCV, but was {type(lr)}."
+    X_original = X.copy()
     X = np.hstack((np.ones((X.shape[0], 1)), X))  # prepend a column of ones (design matrix)
-    V = np.diagflat((np.product(lr.predict_proba(X), axis=1)))
+    V = np.diagflat((np.product(lr.predict_proba(X_original), axis=1)))
     XVX = np.linalg.inv(X.T @ V @ X)  # covariance matrix
     coeff = np.concatenate([np.array(lr.intercept_), lr.coef_.flatten()])
     stderr = np.sqrt(np.diag(XVX))
