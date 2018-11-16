@@ -1,36 +1,41 @@
-import sys  # noqa
-import os  # noqa
+import sys
+import os
 sys.path.append(os.path.abspath(".."))
-from speclib import misc  # noqa
-from speclib import loaders  # noqa
+from speclib import pushbulletNotifier
 
-import numpy as np  # noqa
-import pandas as pd  # noqa
+import numpy as np
+import pandas as pd
 pd.set_option('display.width', 1200)  # for interactive use
-import pickle  # noqa
+import pickle
 
-from sklearn import svm  # noqa
-from sklearn import metrics  # noqa
-from sklearn import decomposition  # noqa
-from sklearn import model_selection  # noqa
-from sklearn import preprocessing  # noqa
-from sklearn import pipeline  # noqa
-from imblearn import over_sampling  # noqa
-from imblearn import pipeline as imb_pipeline  # noqa
-from imblearn import metrics as imb_metrics  # noqa
+from sklearn import svm
+from sklearn import metrics
+from sklearn import model_selection
+from sklearn import preprocessing
+from sklearn import pipeline
+
+# from imblearn import over_sampling
+# from imblearn import pipeline as imb_pipeline
+# from imblearn import metrics as imb_metrics
 
 # import warnings  # noqa
 # warnings.simplefilter("ignore", category=DeprecationWarning)
 # warnings.simplefilter("ignore", category=mpl.cbook.mplDeprecation)
 # warnings.simplefilter("ignore", category=UserWarning)
-from time import time
+
+
+# ****************************************************************************
+# *                      Instantiate Pushbullet notifier                     *
+# ****************************************************************************
+
+pbn = pushbulletNotifier.JobNotification()
 
 
 # ****************************************************************************
 # *                       Settings for cross validation                      *
 # ****************************************************************************
 
-k_folds = 3
+k_folds = 7
 n_jobs = 40
 
 cv_args = dict(scoring = 'roc_auc',        # noqa
@@ -63,46 +68,63 @@ stsc = preprocessing.StandardScaler()
 # *                                Linear SVC                                *
 # ****************************************************************************
 
-svc_lin  = svm.SVC(kernel='linear', **svc_kwargs)
-pipe_lin = pipeline.Pipeline([('stsc', stsc), ('svc', svc_lin)])
+try:
+    svc_lin  = svm.SVC(kernel='linear', **svc_kwargs)
+    pipe_lin = pipeline.Pipeline([('stsc', stsc), ('svc', svc_lin)])
 
-param_grid_lin = dict()
-param_grid_lin.update(svc_param_space_shared)
+    param_grid_lin = dict()
+    param_grid_lin.update(svc_param_space_shared)
 
-est_lin      = model_selection.GridSearchCV(pipe_lin, param_grid_lin, **cv_args)
-est_lin.fit(X_tr, y_tr)
-_, prob1_lin = est_lin.best_estimator_.predict_proba(X_va).T
-AUC_lin      = metrics.roc_auc_score(y_va, prob1_lin)
-
-
-# ****************************************************************************
-# *                              Polynomial SVC                              *
-# ****************************************************************************
-
-svc_poly  = svm.SVC(probability=True, kernel='poly')
-pipe_poly = pipeline.Pipeline([('stsc', stsc), ('svc', svc_poly)])
-
-param_grid_poly = {'svc__degree': [2, 3, 4, 5]}
-param_grid_poly.update(svc_param_space_shared)
-
-est_poly      = model_selection.GridSearchCV(pipe_poly, param_grid_poly, **cv_args)
-est_poly.fit(X_tr, y_tr)
-_, prob1_poly = est_poly.best_estimator_.predict_proba(X_va).T
-AUC_poly      = metrics.roc_auc_score(y_va, prob1_poly)
+    est_lin      = model_selection.GridSearchCV(pipe_lin, param_grid_lin, **cv_args)
+    est_lin.fit(X_tr, y_tr)
+    _, prob1_lin = est_lin.best_estimator_.predict_proba(X_va).T
+    AUC_lin      = metrics.roc_auc_score(y_va, prob1_lin)
+except Exception as err:
+    pbn.send(exception=err)
+finally:
+    msg = f"Completed cross validation with linear kernel, best AUC was {AUC_lin:.4f}"
+    pbn.send(message=msg)
 
 
 # ****************************************************************************
 # *                              Polynomial SVC                              *
 # ****************************************************************************
 
-svc_rbf  = svm.SVC(probability=True, kernel='poly')
-pipe_rbf = pipeline.Pipeline([('stsc', stsc), ('svc', svc_rbf)])
+try:
+    svc_poly  = svm.SVC(probability=True, kernel='poly')
+    pipe_poly = pipeline.Pipeline([('stsc', stsc), ('svc', svc_poly)])
 
-param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 2, 13)}
-param_grid_rbf.update(svc_param_space_shared)
+    param_grid_poly = {'svc__degree': [2, 3, 4, 5]}
+    param_grid_poly.update(svc_param_space_shared)
 
-est_rbf      = model_selection.GridSearchCV(pipe_rbf, param_grid_rbf, **cv_args)
-est_rbf.fit(X_tr, y_tr)
-_, prob1_rbf = est_rbf.best_estimator_.predict_proba(X_va).T
-AUC_rbf      = metrics.roc_auc_score(y_va, prob1_rbf)
+    est_poly      = model_selection.GridSearchCV(pipe_poly, param_grid_poly, **cv_args)
+    est_poly.fit(X_tr, y_tr)
+    _, prob1_poly = est_poly.best_estimator_.predict_proba(X_va).T
+    AUC_poly      = metrics.roc_auc_score(y_va, prob1_poly)
+except Exception as err:
+    pbn.send(exception=err)
+finally:
+    msg = f"Completed cross validation with polynomial kernel, best AUC was {AUC_poly:.4f}"
+    pbn.send(message=msg)
 
+
+# ****************************************************************************
+# *                              Polynomial SVC                              *
+# ****************************************************************************
+
+try:
+    svc_rbf  = svm.SVC(probability=True, kernel='poly')
+    pipe_rbf = pipeline.Pipeline([('stsc', stsc), ('svc', svc_rbf)])
+
+    param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 2, 13)}
+    param_grid_rbf.update(svc_param_space_shared)
+
+    est_rbf      = model_selection.GridSearchCV(pipe_rbf, param_grid_rbf, **cv_args)
+    est_rbf.fit(X_tr, y_tr)
+    _, prob1_rbf = est_rbf.best_estimator_.predict_proba(X_va).T
+    AUC_rbf      = metrics.roc_auc_score(y_va, prob1_rbf)
+except Exception as err:
+    pbn.send(exception=err)
+finally:
+    msg = f"Completed cross validation with RBF kernel, best AUC was {AUC_rbf:.4f}"
+    pbn.send(message=msg)
