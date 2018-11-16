@@ -47,7 +47,7 @@ cv_args = dict(scoring = 'roc_auc',        # noqa
                return_train_score = True)  # noqa
 
 svc_kwargs = dict(probability = True,          # noqa
-                  class_weights = 'balanced')  # noqa
+                  class_weight = 'balanced')  # noqa
 
 svc_param_space_shared = {'svc__C': 2.0**np.linspace(-10, 10, 11)}
 
@@ -79,6 +79,14 @@ try:
     est_lin.fit(X_tr, y_tr)
     _, prob1_lin = est_lin.best_estimator_.predict_proba(X_va).T
     AUC_lin      = metrics.roc_auc_score(y_va, prob1_lin)
+
+    est_lin.best_auc_  = AUC_lin
+    est_lin.X_tr       = X_tr
+    est_lin.y_tr       = y_tr
+    est_lin.X_va       = X_va
+    est_lin.y_va       = y_va
+    with open("gender_prediction_svm_lin_kernel_auc_score.pkl", "wb") as fid:
+        pickle.dump(est_lin, fid)
 except Exception as err:
     pbn.send(exception=err)
 finally:
@@ -101,6 +109,14 @@ try:
     est_poly.fit(X_tr, y_tr)
     _, prob1_poly = est_poly.best_estimator_.predict_proba(X_va).T
     AUC_poly      = metrics.roc_auc_score(y_va, prob1_poly)
+
+    est_poly.best_auc_ = AUC_poly
+    est_poly.X_tr      = X_tr
+    est_poly.y_tr      = y_tr
+    est_poly.X_va      = X_va
+    est_poly.y_va      = y_va
+    with open("gender_prediction_svm_poly_kernel_auc_score.pkl", "wb") as fid:
+        pickle.dump(est_poly, fid)
 except Exception as err:
     pbn.send(exception=err)
 finally:
@@ -123,6 +139,14 @@ try:
     est_rbf.fit(X_tr, y_tr)
     _, prob1_rbf = est_rbf.best_estimator_.predict_proba(X_va).T
     AUC_rbf      = metrics.roc_auc_score(y_va, prob1_rbf)
+
+    est_rbf.best_auc_  = AUC_rbf
+    est_rbf.X_tr       = X_tr
+    est_rbf.y_tr       = y_tr
+    est_rbf.X_va       = X_va
+    est_rbf.y_va       = y_va
+    with open("gender_prediction_svm_rbf_kernel_auc_score.pkl", "wb") as fid:
+        pickle.dump(est_rbf, fid)
 except Exception as err:
     pbn.send(exception=err)
 finally:
