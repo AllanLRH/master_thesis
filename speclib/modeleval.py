@@ -209,11 +209,11 @@ def fitAndEvalueateModel(X, y, model, tuned_parameters, score, n_splits=5, test_
          DataFrame from cross validation evaluation of model performance)
     """
     perf_df = gridsearchCrossVal(X, y, model, tuned_parameters, score)
-    best_params = dict(perf_df.loc[perf_df.accuracy.values.argmax(), 'best_params'])
+    best_params = dict(perf_df.loc[perf_df[score].values.argmax(), 'best_params'])
     subsearch_params = constructSubsearchTunedParameters(best_params, tuned_parameters,
                                                          n_gridpoints=n_gridpoints)
     perf_df_sub = gridsearchCrossVal(X, y, model, subsearch_params, score)
-    best_params_sub = dict(perf_df.loc[perf_df.accuracy.values.argmax(), 'best_params'])
+    best_params_sub = dict(perf_df.loc[perf_df[score].values.argmax(), 'best_params'])
     perf_eval_df = stratifiedCrossEval(X, y, model.set_params(**best_params_sub),
                                        n_splits=n_splits, test_size=test_size)
     return (perf_df, perf_df_sub, perf_eval_df)
