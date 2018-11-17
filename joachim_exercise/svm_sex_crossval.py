@@ -118,7 +118,7 @@ try:
     AUC_poly_full = metrics.roc_auc_score(y, prob1_poly_full)
 
     est_poly.best_auc_      = AUC_poly
-    est_poly.best_aucfull__ = AUC_poly_full
+    est_poly.best_auc_full_ = AUC_poly_full
     est_poly.X_tr_          = X_tr
     est_poly.y_tr_          = y_tr
     est_poly.X_va_          = X_va
