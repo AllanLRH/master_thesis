@@ -66,6 +66,7 @@ X_tr, X_va, y_tr, y_va = model_selection.train_test_split(X, y, test_size=0.2, s
 
 stsc_pca = preprocessing.StandardScaler(with_std=False)
 stsc_svc = preprocessing.StandardScaler()
+pca      = decomposition.PCA()
 
 
 # ****************************************************************************
@@ -73,9 +74,14 @@ stsc_svc = preprocessing.StandardScaler()
 # ****************************************************************************
 
 try:
+    print("\n\n\n\t\t\t\tProcessing lin\n\n")
     svc_lin  = svm.SVC(kernel='linear', **svc_kwargs)
-    pca_lin  = decomposition.PCA()
-    pipe_lin = pipeline.Pipeline([('stsc_pca', stsc_pca), ('pca_lin', pca_lin), ('stsc_svc', stsc_svc), ('svc', svc_lin)])
+    pipe_lin = pipeline.Pipeline([
+        ('stsc_pca', stsc_pca),
+        ('pca', pca),
+        ('stsc_svc', stsc_svc),
+        ('svc', svc_lin)
+    ])
 
     param_grid_lin = dict()
     param_grid_lin.update(svc_param_space_shared)
@@ -108,9 +114,14 @@ finally:
 # ****************************************************************************
 
 try:
+    print("\n\n\n\t\t\t\tProcessing poly\n\n")
     svc_poly  = svm.SVC(kernel='poly')
-    pca_poly  = decomposition.PCA()
-    pipe_poly = pipeline.Pipeline([('stsc_pca', stsc_pca), ('pca_poly', pca_poly), ('stsc_svc', stsc_svc), ('svc', svc_poly)])
+    pipe_poly = pipeline.Pipeline([
+        ('stsc_pca', stsc_pca),
+        ('pca', pca),
+        ('stsc_svc', stsc_svc),
+        ('svc', svc_poly)
+    ])
 
     param_grid_poly = {'svc__degree': [2, 3, 4, 5]}
     param_grid_poly.update(svc_param_space_shared)
@@ -143,9 +154,14 @@ finally:
 # ****************************************************************************
 
 try:
+    print("\n\n\n\t\t\t\tProcessing rbf\n\n")
     svc_rbf  = svm.SVC(kernel='poly')
-    pca_rbf  = decomposition.PCA()
-    pipe_rbf = pipeline.Pipeline([('stsc_pca', stsc_pca), ('pca_rbf', pca_rbf), ('stsc_svc', stsc_svc), ('svc', svc_rbf)])
+    pipe_rbf = pipeline.Pipeline([
+        ('stsc_pca', stsc_pca),
+        ('pca', pca),
+        ('stsc_svc', stsc_svc),
+        ('svc', svc_rbf)
+    ])
 
     param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 2, 13)}
     param_grid_rbf.update(svc_param_space_shared)
