@@ -115,7 +115,7 @@ finally:
 
 try:
     print("\n\n\n\t\t\t\tProcessing poly\n\n")
-    svc_poly  = svm.SVC(kernel='poly')
+    svc_poly  = svm.SVC(kernel='poly', **svc_kwargs)
     pipe_poly = pipeline.Pipeline([
         ('stsc_pca', stsc_pca),
         ('pca', pca),
@@ -155,7 +155,7 @@ finally:
 
 try:
     print("\n\n\n\t\t\t\tProcessing rbf\n\n")
-    svc_rbf  = svm.SVC(kernel='poly')
+    svc_rbf  = svm.SVC(kernel='poly', **svc_kwargs)
     pipe_rbf = pipeline.Pipeline([
         ('stsc_pca', stsc_pca),
         ('pca', pca),
