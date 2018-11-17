@@ -51,7 +51,7 @@ svc_kwargs = dict(probability = True)  # noqa
 
 svc_param_space_shared = {'svc__C': 2.0**np.linspace(-12, 10, 23),
                           'svc__class_weight': ['balanced', None],
-                          'pca__n_components': np.array([3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 20, 24, 38, 44])
+                          'pca__n_components': np.array([3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 20, 24, 38, 43])
                           }
 
 # ****************************************************************************
