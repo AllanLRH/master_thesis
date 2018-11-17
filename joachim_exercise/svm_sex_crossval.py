@@ -79,9 +79,9 @@ try:
     est_lin.fit(X_tr, y_tr)
     _, prob1_lin       = est_lin.best_estimator_.predict_proba(X_va).T
     _, prob1_lin_full  = est_lin.best_estimator_.predict_proba(X).T
-    AUC_lin            = metrics.roc_auc_score(y_va, prob1_lin_full)
+    AUC_lin            = metrics.roc_auc_score(y_va, prob1_lin)
 
-    AUC_lin_full  = metrics.roc_auc_score(y, )
+    AUC_lin_full  = metrics.roc_auc_score(y, prob1_lin_full)
 
     est_lin.best_auc_       = AUC_lin
     est_lin.best_auc_full_  = AUC_lin_full
@@ -103,7 +103,7 @@ finally:
 # ****************************************************************************
 
 try:
-    svc_poly  = svm.SVC(probability=True, kernel='poly')
+    svc_poly  = svm.SVC(kernel='poly', **svc_kwargs)
     pipe_poly = pipeline.Pipeline([('stsc', stsc), ('svc', svc_poly)])
 
     param_grid_poly = {'svc__degree': [2, 3, 4, 5]}
@@ -113,9 +113,9 @@ try:
     est_poly.fit(X_tr, y_tr)
     _, prob1_poly      = est_poly.best_estimator_.predict_proba(X_va).T
     _, prob1_poly_full = est_poly.best_estimator_.predict_proba(X).T
-    AUC_poly           = metrics.roc_auc_score(y_va, prob1_poly_full)
+    AUC_poly           = metrics.roc_auc_score(y_va, prob1_poly)
 
-    AUC_poly_full = metrics.roc_auc_score(y, )
+    AUC_poly_full = metrics.roc_auc_score(y, prob1_poly_full)
 
     est_poly.best_auc_      = AUC_poly
     est_poly.best_aucfull__ = AUC_poly_full
@@ -137,7 +137,7 @@ finally:
 # ****************************************************************************
 
 try:
-    svc_rbf  = svm.SVC(probability=True, kernel='poly')
+    svc_rbf  = svm.SVC(kernel='poly', **svc_kwargs)
     pipe_rbf = pipeline.Pipeline([('stsc', stsc), ('svc', svc_rbf)])
 
     param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 2, 13)}
@@ -147,9 +147,9 @@ try:
     est_rbf.fit(X_tr, y_tr)
     _, prob1_rbf       = est_rbf.best_estimator_.predict_proba(X_va).T
     _, prob1_rbf_full  = est_rbf.best_estimator_.predict_proba(X).T
-    AUC_rbf            = metrics.roc_auc_score(y_va, prob1_rbf_full)
+    AUC_rbf            = metrics.roc_auc_score(y_va, prob1_rbf)
 
-    AUC_rbf_full  = metrics.roc_auc_score(y, )
+    AUC_rbf_full  = metrics.roc_auc_score(y, prob1_rbf_full)
 
     est_rbf.best_auc_       = AUC_rbf
     est_rbf.best_auc_full_  = AUC_rbf_full
