@@ -73,40 +73,40 @@ pca      = decomposition.PCA()
 # *                                Linear SVC                                *
 # ****************************************************************************
 
-try:
-    print("\n\n\n\t\t\t\tProcessing lin\n\n")
-    svc_lin  = svm.SVC(kernel='linear', **svc_kwargs)
-    pipe_lin = pipeline.Pipeline([
-        ('stsc_pca', stsc_pca),
-        ('pca', pca),
-        ('stsc_svc', stsc_svc),
-        ('svc', svc_lin)
-    ])
+# try:
+#     print("\n\n\n\t\t\t\tProcessing lin\n\n")
+#     svc_lin  = svm.SVC(kernel='linear', **svc_kwargs)
+#     pipe_lin = pipeline.Pipeline([
+#         ('stsc_pca', stsc_pca),
+#         ('pca', pca),
+#         ('stsc_svc', stsc_svc),
+#         ('svc', svc_lin)
+#     ])
 
-    param_grid_lin = dict()
-    param_grid_lin.update(svc_param_space_shared)
+#     param_grid_lin = dict()
+#     param_grid_lin.update(svc_param_space_shared)
 
-    est_lin            = model_selection.GridSearchCV(pipe_lin, param_grid_lin, **cv_args)
-    est_lin.fit(X_tr, y_tr)
-    _, prob1_lin       = est_lin.best_estimator_.predict_proba(X_va).T
-    _, prob1_lin_full  = est_lin.best_estimator_.predict_proba(X).T
-    AUC_lin            = metrics.roc_auc_score(y_va, prob1_lin)
+#     est_lin            = model_selection.GridSearchCV(pipe_lin, param_grid_lin, **cv_args)
+#     est_lin.fit(X_tr, y_tr)
+#     _, prob1_lin       = est_lin.best_estimator_.predict_proba(X_va).T
+#     _, prob1_lin_full  = est_lin.best_estimator_.predict_proba(X).T
+#     AUC_lin            = metrics.roc_auc_score(y_va, prob1_lin)
 
-    AUC_lin_full  = metrics.roc_auc_score(y, prob1_lin_full)
+#     AUC_lin_full  = metrics.roc_auc_score(y, prob1_lin_full)
 
-    est_lin.best_auc_       = AUC_lin
-    est_lin.best_auc_full_  = AUC_lin_full
-    est_lin.X_tr_           = X_tr
-    est_lin.y_tr_           = y_tr
-    est_lin.X_va_           = X_va
-    est_lin.y_va_           = y_va
-    with open("gender_prediction_pca_svm_lin_kernel_auc_score.pkl", "wb") as fid:
-        pickle.dump(est_lin, fid)
-except Exception as err:
-    pbn.send(exception=err)
-finally:
-    msg = f"Completed cross validation with linear kernel, best AUC was {AUC_lin:.4f}"
-    pbn.send(message=msg)
+#     est_lin.best_auc_       = AUC_lin
+#     est_lin.best_auc_full_  = AUC_lin_full
+#     est_lin.X_tr_           = X_tr
+#     est_lin.y_tr_           = y_tr
+#     est_lin.X_va_           = X_va
+#     est_lin.y_va_           = y_va
+#     with open("gender_prediction_pca_svm_lin_kernel_auc_score.pkl", "wb") as fid:
+#         pickle.dump(est_lin, fid)
+# except Exception as err:
+#     pbn.send(exception=err)
+# finally:
+#     msg = f"Completed cross validation with linear kernel, best AUC was {AUC_lin:.4f}"
+#     pbn.send(message=msg)
 
 
 # ****************************************************************************
