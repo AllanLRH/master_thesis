@@ -8,6 +8,7 @@ import tabulate
 import itertools
 from IPython.display import display, HTML
 import time
+from string import Template
 from psutil import cpu_percent
 
 
@@ -842,4 +843,24 @@ def camel2snake(camel):
         return {wd: _inner(wd) for wd in camel}
     else:
         raise ValueError(f"Only accepts str or Pandas index (pd.core.indexes.base.Index), but recieved {type(camel)}")
+
+
+template = Template(r"""
+\begin{tabular}{cccc}
+  \toprule
+  & & \multicolumn{2}{ c }{\textbf{Actual class}}                     \\
+  & & Male & Female                                                   \\ \cmidrule(lr){3-4}
+  \multicolumn{1}{ c  }{\multirow{2}{*}{\textbf{Predicted class}} }   &
+  \multicolumn{1}{ c| }{Male}     & $TN & $FP                         \\
+  \multicolumn{1}{ c  }{}                                             &
+  \multicolumn{1}{ c| }{Female}       & $FN & $TP                         \\
+  \bottomrule
+\end{tabular}
+""")
+def fillLatexConfusionTable(confmat):  # noqa
+    (tn, fp), (fn, tp) = confmat
+    filled = template.substitute(TN=tn, FP=fp, FN=fn, TP=tp)
+    return filled
+
+
 
