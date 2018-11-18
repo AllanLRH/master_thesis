@@ -47,11 +47,11 @@ cv_args = dict(scoring = 'roc_auc',        # noqa
                # pre_dispatch = 2 * n_jobs,  # noqa
                return_train_score = True)  # noqa
 
-svc_kwargs = dict(probability = True)  # noqa
+svc_kwargs = dict(probability=True, cache_size=1500)  # noqa
 
 svc_param_space_shared = {'svc__C': 2.0**np.linspace(-12, 10, 23),
                           'svc__class_weight': ['balanced', None],
-                          'pca__n_components': np.array([3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 20, 24, 38, 43])
+                          'pca__n_components': np.array([4, 5, 6, 7, 8, 10, 12, 14, 17, 20, 25, 34, 43])
                           }
 
 # ****************************************************************************
@@ -113,40 +113,40 @@ pca      = decomposition.PCA()
 # *                              Polynomial SVC                              *
 # ****************************************************************************
 
-try:
-    print("\n\n\n\t\t\t\tProcessing poly\n\n")
-    svc_poly  = svm.SVC(kernel='poly', **svc_kwargs)
-    pipe_poly = pipeline.Pipeline([
-        ('stsc_pca', stsc_pca),
-        ('pca', pca),
-        ('stsc_svc', stsc_svc),
-        ('svc', svc_poly)
-    ])
+# try:
+#     print("\n\n\n\t\t\t\tProcessing poly\n\n")
+#     svc_poly  = svm.SVC(kernel='poly', **svc_kwargs)
+#     pipe_poly = pipeline.Pipeline([
+#         ('stsc_pca', stsc_pca),
+#         ('pca', pca),
+#         ('stsc_svc', stsc_svc),
+#         ('svc', svc_poly)
+#     ])
 
-    param_grid_poly = {'svc__degree': [2, 3, 4, 5]}
-    param_grid_poly.update(svc_param_space_shared)
+#     param_grid_poly = {'svc__degree': [2, 3, 4, 5]}
+#     param_grid_poly.update(svc_param_space_shared)
 
-    est_poly           = model_selection.GridSearchCV(pipe_poly, param_grid_poly, **cv_args)
-    est_poly.fit(X_tr, y_tr)
-    _, prob1_poly      = est_poly.best_estimator_.predict_proba(X_va).T
-    _, prob1_poly_full = est_poly.best_estimator_.predict_proba(X).T
-    AUC_poly           = metrics.roc_auc_score(y_va, prob1_poly)
+#     est_poly           = model_selection.GridSearchCV(pipe_poly, param_grid_poly, **cv_args)
+#     est_poly.fit(X_tr, y_tr)
+#     _, prob1_poly      = est_poly.best_estimator_.predict_proba(X_va).T
+#     _, prob1_poly_full = est_poly.best_estimator_.predict_proba(X).T
+#     AUC_poly           = metrics.roc_auc_score(y_va, prob1_poly)
 
-    AUC_poly_full = metrics.roc_auc_score(y, prob1_poly_full)
+#     AUC_poly_full = metrics.roc_auc_score(y, prob1_poly_full)
 
-    est_poly.best_auc_      = AUC_poly
-    est_poly.best_auc_full_ = AUC_poly_full
-    est_poly.X_tr_          = X_tr
-    est_poly.y_tr_          = y_tr
-    est_poly.X_va_          = X_va
-    est_poly.y_va_          = y_va
-    with open("gender_prediction_pca_svm_poly_kernel_auc_score.pkl", "wb") as fid:
-        pickle.dump(est_poly, fid)
-except Exception as err:
-    pbn.send(exception=err)
-finally:
-    msg = f"Completed cross validation with polynomial kernel, best AUC was {AUC_poly:.4f}"
-    pbn.send(message=msg)
+#     est_poly.best_auc_      = AUC_poly
+#     est_poly.best_auc_full_ = AUC_poly_full
+#     est_poly.X_tr_          = X_tr
+#     est_poly.y_tr_          = y_tr
+#     est_poly.X_va_          = X_va
+#     est_poly.y_va_          = y_va
+#     with open("gender_prediction_pca_svm_poly_kernel_auc_score.pkl", "wb") as fid:
+#         pickle.dump(est_poly, fid)
+# except Exception as err:
+#     pbn.send(exception=err)
+# finally:
+#     msg = f"Completed cross validation with polynomial kernel, best AUC was {AUC_poly:.4f}"
+#     pbn.send(message=msg)
 
 
 # ****************************************************************************
@@ -163,7 +163,7 @@ try:
         ('svc', svc_rbf)
     ])
 
-    param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 2, 13)}
+    param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 0, 13)}
     param_grid_rbf.update(svc_param_space_shared)
 
     est_rbf            = model_selection.GridSearchCV(pipe_rbf, param_grid_rbf, **cv_args)
