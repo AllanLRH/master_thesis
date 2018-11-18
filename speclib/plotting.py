@@ -13,6 +13,7 @@ import itertools
 from sklearn import metrics
 from speclib import graph
 import netgraph
+import colorsys
 
 
 def rgb(r, g, b):
@@ -922,6 +923,56 @@ def rgba_hex2rgb_tuple(rgba):
     B = int( 255*((1 - alpha) + (alpha * b)) )  # noqa
     return (R, G, B)
 
+
+def rgb_hsv_modify(rgb, h=1.0, s=1.0, v=1.0):
+    """Modify an RGB color in HSV space, by nultiplying HSV a component with a scaler.
+
+    Parameters
+    ----------
+    rgb : iterable
+        RGB values as floats in range [0, 1] or ints in range [0, 255].
+    h : float, optional
+        Scalar to multiply the h component in HSV space with.
+    s : float, optional
+        Scalar to multiply the s component in HSV space with.
+    v : float, optional
+        Scalar to multiply the v component in HSV space with.
+
+    Returns
+    -------
+    list
+        List with RGB-values in range [0, 1].
+
+    Raises
+    ------
+    ValueError
+        If RGB input is invalid.
+    ValueError
+        If any of the modified HSV values are iyt of range [0, 1].
+    """
+    # Check and coerce data types for RGB input
+    all_floats = all([isinstance(el, float) for el in rgb])
+    all_ints = all([isinstance(el, int) for el in rgb])
+    if not (all_ints or all_floats):
+        raise ValueError("Input must be a RGB [0, 255] or rgb [0, 1] iterable.")
+    if all_ints:
+        rgb = [el/255 for el in rgb]
+
+    # Convert from RGB to HSV, and apply modifications to components
+    hh, ss, vv = colorsys.rgb_to_hsv(*rgb)
+    hm, sm, vm = h*hh, s*ss, v*vv
+
+    # Check that the HSV values are still valid in range [0, 1]
+    if not 0 <= hm <= 1:
+        raise ValueError(f"Multiplying the HSV component H with {h} results in {hm}, which is not with [0, 1].")
+    if not 0 <= sm <= 1:
+        raise ValueError(f"Multiplying the HSV component S with {s} results in {sm}, which is not with [0, 1].")
+    if not 0 <= vm <= 1:
+        raise ValueError(f"Multiplying the HSV component H with {v} results in {vm}, which is not with [0, 1].")
+
+    # Convert modified values to RGB and return result
+    rgb_modified = colorsys.hsv_to_rgb(hm, sm, vm)
+    return rgb_modified
 
 
 if __name__ == '__main__':
