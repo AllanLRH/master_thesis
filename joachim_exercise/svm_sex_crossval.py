@@ -133,14 +133,14 @@ finally:
 
 
 # ****************************************************************************
-# *                              Polynomial SVC                              *
+# *                                  RBF SVC                                 *
 # ****************************************************************************
 
 try:
-    svc_rbf  = svm.SVC(kernel='poly', **svc_kwargs)
+    svc_rbf  = svm.SVC(kernel='rbf', **svc_kwargs)
     pipe_rbf = pipeline.Pipeline([('stsc', stsc), ('svc', svc_rbf)])
 
-    param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 2, 13)}
+    param_grid_rbf = {'svc__gamma': 2.0**np.linspace(-10, 0, 11)}
     param_grid_rbf.update(svc_param_space_shared)
 
     est_rbf            = model_selection.GridSearchCV(pipe_rbf, param_grid_rbf, **cv_args)
