@@ -24,7 +24,8 @@ sns.set_palette(colorcycle)
 parse_pattern = "[CV]  pca__n_components={n:d}, svc__C=1{C:f}, svc__class_weight={wt:w}, svc__gamma={gamma:f}, score={auc:f}, total={time:f}{tu:w}"
 rx = re.compile(r'total= +')
 
-with open("pca_svm_progress_log.txt") as fid:
+# with open("pca_svm_progress_log.txt") as fid:
+with open("pca_svm_progress_log_2.txt") as fid:
     lns = fid.read().split('\n')
     lns = [rx.sub('total=', ln) for ln in lns]
 
